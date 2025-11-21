@@ -11,7 +11,7 @@
 color="primary" class="me-4"
                                            @click="submit">Salvar</v-btn>
                     <v-btn 
-                       :to="{ name: 'squads', params: { uuid: route.params.productUuid } }"
+                       :to="{ name: 'onboarding' }"
                         class="me-4"
                        >Cancelar</v-btn>
                 </v-form>
@@ -36,7 +36,6 @@ console.log('params:' , route.params);
 const squad = reactive({
     name: '',
     description: '',
-    product_uuid: route.params.productUuid,
     uuid: ''
 });
 
@@ -45,7 +44,6 @@ if (route.meta.type === 'update') {
     squad.name = s.name;
     squad.description = s.description;
     squad.uuid = s.uuid;
-    squad.product_uuid = s.product_uuid;
 }
 
 const submit = () => {
@@ -53,9 +51,8 @@ const submit = () => {
         useSquad.create(squad);
         router.push({ name: 'onboarding' });
     } else {
-        console.log(useSquad.update(squad))
-        router.push({ name: 'squads', params: { uuid: route.params.productUuid }});
+        useSquad.update(squad);
+        router.push({ name: 'onboarding' });
     }
-    // router.push({ name: 'product-by-id', params: { uuid: route.params.uuid } });
 };
 </script>

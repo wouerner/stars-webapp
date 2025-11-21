@@ -4,7 +4,7 @@
       <div class="w-100 d-flex align-center justify-space-between main-container">
         <a class="d-flex align-center logo">
           <h1 class=" d-none d-sm-block text-h5 font-weight-bold font-semibold primary-color ml-3 logo-text">
-            SouJunior: Stars 
+            Stars 
           </h1>
         </a>
         <div class="d-flex align-center ga-2">
@@ -35,30 +35,40 @@
           >
             Onboarding
           </v-btn>
-          <!-- <v-btn
+          <v-btn
+            v-if="logged === true"
+            variant="text"
+            class="font-weight-semibold"
+            :to="{ name: 'volunteers' }"
+          >
+            Voluntários
+          </v-btn>
+          <!--v-btn
             v-if="logged === false"
             variant="text"
             class="font-weight-semibold"
             :to="{ name: 'registry' }"
           >
             Registro
-          </v-btn> -->
-          <!--v-btn
+          </v-btn-->
+          <v-btn
             v-if="logged === false"
             variant="text"
             class="font-weight-semibold"
             :to="{ name: 'login' }"
           >
             Login
-          </v-btn-->
+          </v-btn>
           <v-btn
+            v-if="logged === false"
             variant="text"
             class="font-weight-semibold"
             :to="{ name: 'registry' }"
           >
-           Registro 
+            Registro
           </v-btn>
           <v-btn
+            v-if="logged === false"
             variant="text"
             class="font-weight-semibold"
             :to="{ name: 'search' }"
@@ -126,8 +136,6 @@ const auth = useAuthStore()
 const route = useRoute()
 
 const logged = computed(() => auth.getName() != '')
-
-const productUuid = computed(() => (auth.getName() != '' ? auth.products[0] : false))
 
 console.log('logged', route.path)
 const ef = computed(() => (route.path === '/' ? 'homeBackgroundEffect' : ''))

@@ -5,15 +5,12 @@ import RegistryView from '../views/user/RegistryView.vue'
 import LoginView from '@/views/user/LoginView.vue'
 import ProfileView from '../views/user/ProfileView.vue'
 
-// product 
-import ProductsView from '../views/product/ProductsView.vue'
-import ProductView from '../views/product/ProductView.vue'
-import ProductRegistryView from '../views/product/RegistryView.vue'
-
 // squad 
 import SquadsView from '../views/squad/SquadsView.vue'
 import SquadView from '../views/squad/SquadView.vue'
 import SquadCreateView from '../views/squad/CreateView.vue'
+
+import VolunteersView from '@/views/volunteer/VolunteersView.vue'
 
 import { useAuthStore } from '@/stores/auth';
 
@@ -44,40 +41,6 @@ const router = createRouter({
             auth: true
         }
     },
-      {
-          path: '/products',
-          name: 'products',
-          component: ProductsView,
-          meta : {
-              auth: false
-          }
-      },
-    {
-      path: '/product/:uuid',
-      name: 'product-by-id',
-      component: ProductView,
-        meta : {
-            auth: true
-        }
-    },
-    {
-        path: '/product/create',
-        name: 'product-create',
-        component: ProductRegistryView,
-        meta : {
-            auth: true,
-            update: false 
-        }
-    },
-    {
-        path: '/product/:uuid/update',
-        name: 'product-update',
-        component: ProductRegistryView,
-        meta : {
-            auth: true,
-            update: true
-        }
-    },
     {
       path: '/squads/:uuid',
       name: 'squads',
@@ -98,7 +61,7 @@ const router = createRouter({
 
     },
     {
-      path: '/squad/create/:productUuid',
+      path: '/squad/create',
       name: 'squad-create',
       component: SquadCreateView,
         meta : {
@@ -129,6 +92,14 @@ const router = createRouter({
       component: () => import('../views/user/SearchView.vue'),
         meta : {
             auth: false 
+        }
+    },
+    {
+      path: '/volunteers',
+      name: 'volunteers',
+      component: VolunteersView,
+        meta : {
+            auth: true
         }
     },
     {

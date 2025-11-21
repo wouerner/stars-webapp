@@ -37,7 +37,7 @@ export const useSquadStore = defineStore('squad', () => {
             } else if (data.message) {
                 // alert(data.message)
                 // await fetch()
-                await useAuth.fetchSquads(squad.product_uuid)
+                // await useAuth.fetchSquads(squad.product_uuid)
             }
             else {
                 squad.value = data
@@ -58,7 +58,7 @@ export const useSquadStore = defineStore('squad', () => {
             } else if (data.message) {
                 // alert(data.message)
                 // await fetch()
-                await useAuth.fetchSquads(squad.product_uuid)
+                // await useAuth.fetchSquads(squad.product_uuid)
                 return data
             }
             else {

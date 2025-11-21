@@ -9,33 +9,15 @@
     <v-row align="center" justify="center">
       <v-col cols="6">
         <v-form>
-          <v-text-field v-model="profile.name" label="Nome completo *" variant="outlined" disabled>
+          <v-text-field v-model="profile.name" label="Nome completo" variant="outlined" readonly>
           </v-text-field>
-          <v-text-field v-model="profile.email" label="E-mail *" variant="outlined"> </v-text-field>
-          <v-text-field
-            v-model="profile.city"
-            label="Cidade *"
-            variant="outlined"
-            :rules="[rules.textOnly]"
-          >
+          <v-text-field v-model="profile.email" label="E-mail" variant="outlined" readonly> </v-text-field>
+          <v-text-field v-model="profile.linkedin" label="Perfil do LinkedIn" variant="outlined" readonly>
           </v-text-field>
-          <v-text-field
-            v-model="profile.state"
-            label="Estado *"
-            variant="outlined"
-            :rules="[rules.textOnly]"
-          >
-          </v-text-field>
-          <v-text-field v-model="profile.linkedin" label="Perfil do LinkedIn *" variant="outlined">
-          </v-text-field>
-          <v-text-field v-model="profile.discord" label="Perfil no Discord *" variant="outlined">
-          </v-text-field>
-          <v-row>
-            <v-col>
-              <v-btn color="primary" @click="submitProfile">Atualizar</v-btn>
-              <v-btn class="ml-3" :to="{ name: 'onboarding' }">Cancelar</v-btn>
-            </v-col>
-          </v-row>
+          
+          <v-alert v-if="!volunteerFound" type="warning" class="mt-3">
+            Perfil de voluntário não encontrado para este usuário.
+          </v-alert>
         </v-form>
       </v-col>
     </v-row>
@@ -43,30 +25,39 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, onMounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth.js'
+import { useVolunteerStore } from '@/stores/volunteer.js'
 
 const auth = useAuthStore()
+const volunteerStore = useVolunteerStore()
+
+const volunteerFound = ref(true)
 
 const profile = reactive({
-  name: auth.auth.name,
+  name: '',
   email: auth.auth.email,
-  city: '',
-  state: '',
-  linkedin: '',
-  discord: ''
+  linkedin: ''
 })
 
-const rules = {
-  textOnly: (value) =>
-    /^[a-zA-Z\sáàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ]*$/.test(value) || 'Apenas texto é permitido.'
-}
-
-const submitProfile = async () => {
-  try {
-    auth.updateProfile(profile)
-  } catch (error) {
-    console.log(error)
+onMounted(async () => {
+  if (auth.auth.email) {
+    try {
+      await volunteerStore.fetchByEmail(auth.auth.email)
+      if (volunteerStore.volunteer && volunteerStore.volunteer.name) {
+         profile.name = volunteerStore.volunteer.name
+         profile.linkedin = volunteerStore.volunteer.linkedin
+         volunteerFound.value = true
+      } else {
+         // If fetchByEmail doesn't throw but returns null/empty, or if store logic differs
+         // check volunteerStore state
+         volunteerFound.value = false;
+      }
+    } catch (e) {
+      console.error("Error fetching volunteer profile", e)
+      volunteerFound.value = false
+    }
   }
-}
+})
+
 </script>

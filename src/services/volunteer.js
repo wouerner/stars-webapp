@@ -119,10 +119,24 @@ async function del(uuidSquad, uuidMember) {
     }
 }
 
+async function fetchAll() {
+    try {
+        const response = await axiosInstance.get(
+            '/volunteers/',
+            { headers: headers() }
+        );
+        return response.data;
+    } catch (error) {
+        alert('Error fetching all volunteers: ' + error);
+        return [];
+    }
+}
+
 export default {
     fetchBy,
     del,
     create, 
     update,
-    fetchByEmail
+    fetchByEmail,
+    fetchAll
 };
