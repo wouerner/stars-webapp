@@ -3,8 +3,9 @@ import volunteerService from '@/services/volunteer.js'
 import { ref } from 'vue'
 
 export const useVolunteerStore = defineStore('volunteer', () => {
-    const volunteer = ref([]); // Used for single volunteer details
+    const currentVolunteer = ref(null); // Used for single volunteer details
     const volunteers = ref([]); // New ref for list of volunteers
+    const statuses = ref([]); // To store all available statuses
 
     async function fetchByEmail(email) {
         try {
@@ -17,7 +18,7 @@ export const useVolunteerStore = defineStore('volunteer', () => {
                 return;
             }
 
-            volunteer.value = data
+            currentVolunteer.value = data;
            
         } catch (error) {
             alert('Catch: ' + error)
@@ -39,21 +40,57 @@ export const useVolunteerStore = defineStore('volunteer', () => {
         }
     }
 
-    async function fetchAll() {
+    async function fetchAll(page = 1, limit = 10, filters = {}) {
         try {
-            const response = await volunteerService.fetchAll(); // Assuming this will be added to service
+            const skip = (page - 1) * limit;
+            const params = { skip, limit, ...filters };
+            const response = await volunteerService.fetchAll(params);
             volunteers.value = response;
         } catch (error) {
+            console.error('Erro ao buscar voluntários:', error);
             alert('Erro ao buscar voluntários: ' + error);
         }
     }
 
+    async function fetchStatuses() {
+        try {
+            statuses.value = await volunteerService.getStatuses();
+        } catch (error) {
+            console.error('Erro ao buscar status de voluntários:', error);
+            alert('Erro ao buscar status de voluntários: ' + error);
+        }
+    }
+
+    async function fetchVolunteer(id) {
+        try {
+            currentVolunteer.value = await volunteerService.getById(id);
+        } catch (error) {
+            console.error(`Erro ao buscar voluntário ${id}:`, error);
+            alert(`Erro ao buscar voluntário ${id}: ` + error);
+        }
+    }
+
+    async function updateVolunteerStatus(volunteerId, newStatusId) {
+        try {
+            await volunteerService.updateStatus(volunteerId, newStatusId);
+            // After successful update, refetch the volunteer to get the updated status and history
+            await fetchVolunteer(volunteerId); 
+        } catch (error) {
+            console.error(`Erro ao atualizar status do voluntário ${volunteerId}:`, error);
+            alert(`Erro ao atualizar status do voluntário ${volunteerId}: ` + error);
+        }
+    }
+
     return { 
-        volunteer, 
+        currentVolunteer, 
         volunteers, 
+        statuses,
         fetchAll,
         create,
-        fetchByEmail
+        fetchByEmail,
+        fetchStatuses,
+        fetchVolunteer,
+        updateVolunteerStatus
     }
 }, 
     { 

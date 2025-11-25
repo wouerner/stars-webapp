@@ -6,7 +6,7 @@ import jobtitleService from '@/services/jobtitle.js'
 
 export const useJobtitleStore = defineStore('jobtitle', () => {
     const tt  = useAuthStore()
-    const data = ref({})
+    const data = ref([])
 
     const useSnackbar = useSnackbarStore()
 

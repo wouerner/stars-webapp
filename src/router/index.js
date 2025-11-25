@@ -11,6 +11,7 @@ import SquadView from '../views/squad/SquadView.vue'
 import SquadCreateView from '../views/squad/CreateView.vue'
 
 import VolunteersView from '@/views/volunteer/VolunteersView.vue'
+import VolunteerDetailsView from '@/views/volunteer/VolunteerDetailsView.vue' // Import the new component
 
 import { useAuthStore } from '@/stores/auth';
 
@@ -99,6 +100,15 @@ const router = createRouter({
       name: 'volunteers',
       component: VolunteersView,
         meta : {
+            auth: true
+        }
+    },
+    {
+      path: '/volunteers/:id', // New route for volunteer details
+      name: 'volunteer-details',
+      component: VolunteerDetailsView,
+      props: true,
+        meta: {
             auth: true
         }
     },

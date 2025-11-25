@@ -119,16 +119,56 @@ async function del(uuidSquad, uuidMember) {
     }
 }
 
-async function fetchAll() {
+async function fetchAll(params = {}) {
     try {
         const response = await axiosInstance.get(
             '/volunteers/',
-            { headers: headers() }
+            { 
+                headers: headers(),
+                params
+            }
         );
         return response.data;
     } catch (error) {
         alert('Error fetching all volunteers: ' + error);
+        console.error('Error fetching all volunteers:', error);
         return [];
+    }
+}
+
+async function getStatuses() {
+    try {
+        const response = await axiosInstance.get('/volunteer-statuses/', { headers: headers() });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching volunteer statuses:', error);
+        throw error;
+    }
+}
+
+async function getById(volunteerId) {
+    try {
+        const response = await axiosInstance.get(`/volunteers/${volunteerId}`, { headers: headers() });
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching volunteer with ID ${volunteerId}:`, error);
+        throw error;
+    }
+}
+
+async function updateStatus(volunteerId, newStatusId) {
+    try {
+        const response = await axiosInstance.patch(
+            `/volunteers/${volunteerId}/status`, 
+            { new_status_id: newStatusId },
+            { 
+                headers: headers()
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error(`Error updating status for volunteer ID ${volunteerId}:`, error);
+        throw error;
     }
 }
 
@@ -138,5 +178,8 @@ export default {
     create, 
     update,
     fetchByEmail,
-    fetchAll
+    fetchAll,
+    getStatuses,
+    getById,
+    updateStatus
 };
