@@ -157,8 +157,6 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
-
 import { useAuthStore } from "@/stores/auth";
 import { useMemberStore } from "@/stores/member";
 import { useSquadStore } from "@/stores/squad";

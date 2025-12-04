@@ -27,8 +27,14 @@ import { useAuthStore } from "@/stores/auth";
 import { useMemberStore } from "@/stores/member";
 
 const props = defineProps({
-    member: Object,
-    type: String,
+    member: {
+        type: Object,
+        default: () => ({}),
+    },
+    type: {
+        type: String,
+        default: 'create',
+    },
 })
 const emit = defineEmits(['submit', 'submitcancel'])
 

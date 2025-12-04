@@ -1,7 +1,6 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
 import instance from "@/services/http.js";
-import squadService from "@/services/squad.js";
 import router from "@/router";
 import { useSnackbarStore } from "@/stores/snackbar.js";
 

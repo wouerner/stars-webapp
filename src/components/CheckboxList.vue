@@ -1,9 +1,7 @@
-<script setup lang="ts">
-import { PropType } from 'vue';
-
+<script setup>
   defineProps({
     values: {
-      type: Array as PropType<string[]>,
+      type: Array,
       required: true
     },
     label: {
@@ -17,7 +15,7 @@ import { PropType } from 'vue';
       default: 'checkbox'
     },
     modelValue: {
-      type: String as PropType<string>,
+      type: String,
       required: false,
       default: ''
     },
@@ -25,8 +23,8 @@ import { PropType } from 'vue';
 
   const emit = defineEmits(['update:modelValue'])
 
-  const handleChange = (event: Event) => {
-    const target = event.target as HTMLInputElement
+  const handleChange = (event) => {
+    const target = event.target
     emit('update:modelValue', target.checked ? target.value : '')
   }
 </script>

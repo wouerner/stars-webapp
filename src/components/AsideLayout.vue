@@ -1,16 +1,12 @@
-<script setup lang="ts">
-import { ref, watch } from 'vue'
+<script setup>
+import { ref } from 'vue'
 import CheckboxList from './CheckboxList.vue'
 import { roles, headAreas, juniorAreas, productManagerSubAreas, designSubAreas, dataSubAreas, businessSubAreas, availabilities, periods } from '../config/options'
 
 const selectedArea = ref('')
 const selectedRole = ref('')
-const selectedSubArea = ref('')
-const selectedAvailability = ref('')
-const selectedPeriod = ref('')
 
-
-const handleAreaSelection = (area: string) => {
+const handleAreaSelection = (area) => {
   if (selectedArea.value === area) {
     selectedArea.value = ''
   } else {

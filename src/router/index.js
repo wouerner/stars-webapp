@@ -4,6 +4,7 @@ import HomeView from '@/views/HomeView.vue'
 import RegistryView from '../views/user/RegistryView.vue'
 import LoginView from '@/views/user/LoginView.vue'
 import ProfileView from '../views/user/ProfileView.vue'
+import UserRegisterView from '../views/user/UserRegisterView.vue'
 
 // squad 
 import SquadsView from '../views/squad/SquadsView.vue'
@@ -28,6 +29,11 @@ const router = createRouter({
       path: '/',
       name: 'registry',
       component: RegistryView
+    },
+    {
+      path: '/register',
+      name: 'user-register',
+      component: UserRegisterView
     },
     {
       path: '/login',

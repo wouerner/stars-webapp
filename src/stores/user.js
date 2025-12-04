@@ -1,7 +1,6 @@
-import { ref, computed, reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import axiosInstance from '@/services/http.js'
-import router from "@/router";
 
 export const useUserStore = defineStore('user', () => {
 
@@ -14,20 +13,34 @@ export const useUserStore = defineStore('user', () => {
 
     async function register(applicant) {
         try {
-            const response = await axiosInstance.post('/user', applicant);
+            const response = await axiosInstance.post('/users/', applicant);
             const data = response.data;
 
             if (data.error) {
                 alert(data.error)
-                return;
-            } else if (data.message) {
+                return false;
+            } else {
                 registered.value = true;
-                localStorage.setItem('user', data);
+                // localStorage.setItem('user', JSON.stringify(data)); // user data is usually set on login, not register
+                return true;
             }
         } catch (error) {
-            if (error.response.status === 401 || error.response.status === 422 || error.response.status === 404 || error.response.status === 500) {
-                alert(error.response.data)
+            if (error.response) {
+                if (error.response.status === 400) {
+                    if (error.response.data.detail === "Invalid registration code") {
+                        alert("O código de registro informado é inválido. Verifique com o administrador.");
+                    } else if (error.response.data.detail === "Email already registered") {
+                         alert("E-mail já cadastrado!");
+                    } else {
+                        alert(error.response.data.detail || "Erro ao cadastrar usuário.");
+                    }
+                } else {
+                    alert(error.response.data.detail || "Ocorreu um erro no registro.");
+                }
+            } else {
+                alert("Erro de conexão.");
             }
+            return false;
         }
     }
 

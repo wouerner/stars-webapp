@@ -24,7 +24,7 @@
           />
           <hr class="mb-6 mt-3" />
           <v-btn color="primary" type="submit" block @click="submitLogin">Login</v-btn>
-          <v-btn block class="mt-2 cancelButton" :to="{ name: 'registry' }">Registrar</v-btn>
+          <v-btn block class="mt-2 cancelButton" :to="{ name: 'user-register' }">Registrar</v-btn>
         </v-form>
       </v-card>
     </v-col>

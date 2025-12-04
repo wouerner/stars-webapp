@@ -55,6 +55,32 @@
               >
               </v-text-field>
 
+              <v-text-field
+                v-model="applicant.password"
+                :append-inner-icon="visible ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="visible ? 'text' : 'password'"
+                label="Senha"
+                placeholder="Digite sua senha"
+                variant="outlined"
+                :rules="passwordRules"
+                @click:append-inner="visible = !visible"
+              ></v-text-field>
+
+              <v-text-field
+                v-model="applicant.confirmPassword"
+                :type="visible ? 'text' : 'password'"
+                label="Confirme sua senha"
+                placeholder="Digite sua senha novamente"
+                variant="outlined"
+              ></v-text-field>
+
+              <v-text-field
+                v-model="applicant.registration_code"
+                label="Código de Registro"
+                placeholder="Digite o código de convite"
+                variant="outlined"
+              ></v-text-field>
+
               <v-select
                   v-model="applicant.jobtitle_id"
                   label="Cargo no projeto"
@@ -114,7 +140,6 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { useUserStore } from '@/stores/user.js'
-import imgUrl from '@/assets/logo-green-transparent.png'
 import { useRouter } from 'vue-router'
 import { useVolunteerStore } from '@/stores/volunteer.js'
 import { useJobtitleStore } from '@/stores/jobtitle.js'
@@ -137,9 +162,14 @@ const applicant = reactive({
   name: '',
   linkedin: '',
   email: '',
-  jobtitle: '',
+  password: '',
+  confirmPassword: '',
+  registration_code: '',
+  jobtitle_id: null,
   terms: false,
 })
+
+const visible = ref(false)
 
 const nextStep = () => {
   step.value++
@@ -150,12 +180,19 @@ const emailRules = [
   (v) => /.+@.+\..+/.test(v) || 'E-mail deve ser válido'
 ]
 
+const passwordRules = [
+  (v) => !!v || 'Senha é obrigatória',
+  (v) => v.length >= 8 || 'Senha deve ter no mínimo 8 caracteres'
+]
+
 const resetForm = () => {
-  applicant.register_token = ''
   applicant.name = ''
+  applicant.linkedin = ''
   applicant.email = ''
   applicant.password = ''
   applicant.confirmPassword = ''
+  applicant.registration_code = ''
+  applicant.jobtitle_id = null
   applicant.terms = false
   step.value = 1
 }
@@ -164,21 +201,25 @@ const submitApplicant = async () => {
   const newApplicant = { ...applicant }
   if (
     !newApplicant.name ||
-    !newApplicant.email
+    !newApplicant.email ||
+    !newApplicant.password ||
+    !newApplicant.registration_code
   ) {
-    return alert('Preencha todos os campos')
+    return alert('Preencha todos os campos obrigatórios')
   } else if (newApplicant.password !== newApplicant.confirmPassword) {
     return alert('As senhas não conferem')
   } else if (!newApplicant.terms) {
     return alert('Você precisa concordar com os termos e condições!')
-  } else if (userStore.registered === true) {
-    return alert('Usuário cadastrado!')
   } else {
     try {
-      await volunteerStore.create(newApplicant)
-    //  if (userStore.registered === true) {
-        nextStep()
-     // }
+      // Try to register the user (Account)
+      const userRegistered = await userStore.register(newApplicant)
+      
+      if (userRegistered) {
+          // If user registration is successful, create the volunteer profile
+          await volunteerStore.create(newApplicant)
+          nextStep()
+      }
     } catch (error) {
       console.error(error.message)
     }

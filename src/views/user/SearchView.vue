@@ -34,11 +34,8 @@
 
 <script setup>
 import { reactive, computed } from 'vue'
-import { useRouter } from 'vue-router'
 import { useVolunteerStore } from '@/stores/volunteer.js'
 import { useJobtitleStore } from '@/stores/jobtitle.js'
-
-const $router = useRouter()
 
 const volunteerStore = useVolunteerStore()
 const jobtitleStore = useJobtitleStore()
@@ -61,10 +58,4 @@ const onClick = () => {
     console.log('click', email)
     volunteerStore.fetchByEmail(email.value)
 }
-
-const emailRules = [
-  (v) => !!v || 'E-mail é obrigatório',
-  (v) => /.+@.+\..+/.test(v) || 'E-mail deve ser válido'
-]
-
 </script>

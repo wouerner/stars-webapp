@@ -63,6 +63,14 @@
             v-if="logged === false"
             variant="text"
             class="font-weight-semibold"
+            :to="{ name: 'user-register' }"
+          >
+            Criar Conta
+          </v-btn>
+          <v-btn
+            v-if="logged === false"
+            variant="text"
+            class="font-weight-semibold"
             :to="{ name: 'registry' }"
           >
             Registro
@@ -118,18 +126,12 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
-import { useRouter, RouterView, useRoute } from 'vue-router'
+import { computed } from 'vue'
+import { RouterView, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { useTheme } from 'vuetify'
 import { useSnackbarStore } from '@/stores/snackbar'
-import imgUrl from '@/assets/logo-green-transparent.png'
 
-const router = useRouter()
-const theme = useTheme()
 const snackbarStore = useSnackbarStore()
-
-const currentTheme = computed(() => theme.current.value)
 
 const auth = useAuthStore()
 
@@ -140,14 +142,6 @@ const logged = computed(() => auth.getName() != '')
 console.log('logged', route.path)
 const ef = computed(() => (route.path === '/' ? 'homeBackgroundEffect' : ''))
 
-const navigateToHome = () => {
-  router.push({ name: 'home' })
-}
-
-function toggleTheme() {
-  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
-  localStorage.setItem('theme', theme.global.name.value)
-}
 </script>
 
 <style lang="scss">

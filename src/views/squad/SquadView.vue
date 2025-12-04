@@ -37,11 +37,7 @@
 </template>
 
 <script setup>
-import { useSquadStore } from '../../stores/squad';
 import { useRouter } from 'vue-router';
-
-const squadStore = useSquadStore();
-const squadItem = squadStore.squadItem;
 
 const router = useRouter();
 

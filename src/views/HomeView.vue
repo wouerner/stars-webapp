@@ -61,7 +61,7 @@
         <img :src="homeAboutIcon" alt="Sobre a SouJunior Labs" />
       </div>
       <div>
-        <h3>Somos uma iniciativa voluntária comprometida em criar produtos reais.</h3>
+        <h3>Somos uma iniciativa voluntária comprometida em criar produtos reais.</h3>
         <p>
           Nosso propósito é oferecer suporte àqueles que buscam experiência prática, através da
           criação colaborativa de produtos inovadores, assim impulsionando o desenvolvimento
@@ -272,13 +272,6 @@ import footerIcon4 from '@/assets/home/Instagram.png'
 import footerIcon5 from '@/assets/home/YouTube.png'
 import footerIcon6 from '@/assets/home/Twitter.png'
 import footerIcon7 from '@/assets/home/Facebook.png'
-import squadIcon1 from '@/assets/home/squadIcon1.png'
-import squadIcon2 from '@/assets/home/squadIcon2.png'
-import djhonantanIcon from '@/assets/home/djhonantan.png'
-import inahyeIcon from '@/assets/home/inahye.png'
-import thaisIcon from '@/assets/home/thais.png'
-import thaynnaIcon from '@/assets/home/thaynna.png'
-import wouernerIcon from '@/assets/home/wouerner.png'
 
 const carouselItems = [
   { title: 'Business', icon: areaIcon1 },
@@ -305,41 +298,6 @@ const navigationPrev = () => {
     .slice(-1)
     .concat(carouselItemsRef.value.slice(0, -1))
 }
-
-const teamMembers = [
-  {
-    id: 1,
-    name: 'Djhonantan Parreira',
-    role: 'Front-end Developer',
-    linkedin: 'https://www.linkedin.com/in/djhonantanparreira/',
-    github: 'https://www.github.com/djhonantanparreira',
-    image: djhonantanIcon
-  },
-  {
-    id: 2,
-    name: 'Inahyê Dourado',
-    role: 'Product Manager',
-    linkedin: 'https://www.linkedin.com/in/inahyedourado/',
-    github: 'https://github.com/InahyeDourado',
-    image: inahyeIcon
-  },
-  {
-    id: 3,
-    name: 'Thais Escobar',
-    role: 'Product Manager',
-    linkedin: 'https://www.linkedin.com/in/thais-escobar/',
-    github: 'https://github.com/thaisescobarf',
-    image: thaisIcon
-  },
-  {
-    id: 4,
-    name: 'Thaynná Oliveira',
-    role: 'UI/UX Designer',
-    linkedin: 'https://www.linkedin.com/in/thaygjo/',
-    github: 'https://github.com/thaygjo',
-    image: thaynnaIcon
-  }
-]
 </script>
 
 <style scoped>
