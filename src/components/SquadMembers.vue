@@ -82,12 +82,12 @@
                 :headers="headers"
                 :items="useMembers.member">
 
-                    <template #item.role="{ value }">
+                    <template #[`item.role`]="{ value }">
                         <v-chip>
                             {{ value }}
                         </v-chip>
                     </template>
-                <template #item.actions="{ item }">
+                <template #[`item.actions`]="{ item }">
 
 
                     <v-dialog width="500">

@@ -14,7 +14,7 @@
     <v-row align="center" justify="center">
       <v-col xl="7" sm="12">
         <v-stepper v-model="step" :items="items" hide-actions mobile>
-          <template #item.1>
+          <template #[`item.1`]>
             <p class="pa-2">
               Olá, você quer participar do SouJunior ?
               Para prosseguir será necessário se
@@ -29,7 +29,7 @@
                 </v-col>
             </v-row>
           </template>
-          <template #item.2>
+          <template #[`item.2`]>
             <v-form>
               <v-text-field
                 v-model="applicant.name"
@@ -105,7 +105,7 @@
               </v-row>
             </v-form>
           </template>
-          <template #item.3>
+          <template #[`item.3`]>
             <p class="mt-6">
               Meus parabéns, seu registro foi feito com sucesso, você receberá um e-mail de confirmação em breve. 
             </p>
