@@ -44,9 +44,9 @@ onMounted(async () => {
   if (auth.auth.email) {
     try {
       await volunteerStore.fetchByEmail(auth.auth.email)
-      if (volunteerStore.volunteer && volunteerStore.volunteer.name) {
-         profile.name = volunteerStore.volunteer.name
-         profile.linkedin = volunteerStore.volunteer.linkedin
+      if (volunteerStore.currentVolunteer && volunteerStore.currentVolunteer.name) {
+         profile.name = volunteerStore.currentVolunteer.name
+         profile.linkedin = volunteerStore.currentVolunteer.linkedin
          volunteerFound.value = true
       } else {
          // If fetchByEmail doesn't throw but returns null/empty, or if store logic differs

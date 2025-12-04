@@ -51,22 +51,22 @@
           >
             Registro
           </v-btn-->
-          <v-btn
+          <!--v-btn
             v-if="logged === false"
             variant="text"
             class="font-weight-semibold"
             :to="{ name: 'login' }"
           >
             Login
-          </v-btn>
-          <v-btn
+          </v-btn-->
+          <!--v-btn
             v-if="logged === false"
             variant="text"
             class="font-weight-semibold"
             :to="{ name: 'user-register' }"
           >
             Criar Conta
-          </v-btn>
+          </v-btn-->
           <v-btn
             v-if="logged === false"
             variant="text"

@@ -74,13 +74,6 @@
                 variant="outlined"
               ></v-text-field>
 
-              <v-text-field
-                v-model="applicant.registration_code"
-                label="Código de Registro"
-                placeholder="Digite o código de convite"
-                variant="outlined"
-              ></v-text-field>
-
               <v-select
                   v-model="applicant.jobtitle_id"
                   label="Cargo no projeto"
@@ -164,7 +157,6 @@ const applicant = reactive({
   email: '',
   password: '',
   confirmPassword: '',
-  registration_code: '',
   jobtitle_id: null,
   terms: false,
 })
@@ -191,7 +183,6 @@ const resetForm = () => {
   applicant.email = ''
   applicant.password = ''
   applicant.confirmPassword = ''
-  applicant.registration_code = ''
   applicant.jobtitle_id = null
   applicant.terms = false
   step.value = 1
@@ -202,8 +193,7 @@ const submitApplicant = async () => {
   if (
     !newApplicant.name ||
     !newApplicant.email ||
-    !newApplicant.password ||
-    !newApplicant.registration_code
+    !newApplicant.password
   ) {
     return alert('Preencha todos os campos obrigatórios')
   } else if (newApplicant.password !== newApplicant.confirmPassword) {

@@ -1,7 +1,6 @@
 <template>
   <v-container fluid class="pa-0 d-flex align-center justify-center">
     <v-col class="d-flex flex-grow-0 v-col-gap">
-      <img :src="imgUrl" width="auto" height="100%" alt="Logo SouJunior Labs" class="floating" />
       <v-card class="login-form secondary">
         <p>Entrar</p>
         <hr class="mt-1 mb-8" />
@@ -39,8 +38,8 @@ import { useAuthStore } from '@/stores/auth'
 const authStore = useAuthStore()
 
 const user = reactive({
-  email: 'w@w.com',
-  password: '12345678'
+  email: '',
+  password: ''
 })
 
 const submitLogin = async () => {

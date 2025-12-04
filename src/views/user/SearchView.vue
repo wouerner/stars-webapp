@@ -21,11 +21,11 @@
     </v-row>
     <v-row align="center" justify="center">
       <v-col xl="6"  sm="12" align="center">
-          <v-card align="left" class="pa-4">
-              <p class="pa-1">Nome: <strong>{{volunteerStore.volunteer.name}}</strong></p>
-              <p class="pa-1"> Linkedin: <strong>{{volunteerStore.volunteer.linkedin}}</strong></p>
+          <v-card v-if="volunteerStore.currentVolunteer" align="left" class="pa-4">
+              <p class="pa-1">Nome: <strong>{{volunteerStore.currentVolunteer.name}}</strong></p>
+              <p class="pa-1"> Linkedin: <strong>{{volunteerStore.currentVolunteer.linkedin}}</strong></p>
               <p class="pa-1"> Cargo: <strong>{{job.title}}</strong></p>
-              <p class="pa-1">Status: <strong>  <v-chip v-if="volunteerStore.volunteer.is_active">Ativo</v-chip></strong></p>
+              <p class="pa-1">Status: <strong>  <v-chip v-if="volunteerStore.currentVolunteer.is_active">Ativo</v-chip></strong></p>
           </v-card>
       </v-col>
     </v-row>
@@ -43,9 +43,9 @@ jobtitleStore.fetchJobtitles()
 
 const job = computed( () => {
     if (jobtitleStore.data.length === 0) return ''
-    if (volunteerStore.volunteer.length === 0) return ''
+    if (!volunteerStore.currentVolunteer) return ''
 
-    const d = jobtitleStore.data.filter(x => x.id === volunteerStore.volunteer.jobtitle_id)
+    const d = jobtitleStore.data.filter(x => x.id === volunteerStore.currentVolunteer.jobtitle_id)
     return d.length > 0 ? d[0] : ''
 })
 
