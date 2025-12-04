@@ -159,15 +159,23 @@ async function getById(volunteerId) {
 async function updateStatus(volunteerId, newStatusId) {
     try {
         const response = await axiosInstance.patch(
-            `/volunteers/${volunteerId}/status`, 
-            { new_status_id: newStatusId },
+            `/volunteers/${volunteerId}/status/`, // Added trailing slash based on user's error log
+            null, // No request body as new_status_id will be a query parameter
             { 
-                headers: headers()
+                headers: headers(),
+                params: { // Pass new_status_id as a query parameter
+                    new_status_id: newStatusId 
+                }
             }
         );
         return response.data;
     } catch (error) {
         console.error(`Error updating status for volunteer ID ${volunteerId}:`, error);
+        if (error.response) {
+            console.error('Error response data:', error.response.data);
+            console.error('Error response status:', error.response.status);
+            console.error('Error response headers:', error.response.headers);
+        }
         throw error;
     }
 }
