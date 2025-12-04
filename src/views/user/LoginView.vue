@@ -32,7 +32,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-import imgUrl from '@/assets/logo-green-transparent.png'
+
 import { useAuthStore } from '@/stores/auth'
 
 const authStore = useAuthStore()
