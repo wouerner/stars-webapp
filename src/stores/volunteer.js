@@ -6,6 +6,7 @@ export const useVolunteerStore = defineStore('volunteer', () => {
     const currentVolunteer = ref(null); // Used for single volunteer details
     const volunteers = ref([]); // New ref for list of volunteers
     const statuses = ref([]); // To store all available statuses
+    const loading = ref(false); // Add loading state
 
     async function fetchByEmail(email) {
         try {
@@ -41,6 +42,7 @@ export const useVolunteerStore = defineStore('volunteer', () => {
     }
 
     async function fetchAll(page = 1, limit = 10, filters = {}) {
+        loading.value = true; // Set loading to true
         try {
             const skip = (page - 1) * limit;
             const params = { skip, limit, ...filters };
@@ -49,6 +51,8 @@ export const useVolunteerStore = defineStore('volunteer', () => {
         } catch (error) {
             console.error('Erro ao buscar voluntários:', error);
             alert('Erro ao buscar voluntários: ' + error);
+        } finally {
+            loading.value = false; // Set loading to false regardless of success or failure
         }
     }
 
@@ -85,6 +89,7 @@ export const useVolunteerStore = defineStore('volunteer', () => {
         currentVolunteer, 
         volunteers, 
         statuses,
+        loading, // Expose loading state
         fetchAll,
         create,
         fetchByEmail,

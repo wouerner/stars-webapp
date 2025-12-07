@@ -13,6 +13,18 @@
               variant="outlined"
               density="compact"
               hide-details
+              :disabled="volunteerStore.loading"
+              @keydown.enter="applyFilters"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="3">
+            <v-text-field
+              v-model="emailFilter"
+              label="Buscar por email"
+              variant="outlined"
+              density="compact"
+              hide-details
+              :disabled="volunteerStore.loading"
               @keydown.enter="applyFilters"
             ></v-text-field>
           </v-col>
@@ -27,6 +39,7 @@
               density="compact"
               hide-details
               clearable
+              :disabled="volunteerStore.loading"
             ></v-select>
           </v-col>
           <v-col cols="12" md="3">
@@ -40,14 +53,23 @@
               density="compact"
               hide-details
               clearable
+              :disabled="volunteerStore.loading"
               @update:model-value="applyFilters"
             ></v-select>
           </v-col>
-          <v-col cols="12" md="3" class="d-flex align-center ga-2">
-            <v-btn color="primary" @click="applyFilters">Filtrar</v-btn>
-            <v-btn variant="outlined" @click="clearFilters">Limpar</v-btn>
+          <v-col cols="12" md="12" class="d-flex align-center ga-2 justify-end">
+            <v-btn color="primary" :disabled="volunteerStore.loading" @click="applyFilters">Filtrar</v-btn>
+            <v-btn variant="outlined" :disabled="volunteerStore.loading" @click="clearFilters">Limpar</v-btn>
           </v-col>
         </v-row>
+
+        <v-overlay :model-value="volunteerStore.loading" class="align-center justify-center" persistent>
+          <v-progress-circular
+            indeterminate
+            size="64"
+            color="primary"
+          ></v-progress-circular>
+        </v-overlay>
 
         <v-list>
           <v-list-item
@@ -92,16 +114,16 @@
               </v-card-text>
             </v-card>
           </v-list-item>
-          <v-list-item v-if="volunteerStore.volunteers.length === 0">
+          <v-list-item v-if="!volunteerStore.loading && volunteerStore.volunteers.length === 0">
             <v-card class="pa-4 w-100">
               <v-card-text>Nenhum voluntário encontrado.</v-card-text>
             </v-card>
           </v-list-item>
         </v-list>
         <div class="d-flex justify-center pt-4 ga-4 align-center">
-          <v-btn :disabled="page <= 1" variant="outlined" @click="prevPage">Anterior</v-btn>
+          <v-btn :disabled="page <= 1 || volunteerStore.loading" variant="outlined" @click="prevPage">Anterior</v-btn>
           <span>Página {{ page }}</span>
-          <v-btn :disabled="volunteerStore.volunteers.length < itemsPerPage" variant="outlined" @click="nextPage">Próximo</v-btn>
+          <v-btn :disabled="volunteerStore.volunteers.length < itemsPerPage || volunteerStore.loading" variant="outlined" @click="nextPage">Próximo</v-btn>
         </div>
       </v-col>
     </v-row>
@@ -124,15 +146,17 @@ const volunteerStore = useVolunteerStore();
 const jobtitleStore = useJobtitleStore();
 const router = useRouter(); // Initialize router
 const page = ref(1);
-const itemsPerPage = 5;
+const itemsPerPage = 15;
 
 const nameFilter = ref('');
+const emailFilter = ref('');
 const jobtitleFilter = ref(null);
 const statusFilter = ref(null); // New status filter
 
 async function loadVolunteers() {
   const filters = {};
   if (nameFilter.value) filters.name = nameFilter.value;
+  if (emailFilter.value) filters.email = emailFilter.value;
   if (jobtitleFilter.value) filters.jobtitle_id = jobtitleFilter.value;
   if (statusFilter.value) filters.status_id = statusFilter.value; // Add status filter
   
@@ -146,6 +170,7 @@ function applyFilters() {
 
 function clearFilters() {
   nameFilter.value = '';
+  emailFilter.value = '';
   jobtitleFilter.value = null;
   statusFilter.value = null; // Clear status filter
   applyFilters();
