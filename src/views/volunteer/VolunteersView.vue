@@ -140,7 +140,7 @@
 import { onMounted, ref } from 'vue';
 import { useVolunteerStore } from '@/stores/volunteer';
 import { useJobtitleStore } from '@/stores/jobtitle';
-import { useRouter } from 'vue-router'; // Import useRouter
+import { useRouter, useRoute } from 'vue-router'; // Import useRouter and useRoute
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import 'dayjs/locale/pt-br'; // Import Portuguese locale
@@ -151,6 +151,7 @@ dayjs.locale('pt-br'); // Use Portuguese locale globally
 const volunteerStore = useVolunteerStore();
 const jobtitleStore = useJobtitleStore();
 const router = useRouter(); // Initialize router
+const route = useRoute(); // Initialize route
 const page = ref(1);
 const itemsPerPage = 15;
 
@@ -224,6 +225,15 @@ const goToVolunteerDetails = (volunteerId) => {
 onMounted(async () => {
   await jobtitleStore.fetchJobtitles();
   await volunteerStore.fetchStatuses(); // Fetch statuses on mount
+  
+  if (route.query.status) {
+    const statusParam = route.query.status;
+    const foundStatus = volunteerStore.statuses.find(s => s.id == statusParam);
+    if (foundStatus) {
+      statusFilter.value = foundStatus.id;
+    }
+  }
+
   await loadVolunteers();
 });
 </script>

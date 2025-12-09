@@ -39,6 +39,14 @@
             v-if="logged === true"
             variant="text"
             class="font-weight-semibold"
+            :to="{ name: 'dashboard' }"
+          >
+            Dashboard
+          </v-btn>
+          <v-btn
+            v-if="logged === true"
+            variant="text"
+            class="font-weight-semibold"
             :to="{ name: 'volunteers' }"
           >
             Voluntários
