@@ -133,21 +133,6 @@
                       ></v-select>
                     </v-col>
 
-                    <v-col cols="12" md="6">
-                      <v-select
-                        v-model="applicant.squad_id"
-                        label="Squad (Opcional)"
-                        placeholder="Selecione uma Squad"
-                        variant="outlined"
-                        density="comfortable"
-                        item-title="name"
-                        item-value="id"
-                        :items="squadStore.squads"
-                        prepend-inner-icon="mdi-account-group"
-                        clearable
-                      ></v-select>
-                    </v-col>
-
 
 
                     <v-col cols="12">
@@ -268,17 +253,14 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useVolunteerStore } from '@/stores/volunteer.js'
 import { useJobtitleStore } from '@/stores/jobtitle.js'
-import { useSquadStore } from '@/stores/squad.js'
 
 const $router = useRouter()
 
 
 const volunteerStore = useVolunteerStore()
 const jobTitleStore = useJobtitleStore()
-const squadStore = useSquadStore()
 
 jobTitleStore.fetchJobtitles()
-squadStore.fetchAllSquads()
 
 const step = ref(1)
 const items = [
@@ -293,7 +275,6 @@ const applicant = reactive({
   discord: '',
   email: '',
   jobtitle_id: null,
-  squad_id: null,
   terms: false,
 })
 
@@ -319,7 +300,6 @@ const resetForm = () => {
   applicant.discord = ''
   applicant.email = ''
   applicant.jobtitle_id = null
-  applicant.squad_id = null
   applicant.terms = false
   step.value = 1
 }
@@ -345,8 +325,7 @@ const submitApplicant = async () => {
         discord: newApplicantData.discord || null,
         is_active: true,
         email: newApplicantData.email,
-        jobtitle_id: newApplicantData.jobtitle_id,
-        squad_id: newApplicantData.squad_id || null
+        jobtitle_id: newApplicantData.jobtitle_id
       }
 
       // Create the volunteer profile directly
