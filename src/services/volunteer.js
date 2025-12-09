@@ -11,23 +11,15 @@ function headers () {
 }
 
 async function fetchBy(uuidSquad) {
-    try {
-        const response = await axiosInstance.get(
-            '/squad/' + uuidSquad + '/members', 
-            { headers: headers() }
-        );
-
-        const data = response.data;
-
-        if (data.error) {
-            alert(data.error)
-            return;
-        } else {
-            return data
-        }
-    }
-    catch (error) {
-        alert(error)
+    const response = await axiosInstance.get(
+        '/squad/' + uuidSquad + '/members', 
+        { headers: headers() }
+    );
+    const data = response.data;
+    if (data.error) {
+        throw new Error(data.error);
+    } else {
+        return data
     }
 }
 
@@ -55,85 +47,50 @@ async function fetchByEmail(email) {
 
 async function create(volunteer) {
     console.log('volunteer :', volunteer);
-    try {
-        const response = await axiosInstance.post(
-            '/volunteer', 
-            volunteer,
-            { headers: headers() }
-        );
-
-        const data = response.data;
-
-        if (data.error) {
-            alert(data.error)
-            return;
-        } else {
-            return data
-        }
-    }
-    catch (error) {
-        alert(error)
-    }
+    const response = await axiosInstance.post(
+        '/volunteer', 
+        volunteer,
+        { headers: headers() }
+    );
+    return response.data;
 }
 
 async function update(member) {
-    try {
-        const response = await axiosInstance.put(
-            '/squad/' + member.squad_uuid + '/member/' + member.uuid, 
-            member,
-            { headers: headers() }
-        );
-
-        const data = response.data;
-
-        if (data.error) {
-            alert(data.error)
-            return;
-        } else {
-            return data
-        }
-    }
-    catch (error) {
-        alert(error)
+    const response = await axiosInstance.put(
+        '/squad/' + member.squad_uuid + '/member/' + member.uuid, 
+        member,
+        { headers: headers() }
+    );
+    const data = response.data;
+    if (data.error) {
+        throw new Error(data.error);
+    } else {
+        return data
     }
 }
 
 async function del(uuidSquad, uuidMember) {
-    try {
-        const response = await axiosInstance.delete(
-            '/squad/' + uuidSquad + '/member/' + uuidMember, 
-            { headers: headers() }
-        );
-
-        const data = response.data;
-
-        if (data.error) {
-            alert(data.error)
-            return;
-        } else {
-            return data
-        }
-    }
-    catch (error) {
-        alert(error)
+    const response = await axiosInstance.delete(
+        '/squad/' + uuidSquad + '/member/' + uuidMember, 
+        { headers: headers() }
+    );
+    const data = response.data;
+    if (data.error) {
+        throw new Error(data.error);
+    } else {
+        return data
     }
 }
 
 async function fetchAll(params = {}) {
-    try {
-        const response = await axiosInstance.get(
-            '/volunteers/',
-            { 
-                headers: headers(),
-                params
-            }
-        );
-        return response.data;
-    } catch (error) {
-        alert('Error fetching all volunteers: ' + error);
-        console.error('Error fetching all volunteers:', error);
-        return [];
-    }
+    const response = await axiosInstance.get(
+        '/volunteers/',
+        { 
+            headers: headers(),
+            params
+        }
+    );
+    return response.data;
 }
 
 async function getStatuses() {

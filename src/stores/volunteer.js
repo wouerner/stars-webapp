@@ -11,33 +11,47 @@ export const useVolunteerStore = defineStore('volunteer', () => {
     async function fetchByEmail(email) {
         try {
             const response = await volunteerService.fetchByEmail(email);
-            const data = response;
-            console.log('data :', data);
-
-            if (data.status === 404) {
-                alert('Volunteer não encontrado')
-                return;
+            // The service's fetchByEmail returns error.response on error,
+            // so if response has a status, it's likely an error.
+            if (response && response.status) { // Assuming response is an error object here
+                if (response.status === 404) {
+                    throw new Error('Voluntário não encontrado');
+                }
+                if (response.data && response.data.detail) {
+                    throw new Error(response.data.detail);
+                }
+                throw new Error('Erro ao buscar voluntário por e-mail.');
             }
-
-            currentVolunteer.value = data;
-           
+            currentVolunteer.value = response;
         } catch (error) {
-            alert('Catch: ' + error)
+            throw error; // Re-throw the error with translated message
         }
     }
 
     async function create(volunteer) {
         console.log('store volunteer :', volunteer);
         try {
-            const response = await volunteerService.create(volunteer);
-            const data = response;
+            const data = await volunteerService.create(volunteer);
 
-            if (data.error) {
-                alert(data.error)
-                return;
-            } 
+            if (data && data.error) {
+                throw new Error(data.error);
+            }
+            return data;
         } catch (error) {
-            alert('Catch: ' + error)
+            let errorMessage = 'Um erro inesperado ocorreu.'; // Default message
+
+            if (error.response && error.response.data && error.response.data.detail) {
+                const backendDetail = error.response.data.detail;
+                if (backendDetail === 'Email already registered') {
+                    errorMessage = 'E-mail já registrado.';
+                } else {
+                    errorMessage = backendDetail; // Use the backend message if not a known one
+                }
+            } else if (error.message) {
+                errorMessage = error.message; // Fallback to generic JS error message
+            }
+            
+            throw new Error(errorMessage);
         }
     }
 
@@ -50,7 +64,13 @@ export const useVolunteerStore = defineStore('volunteer', () => {
             volunteers.value = response;
         } catch (error) {
             console.error('Erro ao buscar voluntários:', error);
-            alert('Erro ao buscar voluntários: ' + error);
+            let errorMessage = 'Erro ao buscar voluntários.';
+            if (error.response && error.response.data && error.response.data.detail) {
+                errorMessage = error.response.data.detail;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            throw new Error(errorMessage);
         } finally {
             loading.value = false; // Set loading to false regardless of success or failure
         }
@@ -61,7 +81,13 @@ export const useVolunteerStore = defineStore('volunteer', () => {
             statuses.value = await volunteerService.getStatuses();
         } catch (error) {
             console.error('Erro ao buscar status de voluntários:', error);
-            alert('Erro ao buscar status de voluntários: ' + error);
+            let errorMessage = 'Erro ao buscar status de voluntários.';
+            if (error.response && error.response.data && error.response.data.detail) {
+                errorMessage = error.response.data.detail;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            throw new Error(errorMessage);
         }
     }
 
@@ -70,7 +96,13 @@ export const useVolunteerStore = defineStore('volunteer', () => {
             currentVolunteer.value = await volunteerService.getById(id);
         } catch (error) {
             console.error(`Erro ao buscar voluntário ${id}:`, error);
-            alert(`Erro ao buscar voluntário ${id}: ` + error);
+            let errorMessage = `Erro ao buscar voluntário ${id}.`;
+            if (error.response && error.response.data && error.response.data.detail) {
+                errorMessage = error.response.data.detail;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            throw new Error(errorMessage);
         }
     }
 
@@ -81,7 +113,13 @@ export const useVolunteerStore = defineStore('volunteer', () => {
             await fetchVolunteer(volunteerId); 
         } catch (error) {
             console.error(`Erro ao atualizar status do voluntário ${volunteerId}:`, error);
-            alert(`Erro ao atualizar status do voluntário ${volunteerId}: ` + error);
+            let errorMessage = `Erro ao atualizar status do voluntário ${volunteerId}.`;
+            if (error.response && error.response.data && error.response.data.detail) {
+                errorMessage = error.response.data.detail;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            throw new Error(errorMessage);
         }
     }
 
@@ -91,7 +129,13 @@ export const useVolunteerStore = defineStore('volunteer', () => {
             await fetchVolunteer(volunteerId); 
         } catch (error) {
             console.error(`Erro ao atualizar squad do voluntário ${volunteerId}:`, error);
-            alert(`Erro ao atualizar squad do voluntário ${volunteerId}: ` + error);
+            let errorMessage = `Erro ao atualizar squad do voluntário ${volunteerId}.`;
+            if (error.response && error.response.data && error.response.data.detail) {
+                errorMessage = error.response.data.detail;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            throw new Error(errorMessage);
         }
     }
 
