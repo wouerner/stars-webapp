@@ -198,8 +198,18 @@
                 <p class="text-body-1 text-medium-emphasis mb-8 mx-auto" style="max-width: 500px;">
                   Seu registro foi efetuado com sucesso. Você receberá um e-mail de confirmação em breve.
                 </p>
+
+                <div class="video-container mb-8">
+                  <iframe
+                    src="https://www.youtube.com/embed/asiPy74n6zY"
+                    title="YouTube video player"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen
+                  ></iframe>
+                </div>
                 
-                <div class="d-flex justify-center">
+                <div class="d-flex justify-center flex-column align-center">
                   <v-btn
                     color="primary"
                     size="large"
@@ -207,10 +217,13 @@
                     elevation="2"
                     :to="{ name: 'search' }"
                     prepend-icon="mdi-magnify"
-                    class="px-8"
+                    class="px-8 mb-4"
                   >
                     Acompanhar Cadastro
                   </v-btn>
+                  <a href="https://apoia.se/soujunior" target="_blank" class="text-decoration-none text-primary">
+                    Apoie o SouJunior!
+                  </a>
                 </div>
               </div>
             </template>
@@ -378,5 +391,21 @@ const rejectTerms = () => {
 
 .v-stepper :deep(.v-stepper-header) {
   display: none;
+}
+
+.video-container {
+  width: 100%;
+  max-width: 320px; /* Mimic mobile screen width */
+  aspect-ratio: 9 / 16; /* Enforce vertical video ratio */
+  margin: 0 auto 24px; /* Center horizontally */
+  border-radius: 12px; /* Optional: Rounded corners for better aesthetics */
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Optional: Subtle shadow */
+}
+
+.video-container iframe {
+  width: 100%;
+  height: 100%;
+  display: block; /* Remove inline gap */
 }
 </style>
