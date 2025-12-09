@@ -12,6 +12,7 @@
           <v-text-field v-model="profile.name" label="Nome completo" variant="outlined" readonly>
           </v-text-field>
           <v-text-field v-model="profile.email" label="E-mail" variant="outlined" readonly> </v-text-field>
+          <v-text-field v-model="profile.phone" label="Telefone / WhatsApp" variant="outlined" readonly> </v-text-field>
           <v-text-field v-model="profile.linkedin" label="Perfil do LinkedIn" variant="outlined" readonly>
           </v-text-field>
           
@@ -37,6 +38,7 @@ const volunteerFound = ref(true)
 const profile = reactive({
   name: '',
   email: auth.auth.email,
+  phone: '',
   linkedin: ''
 })
 
@@ -46,6 +48,7 @@ onMounted(async () => {
       await volunteerStore.fetchByEmail(auth.auth.email)
       if (volunteerStore.currentVolunteer && volunteerStore.currentVolunteer.name) {
          profile.name = volunteerStore.currentVolunteer.name
+         profile.phone = volunteerStore.currentVolunteer.phone
          profile.linkedin = volunteerStore.currentVolunteer.linkedin
          volunteerFound.value = true
       } else {

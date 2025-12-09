@@ -25,6 +25,18 @@
                   <v-list-item-subtitle>Email</v-list-item-subtitle>
                 </v-list-item>
 
+                <v-list-item v-if="currentVolunteer.phone" class="px-0">
+                  <template #prepend>
+                    <v-icon icon="mdi-phone" color="green-darken-1"></v-icon>
+                  </template>
+                  <v-list-item-title>
+                    <a :href="`https://wa.me/${currentVolunteer.phone.replace(/\D/g, '')}`" target="_blank" class="text-decoration-none text-primary">
+                      {{ currentVolunteer.phone }}
+                    </a>
+                  </v-list-item-title>
+                  <v-list-item-subtitle>Telefone / WhatsApp</v-list-item-subtitle>
+                </v-list-item>
+
                 <v-list-item v-if="currentVolunteer.linkedin" class="px-0">
                   <template #prepend>
                     <v-icon icon="mdi-linkedin" color="blue-darken-1"></v-icon>

@@ -90,6 +90,12 @@
                       <strong>{{ getJobTitle(volunteer.jobtitle_id) }}</strong>
                     </div>
                   </v-col>
+                  <v-col v-if="volunteer.phone" cols="12" sm="6" md="4">
+                    <div class="d-flex align-center">
+                      <v-icon icon="mdi-phone" class="mr-2"></v-icon>
+                      <span>{{ volunteer.phone }}</span>
+                    </div>
+                  </v-col>
                   <v-col v-if="volunteer.linkedin" cols="12" sm="6" md="4">
                     <div class="d-flex align-center">
                       <v-icon icon="mdi-linkedin" class="mr-2"></v-icon>

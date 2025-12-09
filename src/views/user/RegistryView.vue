@@ -88,6 +88,17 @@
 
                     <v-col cols="12" md="6">
                       <v-text-field
+                        v-model="applicant.phone"
+                        label="Telefone / WhatsApp"
+                        placeholder="Ex: (11) 99999-9999"
+                        variant="outlined"
+                        density="comfortable"
+                        prepend-inner-icon="mdi-phone"
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" md="6">
+                      <v-text-field
                         v-model="applicant.linkedin"
                         label="LinkedIn"
                         placeholder="https://linkedin.com/in/..."
@@ -250,6 +261,7 @@ const items = [
 ]
 const applicant = reactive({
   name: '',
+  phone: '',
   linkedin: '',
   email: '',
   jobtitle_id: null,
@@ -273,6 +285,7 @@ const emailRules = [
 
 const resetForm = () => {
   applicant.name = ''
+  applicant.phone = ''
   applicant.linkedin = ''
   applicant.email = ''
   applicant.jobtitle_id = null
@@ -297,6 +310,7 @@ const submitApplicant = async () => {
       const payload = {
         name: newApplicantData.name,
         linkedin: newApplicantData.linkedin || '', // Ensure string
+        phone: newApplicantData.phone || null,
         is_active: true,
         email: newApplicantData.email,
         jobtitle_id: newApplicantData.jobtitle_id

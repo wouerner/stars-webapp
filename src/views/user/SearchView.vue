@@ -23,6 +23,7 @@
       <v-col xl="6"  sm="12" align="center">
           <v-card v-if="volunteerStore.currentVolunteer" align="left" class="pa-4">
               <p class="pa-1">Nome: <strong>{{volunteerStore.currentVolunteer.name}}</strong></p>
+              <p class="pa-1"> Telefone: <strong>{{volunteerStore.currentVolunteer.phone}}</strong></p>
               <p class="pa-1"> Linkedin: <strong>{{volunteerStore.currentVolunteer.linkedin}}</strong></p>
               <p class="pa-1"> Cargo: <strong>{{job.title}}</strong></p>
               <p class="pa-1">Status: <strong>  <v-chip v-if="volunteerStore.currentVolunteer.is_active">Ativo</v-chip></strong></p>
