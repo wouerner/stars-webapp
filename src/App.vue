@@ -51,6 +51,14 @@
           >
             Voluntários
           </v-btn>
+          <v-btn
+            v-if="logged === true"
+            variant="text"
+            class="font-weight-semibold"
+            :to="{ name: 'squads-list' }"
+          >
+            Squads
+          </v-btn>
           <!--v-btn
             v-if="logged === false"
             variant="text"
@@ -93,8 +101,10 @@
           </v-btn>
           <v-menu v-if="logged === true" open-on-hover>
             <template #activator="{ props }">
-              <v-btn variant="text" class="font-weight-semibold" v-bind="props">
-                {{ auth.getName() }}
+              <v-btn variant="text" class="font-weight-semibold" v-bind="props" style="max-width: 200px;">
+                <span class="text-truncate">
+                  {{ formattedName }}
+                </span>
                 <v-icon right>mdi-chevron-down</v-icon>
               </v-btn>
             </template>
@@ -149,6 +159,26 @@ const logged = computed(() => auth.getName() != '')
 
 console.log('logged', route.path)
 const ef = computed(() => (route.path === '/' ? 'homeBackgroundEffect' : ''))
+
+const formattedName = computed(() => {
+  const name = auth.getName()
+  if (!name) return ''
+  
+  // Se for email, pega a parte antes do @
+  if (name.includes('@')) {
+    return name.split('@')[0]
+  }
+  
+  // Se for nome completo, pega o primeiro e segundo nome se couber, senão só o primeiro
+  const parts = name.split(' ')
+  if (parts.length > 1) {
+    // Tenta primeiro + segundo nome
+    const shortName = `${parts[0]} ${parts[1]}`
+    if (shortName.length <= 15) return shortName
+  }
+  
+  return parts[0]
+})
 
 </script>
 

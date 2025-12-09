@@ -75,6 +75,14 @@
                   </v-list-item-title>
                   <v-list-item-subtitle>Status Atual</v-list-item-subtitle>
                 </v-list-item>
+
+                <v-list-item v-if="currentVolunteer.squad" class="px-0">
+                  <template #prepend>
+                    <v-icon icon="mdi-account-group" color="grey-darken-1"></v-icon>
+                  </template>
+                  <v-list-item-title>{{ currentVolunteer.squad.name }}</v-list-item-title>
+                  <v-list-item-subtitle>Squad</v-list-item-subtitle>
+                </v-list-item>
               </v-list>
             </v-card-text>
           </v-card>
@@ -97,7 +105,34 @@
                 variant="outlined"
                 color="primary"
                 hide-details
+                :loading="isLoadingStatus"
+                :disabled="isLoadingStatus"
                 @update:model-value="updateVolunteerStatus"
+              ></v-select>
+            </v-card-text>
+          </v-card>
+        </v-col>
+
+        <!-- Gerenciar Squad -->
+        <v-col cols="12" md="6">
+          <v-card class="h-100" elevation="2">
+            <v-card-item>
+              <v-card-title class="text-h6">Gerenciar Squad</v-card-title>
+            </v-card-item>
+            <v-card-text>
+              <p class="text-body-2 mb-4">Atualize a Squad do voluntário.</p>
+              <v-select
+                v-model="selectedSquadId"
+                :items="squads"
+                item-title="name"
+                item-value="id"
+                label="Selecione a nova Squad"
+                variant="outlined"
+                color="primary"
+                hide-details
+                :loading="isLoadingSquad"
+                :disabled="isLoadingSquad"
+                @update:model-value="updateVolunteerSquad"
               ></v-select>
             </v-card-text>
           </v-card>
@@ -145,14 +180,20 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useVolunteerStore } from '@/stores/volunteer.js';
+import { useSquadStore } from '@/stores/squad.js';
 
 const route = useRoute();
 const volunteerStore = useVolunteerStore();
+const squadStore = useSquadStore();
 
 const selectedStatusId = ref(null);
+const selectedSquadId = ref(null);
+const isLoadingStatus = ref(false);
+const isLoadingSquad = ref(false);
 
 const currentVolunteer = computed(() => volunteerStore.currentVolunteer);
 const statuses = computed(() => volunteerStore.statuses);
+const squads = computed(() => squadStore.squads);
 
 const sortedStatusHistory = computed(() => {
   if (currentVolunteer.value && currentVolunteer.value.status_history) {
@@ -163,17 +204,37 @@ const sortedStatusHistory = computed(() => {
 
 onMounted(async () => {
   const volunteerId = route.params.id;
-  await volunteerStore.fetchStatuses();
-  await volunteerStore.fetchVolunteer(volunteerId);
+  await Promise.all([
+    volunteerStore.fetchStatuses(),
+    squadStore.fetchAllSquads(),
+    volunteerStore.fetchVolunteer(volunteerId)
+  ]);
   
   if (currentVolunteer.value) {
     selectedStatusId.value = currentVolunteer.value.status_id;
+    selectedSquadId.value = currentVolunteer.value.squad_id;
   }
 });
 
 const updateVolunteerStatus = async () => {
   if (selectedStatusId.value && currentVolunteer.value && selectedStatusId.value !== currentVolunteer.value.status_id) {
-    await volunteerStore.updateVolunteerStatus(currentVolunteer.value.id, selectedStatusId.value);
+    isLoadingStatus.value = true;
+    try {
+      await volunteerStore.updateVolunteerStatus(currentVolunteer.value.id, selectedStatusId.value);
+    } finally {
+      isLoadingStatus.value = false;
+    }
+  }
+};
+
+const updateVolunteerSquad = async () => {
+  if (selectedSquadId.value && currentVolunteer.value && selectedSquadId.value !== currentVolunteer.value.squad_id) {
+    isLoadingSquad.value = true;
+    try {
+      await volunteerStore.updateVolunteerSquad(currentVolunteer.value.id, selectedSquadId.value);
+    } finally {
+      isLoadingSquad.value = false;
+    }
   }
 };
 

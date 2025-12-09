@@ -85,6 +85,16 @@ export const useVolunteerStore = defineStore('volunteer', () => {
         }
     }
 
+    async function updateVolunteerSquad(volunteerId, newSquadId) {
+        try {
+            await volunteerService.updateSquad(volunteerId, newSquadId);
+            await fetchVolunteer(volunteerId); 
+        } catch (error) {
+            console.error(`Erro ao atualizar squad do voluntário ${volunteerId}:`, error);
+            alert(`Erro ao atualizar squad do voluntário ${volunteerId}: ` + error);
+        }
+    }
+
     return { 
         currentVolunteer, 
         volunteers, 
@@ -95,7 +105,8 @@ export const useVolunteerStore = defineStore('volunteer', () => {
         fetchByEmail,
         fetchStatuses,
         fetchVolunteer,
-        updateVolunteerStatus
+        updateVolunteerStatus,
+        updateVolunteerSquad
     }
 }, 
     { 

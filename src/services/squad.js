@@ -11,6 +11,28 @@ function headers () {
 }
 
 
+async function fetchAll() {
+    try {
+        const response = await axiosInstance.get(
+            '/squads/', 
+            { headers: headers() }
+        );
+
+        const data = response.data;
+
+        if (data.error) {
+            alert(data.error)
+            return;
+        } else {
+            return data
+        }
+    }
+    catch (error) {
+        alert(error)
+        return []
+    }
+}
+
 async function fetchBy(uuid) {
     try {
         const response = await axiosInstance.get(
@@ -35,7 +57,7 @@ async function fetchBy(uuid) {
 async function post(squad) {
     try {
         const response = await axiosInstance.post(
-            '/squad', 
+            '/squads/', 
             squad,
             { headers: headers() }
         );
@@ -98,6 +120,7 @@ async function del(uuid) {
 }
 
 export default {
+    fetchAll,
     fetchBy,
     post,
     del,

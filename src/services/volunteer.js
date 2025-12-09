@@ -180,6 +180,25 @@ async function updateStatus(volunteerId, newStatusId) {
     }
 }
 
+async function updateSquad(volunteerId, newSquadId) {
+    try {
+        const response = await axiosInstance.patch(
+            `/volunteers/${volunteerId}/squad/`,
+            null,
+            { 
+                headers: headers(),
+                params: {
+                    new_squad_id: newSquadId 
+                }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error(`Error updating squad for volunteer ID ${volunteerId}:`, error);
+        throw error;
+    }
+}
+
 export default {
     fetchBy,
     del,
@@ -189,5 +208,6 @@ export default {
     fetchAll,
     getStatuses,
     getById,
-    updateStatus
+    updateStatus,
+    updateSquad
 };

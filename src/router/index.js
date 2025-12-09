@@ -10,6 +10,7 @@ import UserRegisterView from '../views/user/UserRegisterView.vue'
 import SquadsView from '../views/squad/SquadsView.vue'
 import SquadView from '../views/squad/SquadView.vue'
 import SquadCreateView from '../views/squad/CreateView.vue'
+import SquadsListView from '../views/squad/SquadsListView.vue' // New import
 
 import VolunteersView from '@/views/volunteer/VolunteersView.vue'
 import VolunteerDetailsView from '@/views/volunteer/VolunteerDetailsView.vue' // Import the new component
@@ -75,6 +76,14 @@ const router = createRouter({
             auth: true,
             type: 'create'
         }
+    },
+    {
+      path: '/squads', // New route for listing all squads
+      name: 'squads-list',
+      component: SquadsListView,
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/squad/:uuid/update',

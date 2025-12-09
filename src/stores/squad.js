@@ -5,7 +5,17 @@ import { useAuthStore } from './auth.js'
 
 export const useSquadStore = defineStore('squad', () => {
     const squad = ref([]);
+    const squads = ref([]);
     const useAuth = useAuthStore()
+
+    async function fetchAllSquads() {
+        try {
+            const data = await squadService.fetchAll();
+            squads.value = data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     async function fetch() {
         try {
@@ -90,8 +100,10 @@ export const useSquadStore = defineStore('squad', () => {
     }
 
     return { 
-        squad, 
+        squad,
+        squads, 
         fetch,
+        fetchAllSquads,
         create,
         del,
         update

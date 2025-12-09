@@ -50,6 +50,35 @@
           </v-card>
         </v-col>
       </v-row>
+
+      <h2 class="text-h5 mb-4 mt-6">Voluntários por Squad</h2>
+      <v-row>
+        <v-col
+          v-for="squadStat in dashboardStore.stats.total_volunteers_by_squad"
+          :key="squadStat.squad"
+          cols="12"
+          sm="6"
+          md="3"
+        >
+          <v-card 
+            v-ripple 
+            class="h-100 cursor-pointer"
+            elevation="2"
+            @click="navigateToSquad(squadStat.squad)"
+          >
+            <v-card-item>
+              <v-card-title class="d-flex justify-space-between align-center">
+                <span class="text-truncate">{{ squadStat.squad }}</span>
+                <v-icon color="primary" icon="mdi-account-group"></v-icon>
+              </v-card-title>
+            </v-card-item>
+            <v-card-text>
+              <div class="text-h3 font-weight-bold mb-2">{{ squadStat.count }}</div>
+              <div class="text-caption text-medium-emphasis">Voluntários</div>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
     </div>
 
     <v-alert v-else type="error" variant="tonal" class="mt-4">
@@ -63,15 +92,18 @@ import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useDashboardStore } from '@/stores/dashboard';
 import { useVolunteerStore } from '@/stores/volunteer';
+import { useSquadStore } from '@/stores/squad';
 
 const dashboardStore = useDashboardStore();
 const volunteerStore = useVolunteerStore();
+const squadStore = useSquadStore();
 const router = useRouter();
 
 onMounted(async () => {
   await Promise.all([
     dashboardStore.fetchStats(),
-    volunteerStore.fetchStatuses()
+    volunteerStore.fetchStatuses(),
+    squadStore.fetchAllSquads()
   ]);
 });
 
@@ -79,6 +111,13 @@ const navigateToVolunteers = (statusName) => {
   const status = volunteerStore.statuses.find(s => s.name === statusName);
   if (status) {
     router.push({ name: 'volunteers', query: { status: status.id } });
+  }
+};
+
+const navigateToSquad = (squadName) => {
+  const squad = squadStore.squads.find(s => s.name === squadName);
+  if (squad) {
+    router.push({ name: 'volunteers', query: { squad: squad.id } });
   }
 };
 

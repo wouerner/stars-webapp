@@ -109,6 +109,17 @@
                     </v-col>
 
                     <v-col cols="12" md="6">
+                      <v-text-field
+                        v-model="applicant.discord"
+                        label="Discord (Opcional)"
+                        placeholder="Ex: wouerner"
+                        variant="outlined"
+                        density="comfortable"
+                        prepend-inner-icon="mdi-account-voice"
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" md="6">
                       <v-select
                         v-model="applicant.jobtitle_id"
                         label="Cargo Pretendido"
@@ -122,7 +133,20 @@
                       ></v-select>
                     </v-col>
 
-                     <v-col cols="12" md="6" class="d-none d-md-block"></v-col> <!-- Spacer for alignment -->
+                    <v-col cols="12" md="6">
+                      <v-select
+                        v-model="applicant.squad_id"
+                        label="Squad (Opcional)"
+                        placeholder="Selecione uma Squad"
+                        variant="outlined"
+                        density="comfortable"
+                        item-title="name"
+                        item-value="id"
+                        :items="squadStore.squads"
+                        prepend-inner-icon="mdi-account-group"
+                        clearable
+                      ></v-select>
+                    </v-col>
 
 
 
@@ -244,14 +268,17 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useVolunteerStore } from '@/stores/volunteer.js'
 import { useJobtitleStore } from '@/stores/jobtitle.js'
+import { useSquadStore } from '@/stores/squad.js'
 
 const $router = useRouter()
 
 
 const volunteerStore = useVolunteerStore()
 const jobTitleStore = useJobtitleStore()
+const squadStore = useSquadStore()
 
 jobTitleStore.fetchJobtitles()
+squadStore.fetchAllSquads()
 
 const step = ref(1)
 const items = [
@@ -263,8 +290,10 @@ const applicant = reactive({
   name: '',
   phone: '',
   linkedin: '',
+  discord: '',
   email: '',
   jobtitle_id: null,
+  squad_id: null,
   terms: false,
 })
 
@@ -287,8 +316,10 @@ const resetForm = () => {
   applicant.name = ''
   applicant.phone = ''
   applicant.linkedin = ''
+  applicant.discord = ''
   applicant.email = ''
   applicant.jobtitle_id = null
+  applicant.squad_id = null
   applicant.terms = false
   step.value = 1
 }
@@ -311,9 +342,11 @@ const submitApplicant = async () => {
         name: newApplicantData.name,
         linkedin: newApplicantData.linkedin || '', // Ensure string
         phone: newApplicantData.phone || null,
+        discord: newApplicantData.discord || null,
         is_active: true,
         email: newApplicantData.email,
-        jobtitle_id: newApplicantData.jobtitle_id
+        jobtitle_id: newApplicantData.jobtitle_id,
+        squad_id: newApplicantData.squad_id || null
       }
 
       // Create the volunteer profile directly
