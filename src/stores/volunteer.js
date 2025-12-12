@@ -10,21 +10,19 @@ export const useVolunteerStore = defineStore('volunteer', () => {
 
     async function fetchByEmail(email) {
         try {
-            const response = await volunteerService.fetchByEmail(email);
-            // The service's fetchByEmail returns error.response on error,
-            // so if response has a status, it's likely an error.
-            if (response && response.status) { // Assuming response is an error object here
-                if (response.status === 404) {
-                    throw new Error('Voluntário não encontrado');
-                }
-                if (response.data && response.data.detail) {
-                    throw new Error(response.data.detail);
-                }
-                throw new Error('Erro ao buscar voluntário por e-mail.');
-            }
-            currentVolunteer.value = response;
+            // Service now throws on error, so this will only receive successful data
+            currentVolunteer.value = await volunteerService.fetchByEmail(email);
         } catch (error) {
-            throw error; // Re-throw the error with translated message
+            console.error('Erro ao buscar voluntário por e-mail:', error); // Log the actual error
+            let errorMessage = 'Erro ao buscar voluntário por e-mail.';
+            if (error.response && error.response.status === 404) {
+                errorMessage = 'Voluntário não encontrado.';
+            } else if (error.response && error.response.data && error.response.data.detail) {
+                errorMessage = error.response.data.detail;
+            } else if (error.message) { // Fallback for network errors or other JS errors
+                errorMessage = error.message;
+            }
+            throw new Error(errorMessage); // Throw a more user-friendly error
         }
     }
 

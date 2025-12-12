@@ -14,6 +14,8 @@ import SquadsListView from '../views/squad/SquadsListView.vue' // New import
 
 import VolunteersView from '@/views/volunteer/VolunteersView.vue'
 import VolunteerDetailsView from '@/views/volunteer/VolunteerDetailsView.vue' // Import the new component
+import RequestEditView from '@/views/volunteer/RequestEditView.vue'
+import EditProfileView from '@/views/volunteer/EditProfileView.vue'
 
 import { useAuthStore } from '@/stores/auth';
 
@@ -40,6 +42,22 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView
+    },
+    {
+      path: '/volunteer/request-edit',
+      name: 'request-edit',
+      component: RequestEditView,
+      meta: {
+        auth: false
+      }
+    },
+    {
+      path: '/volunteer/edit/:token',
+      name: 'edit-profile-token',
+      component: EditProfileView,
+      meta: {
+        auth: false
+      }
     },
     {
       path: '/profile',

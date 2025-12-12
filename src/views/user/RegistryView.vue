@@ -224,6 +224,9 @@
                   <a href="https://apoia.se/soujunior" target="_blank" class="text-decoration-none text-primary">
                     Apoie o SouJunior!
                   </a>
+                  <a href="https://linktr.ee/wouerner" target="_blank" class="text-decoration-none text-primary mt-2">
+                    Redes Sociais do Fundador: Wouerner Brandão
+                  </a>
                 </div>
               </div>
             </template>

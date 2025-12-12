@@ -24,25 +24,11 @@ async function fetchBy(uuidSquad) {
 }
 
 async function fetchByEmail(email) {
-    try {
-        const response = await axiosInstance.get(
-            '/volunteer/' + email, 
-            { headers: headers() }
-        );
-
-        const data = response.data;
-
-        // if (data.error) {
-        //     alert(data.error)
-        //     return;
-        // } else {
-            return data
-        // }
-    }
-    catch (error) { 
-        console.log('error :', error);
-        return error.response
-    }
+    const response = await axiosInstance.get(
+        '/volunteer/' + email, 
+        { headers: headers() }
+    );
+    return response.data;
 }
 
 async function create(volunteer) {
@@ -156,6 +142,21 @@ async function updateSquad(volunteerId, newSquadId) {
     }
 }
 
+async function requestEditLink(email) {
+    const response = await axiosInstance.post('/volunteers/request-edit-link', { email });
+    return response.data;
+}
+
+async function fetchByToken(token) {
+    const response = await axiosInstance.get(`/volunteers/edit/${token}`);
+    return response.data;
+}
+
+async function updateProfileByToken(token, profileData) {
+    const response = await axiosInstance.patch(`/volunteers/edit/${token}`, profileData);
+    return response.data;
+}
+
 export default {
     fetchBy,
     del,
@@ -166,5 +167,8 @@ export default {
     getStatuses,
     getById,
     updateStatus,
-    updateSquad
+    updateSquad,
+    requestEditLink,
+    fetchByToken,
+    updateProfileByToken
 };
