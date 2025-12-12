@@ -7,8 +7,9 @@
     </div>
 
     <div v-else-if="dashboardStore.stats">
-      <!-- Total Registered Today -->
+      <!-- Stats Row -->
       <v-row class="mb-6">
+        <!-- Total Registered Today -->
         <v-col cols="12" md="4">
           <v-card color="primary" variant="tonal" class="pa-4">
             <v-card-item>
@@ -17,6 +18,19 @@
             </v-card-item>
             <v-card-text class="d-flex align-center justify-center">
               <span class="text-h2 font-weight-bold">{{ dashboardStore.stats.total_volunteers_registered_today }}</span>
+            </v-card-text>
+          </v-card>
+        </v-col>
+
+        <!-- Total Volunteers -->
+        <v-col cols="12" md="4">
+          <v-card color="secondary" variant="tonal" class="pa-4">
+            <v-card-item>
+              <v-card-title class="text-h5">Total de Voluntários</v-card-title>
+              <v-card-subtitle>Base completa</v-card-subtitle>
+            </v-card-item>
+            <v-card-text class="d-flex align-center justify-center">
+              <span class="text-h2 font-weight-bold">{{ dashboardStore.stats.total_volunteers }}</span>
             </v-card-text>
           </v-card>
         </v-col>
