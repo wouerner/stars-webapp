@@ -13,7 +13,8 @@ import SquadCreateView from '../views/squad/CreateView.vue'
 import SquadsListView from '../views/squad/SquadsListView.vue' // New import
 
 import VolunteersView from '@/views/volunteer/VolunteersView.vue'
-import VolunteerDetailsView from '@/views/volunteer/VolunteerDetailsView.vue' // Import the new component
+import VolunteerDetailsView from '@/views/volunteer/VolunteerDetailsView.vue'
+import PublicProfileView from '@/views/volunteer/PublicProfileView.vue'
 import RequestEditView from '@/views/volunteer/RequestEditView.vue'
 import EditProfileView from '@/views/volunteer/EditProfileView.vue'
 
@@ -27,6 +28,14 @@ const router = createRouter({
       path: '/home',
       name: 'home',
       component: HomeView
+    },
+    {
+      path: '/u/:id',
+      name: 'public-profile',
+      component: PublicProfileView,
+      meta: {
+        auth: false
+      }
     },
     {
       path: '/',

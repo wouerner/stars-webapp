@@ -99,6 +99,17 @@ async function getById(volunteerId) {
     }
 }
 
+async function getPublicProfile(volunteerId) {
+    try {
+        // No auth headers needed for public endpoint
+        const response = await axiosInstance.get(`/volunteers/${volunteerId}/public`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching public profile for volunteer ID ${volunteerId}:`, error);
+        throw error;
+    }
+}
+
 async function updateStatus(volunteerId, newStatusId) {
     try {
         const response = await axiosInstance.patch(
@@ -170,5 +181,6 @@ export default {
     updateSquad,
     requestEditLink,
     fetchByToken,
-    updateProfileByToken
+    updateProfileByToken,
+    getPublicProfile
 };

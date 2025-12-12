@@ -30,6 +30,14 @@
               <v-divider class="my-3"></v-divider>
               <div class="d-flex justify-end">
                   <v-btn 
+                    color="secondary"
+                    variant="outlined"
+                    class="mr-2"
+                    @click="viewPublicProfile"
+                  >
+                      Ver Perfil Público
+                  </v-btn>
+                  <v-btn 
                     color="primary" 
                     :loading="sendingLink"
                     :disabled="linkSent"
@@ -55,7 +63,7 @@ import { reactive, computed, ref, onMounted } from 'vue'
 import { useVolunteerStore } from '@/stores/volunteer.js'
 import { useJobtitleStore } from '@/stores/jobtitle.js'
 import volunteerService from '@/services/volunteer.js'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const volunteerStore = useVolunteerStore()
 const jobtitleStore = useJobtitleStore()
@@ -86,6 +94,7 @@ const email = reactive({
 })
 
 const route = useRoute()
+const router = useRouter()
 
 onMounted(async () => {
   if (route.query.email) {
@@ -133,4 +142,10 @@ const requestEdit = async () => {
         sendingLink.value = false
     }
 }
+
+const viewPublicProfile = () => {
+  if (volunteerStore.currentVolunteer && volunteerStore.currentVolunteer.id) {
+    router.push({ name: 'public-profile', params: { id: volunteerStore.currentVolunteer.id } });
+  }
+};
 </script>
