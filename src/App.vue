@@ -59,6 +59,14 @@
           >
             Squads
           </v-btn>
+          <v-btn
+            v-if="logged === true"
+            variant="text"
+            class="font-weight-semibold"
+            :to="{ name: 'projects-list' }"
+          >
+            Projetos
+          </v-btn>
           <!--v-btn
             v-if="logged === false"
             variant="text"

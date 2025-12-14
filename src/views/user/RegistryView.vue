@@ -121,6 +121,20 @@
 
                     <v-col cols="12" md="6">
                       <v-select
+                        v-model="applicant.volunteer_type_id"
+                        label="Tipo de Voluntário"
+                        variant="outlined"
+                        density="comfortable"
+                        item-title="name"
+                        item-value="id"
+                        :items="volunteerTypeStore.data"
+                        prepend-inner-icon="mdi-account-group"
+                        :rules="[v => !!v || 'Selecione um tipo']"
+                      ></v-select>
+                    </v-col>
+
+                    <v-col cols="12" md="6">
+                      <v-select
                         v-model="applicant.jobtitle_id"
                         label="Cargo Pretendido"
                         variant="outlined"
@@ -269,14 +283,17 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useVolunteerStore } from '@/stores/volunteer.js'
 import { useJobtitleStore } from '@/stores/jobtitle.js'
+import { useVolunteerTypeStore } from '@/stores/volunteerType.js'
 
 const $router = useRouter()
 
 
 const volunteerStore = useVolunteerStore()
 const jobTitleStore = useJobtitleStore()
+const volunteerTypeStore = useVolunteerTypeStore()
 
 jobTitleStore.fetchJobtitles()
+volunteerTypeStore.fetchVolunteerTypes()
 
 const step = ref(1)
 const items = [
@@ -291,6 +308,7 @@ const applicant = reactive({
   discord: '',
   email: '',
   jobtitle_id: null,
+  volunteer_type_id: 1, // Default to Junior
   terms: false,
 })
 
@@ -316,6 +334,7 @@ const resetForm = () => {
   applicant.discord = ''
   applicant.email = ''
   applicant.jobtitle_id = null
+  applicant.volunteer_type_id = 1
   applicant.terms = false
   step.value = 1
 }
@@ -341,7 +360,8 @@ const submitApplicant = async () => {
         discord: newApplicantData.discord || null,
         is_active: true,
         email: newApplicantData.email,
-        jobtitle_id: newApplicantData.jobtitle_id
+        jobtitle_id: newApplicantData.jobtitle_id,
+        volunteer_type_id: newApplicantData.volunteer_type_id
       }
 
       // Create the volunteer profile directly

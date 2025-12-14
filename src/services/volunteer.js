@@ -23,10 +23,13 @@ async function fetchBy(uuidSquad) {
     }
 }
 
-async function fetchByEmail(email) {
+async function searchPublic(params = {}) {
     const response = await axiosInstance.get(
-        '/volunteer/' + email, 
-        { headers: headers() }
+        '/volunteer/search', 
+        { 
+            headers: headers(),
+            params
+        }
     );
     return response.data;
 }
@@ -173,7 +176,7 @@ export default {
     del,
     create, 
     update,
-    fetchByEmail,
+    searchPublic,
     fetchAll,
     getStatuses,
     getById,

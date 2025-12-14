@@ -18,6 +18,10 @@ import PublicProfileView from '@/views/volunteer/PublicProfileView.vue'
 import RequestEditView from '@/views/volunteer/RequestEditView.vue'
 import EditProfileView from '@/views/volunteer/EditProfileView.vue'
 
+// project
+import ProjectsListView from '@/views/project/ProjectsListView.vue'
+import ProjectCreateView from '@/views/project/ProjectCreateView.vue'
+
 import { useAuthStore } from '@/stores/auth';
 
 
@@ -120,6 +124,22 @@ const router = createRouter({
             auth: true,
             type: 'update'
         }
+    },
+    {
+      path: '/projects', 
+      name: 'projects-list',
+      component: ProjectsListView,
+      meta: {
+        auth: true
+      }
+    },
+    {
+      path: '/projects/create', 
+      name: 'project-create',
+      component: ProjectCreateView,
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/onboarding',

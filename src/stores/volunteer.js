@@ -5,24 +5,25 @@ import { ref } from 'vue'
 export const useVolunteerStore = defineStore('volunteer', () => {
     const currentVolunteer = ref(null); // Used for single volunteer details
     const volunteers = ref([]); // New ref for list of volunteers
+    const foundVolunteers = ref([]); // For public search results
     const statuses = ref([]); // To store all available statuses
     const loading = ref(false); // Add loading state
 
-    async function fetchByEmail(email) {
+    async function searchPublic(params) {
         try {
-            // Service now throws on error, so this will only receive successful data
-            currentVolunteer.value = await volunteerService.fetchByEmail(email);
+            foundVolunteers.value = await volunteerService.searchPublic(params);
+            // Optionally clear currentVolunteer or leave it? 
+            // Better to use foundVolunteers in the search view.
         } catch (error) {
-            console.error('Erro ao buscar voluntário por e-mail:', error); // Log the actual error
-            let errorMessage = 'Erro ao buscar voluntário por e-mail.';
-            if (error.response && error.response.status === 404) {
-                errorMessage = 'Voluntário não encontrado.';
-            } else if (error.response && error.response.data && error.response.data.detail) {
+            console.error('Erro ao buscar voluntários (público):', error);
+            foundVolunteers.value = []; // Clear on error
+            let errorMessage = 'Erro ao buscar voluntários.';
+             if (error.response && error.response.data && error.response.data.detail) {
                 errorMessage = error.response.data.detail;
-            } else if (error.message) { // Fallback for network errors or other JS errors
+            } else if (error.message) {
                 errorMessage = error.message;
             }
-            throw new Error(errorMessage); // Throw a more user-friendly error
+            throw new Error(errorMessage);
         }
     }
 
@@ -140,11 +141,12 @@ export const useVolunteerStore = defineStore('volunteer', () => {
     return { 
         currentVolunteer, 
         volunteers, 
+        foundVolunteers,
         statuses,
         loading, // Expose loading state
         fetchAll,
         create,
-        fetchByEmail,
+        searchPublic,
         fetchStatuses,
         fetchVolunteer,
         updateVolunteerStatus,
