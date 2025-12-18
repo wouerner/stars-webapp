@@ -39,7 +39,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="error" text :to="{ name: 'projects-list' }">Cancelar</v-btn>
-            <v-btn color="primary" @click="submit" :disabled="!valid || loading">
+            <v-btn color="primary" :disabled="!valid || loading" @click="submit">
               {{ loading ? 'Salvando...' : 'Criar' }}
             </v-btn>
           </v-card-actions>

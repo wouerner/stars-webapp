@@ -46,7 +46,7 @@
           <v-card v-for="vol in volunteerStore.foundVolunteers" :key="vol.id" align="left" class="pa-4 mb-4">
               <p class="pa-1">Nome: <strong>{{vol.name}}</strong></p>
               <!-- Phone is usually not in public profile, removing or checking if present -->
-              <p class="pa-1" v-if="vol.phone">Telefone: <strong>{{vol.phone}}</strong></p> 
+              <p v-if="vol.phone" class="pa-1">Telefone: <strong>{{vol.phone}}</strong></p> 
               <p class="pa-1"> Linkedin: <strong>{{vol.linkedin}}</strong></p>
               <p class="pa-1"> Cargo: <strong>{{getJobTitle(vol.jobtitle_id)}}</strong></p>
               <p class="pa-1">Status: <strong>  <v-chip v-if="vol.is_active">Ativo</v-chip></strong></p>

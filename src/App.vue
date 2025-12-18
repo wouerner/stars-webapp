@@ -1,6 +1,6 @@
 <template>
   <v-app :class="ef">
-    <v-app-bar class="header" color="transparent" app elevation="4">
+    <v-app-bar v-if="route.name !== 'public-profile'" class="header" color="transparent" app elevation="4">
       <div class="w-100 d-flex align-center justify-space-between main-container">
         <a class="d-flex align-center logo">
           <h1 class=" d-none d-sm-block text-h5 font-weight-bold font-semibold primary-color ml-3 logo-text">
@@ -132,7 +132,7 @@
 
 
     <transition name="fade" mode="out-in">
-      <v-main class="d-flex flex-grow-1 " style="margin-top: 64px">
+      <v-main class="d-flex flex-grow-1 " :style="route.name !== 'public-profile' ? 'margin-top: 64px' : ''">
         <RouterView />
 
     <v-snackbar v-model="snackbarStore.snack.show" v-bind="snackbarStore.snack" location="top right">
