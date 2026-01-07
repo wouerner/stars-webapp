@@ -72,6 +72,21 @@
               @update:model-value="applyFilters"
             ></v-select>
           </v-col>
+          <v-col cols="12" md="3">
+            <v-select
+              v-model="volunteerTypeFilter"
+              :items="volunteerTypeStore.data"
+              item-title="name"
+              item-value="id"
+              label="Filtrar por Tipo"
+              variant="outlined"
+              density="compact"
+              hide-details
+              clearable
+              :disabled="volunteerStore.loading"
+              @update:model-value="applyFilters"
+            ></v-select>
+          </v-col>
           <v-col cols="12" md="12" class="d-flex align-center ga-2 justify-end">
             <v-btn color="primary" :disabled="volunteerStore.loading" @click="applyFilters">Filtrar</v-btn>
             <v-btn variant="outlined" :disabled="volunteerStore.loading" @click="clearFilters">Limpar</v-btn>
@@ -131,6 +146,12 @@
                       <span>Cadastrado {{ timeAgo(volunteer.created_at) }}</span>
                     </div>
                   </v-col>
+                  <v-col v-if="volunteer.volunteer_type" cols="12" sm="6" md="4">
+                    <div class="d-flex align-center">
+                      <v-icon icon="mdi-account-star" class="mr-2"></v-icon>
+                      <span>{{ volunteer.volunteer_type.name }}</span>
+                    </div>
+                  </v-col>
                 </v-row>
               </v-card-text>
             </v-card>
@@ -156,6 +177,7 @@ import { onMounted, ref } from 'vue';
 import { useVolunteerStore } from '@/stores/volunteer';
 import { useJobtitleStore } from '@/stores/jobtitle';
 import { useSquadStore } from '@/stores/squad';
+import { useVolunteerTypeStore } from '@/stores/volunteerType';
 import { useRouter, useRoute } from 'vue-router'; // Import useRouter and useRoute
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -167,6 +189,7 @@ dayjs.locale('pt-br'); // Use Portuguese locale globally
 const volunteerStore = useVolunteerStore();
 const jobtitleStore = useJobtitleStore();
 const squadStore = useSquadStore();
+const volunteerTypeStore = useVolunteerTypeStore();
 const router = useRouter(); // Initialize router
 const route = useRoute(); // Initialize route
 const page = ref(1);
@@ -177,6 +200,7 @@ const emailFilter = ref('');
 const jobtitleFilter = ref(null);
 const statusFilter = ref(null); // New status filter
 const squadFilter = ref(null);
+const volunteerTypeFilter = ref(null);
 
 async function loadVolunteers() {
   const filters = {};
@@ -185,6 +209,7 @@ async function loadVolunteers() {
   if (jobtitleFilter.value) filters.jobtitle_id = jobtitleFilter.value;
   if (statusFilter.value) filters.status_id = statusFilter.value; // Add status filter
   if (squadFilter.value) filters.squad_id = squadFilter.value;
+  if (volunteerTypeFilter.value) filters.volunteer_type_id = volunteerTypeFilter.value;
   
   await volunteerStore.fetchAll(page.value, itemsPerPage, filters);
 }
@@ -200,6 +225,7 @@ function clearFilters() {
   jobtitleFilter.value = null;
   statusFilter.value = null; // Clear status filter
   squadFilter.value = null;
+  volunteerTypeFilter.value = null;
   applyFilters();
 }
 
@@ -246,6 +272,7 @@ onMounted(async () => {
   await jobtitleStore.fetchJobtitles();
   await volunteerStore.fetchStatuses(); // Fetch statuses on mount
   await squadStore.fetchAllSquads();
+  await volunteerTypeStore.fetchVolunteerTypes();
   
   if (route.query.status) {
     const statusParam = route.query.status;
@@ -262,6 +289,14 @@ onMounted(async () => {
       if (foundSquad) {
           squadFilter.value = foundSquad.id;
       }
+  }
+
+  if (route.query.volunteer_type) {
+    const typeParam = route.query.volunteer_type;
+    const foundType = volunteerTypeStore.data.find(t => t.id == typeParam);
+    if (foundType) {
+      volunteerTypeFilter.value = foundType.id;
+    }
   }
 
   await loadVolunteers();

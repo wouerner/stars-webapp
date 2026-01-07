@@ -93,6 +93,35 @@
           </v-card>
         </v-col>
       </v-row>
+
+      <h2 class="text-h5 mb-4 mt-6">Voluntários por Tipo</h2>
+      <v-row>
+        <v-col
+          v-for="typeStat in dashboardStore.stats.total_volunteers_by_type"
+          :key="typeStat.volunteer_type"
+          cols="12"
+          sm="6"
+          md="3"
+        >
+          <v-card 
+            v-ripple 
+            class="h-100 cursor-pointer"
+            elevation="2"
+            @click="navigateToType(typeStat.volunteer_type)"
+          >
+            <v-card-item>
+              <v-card-title class="d-flex justify-space-between align-center">
+                <span class="text-truncate">{{ typeStat.volunteer_type }}</span>
+                <v-icon color="info" icon="mdi-account-star"></v-icon>
+              </v-card-title>
+            </v-card-item>
+            <v-card-text>
+              <div class="text-h3 font-weight-bold mb-2">{{ typeStat.count }}</div>
+              <div class="text-caption text-medium-emphasis">Voluntários</div>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
     </div>
 
     <v-alert v-else type="error" variant="tonal" class="mt-4">
@@ -107,17 +136,20 @@ import { useRouter } from 'vue-router';
 import { useDashboardStore } from '@/stores/dashboard';
 import { useVolunteerStore } from '@/stores/volunteer';
 import { useSquadStore } from '@/stores/squad';
+import { useVolunteerTypeStore } from '@/stores/volunteerType';
 
 const dashboardStore = useDashboardStore();
 const volunteerStore = useVolunteerStore();
 const squadStore = useSquadStore();
+const volunteerTypeStore = useVolunteerTypeStore();
 const router = useRouter();
 
 onMounted(async () => {
   await Promise.all([
     dashboardStore.fetchStats(),
     volunteerStore.fetchStatuses(),
-    squadStore.fetchAllSquads()
+    squadStore.fetchAllSquads(),
+    volunteerTypeStore.fetchVolunteerTypes()
   ]);
 });
 
@@ -132,6 +164,13 @@ const navigateToSquad = (squadName) => {
   const squad = squadStore.squads.find(s => s.name === squadName);
   if (squad) {
     router.push({ name: 'volunteers', query: { squad: squad.id } });
+  }
+};
+
+const navigateToType = (typeName) => {
+  const type = volunteerTypeStore.data.find(t => t.name === typeName);
+  if (type) {
+    router.push({ name: 'volunteers', query: { volunteer_type: type.id } });
   }
 };
 
