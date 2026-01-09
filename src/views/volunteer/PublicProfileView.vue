@@ -144,6 +144,21 @@
                  <v-list-item-title class="text-body-2 font-weight-medium">{{ volunteer.squad.name }}</v-list-item-title>
                  <v-list-item-subtitle class="text-caption">Squad</v-list-item-subtitle>
               </v-list-item>
+
+              <v-divider v-if="volunteer.squad && volunteer.is_apoiase_supporter" inset></v-divider>
+
+              <!-- Apoiador APOIA.se -->
+              <v-list-item v-if="volunteer.is_apoiase_supporter" class="px-6 py-3">
+                 <template #prepend>
+                   <v-avatar color="pink-accent-2" variant="tonal" class="mr-4 rounded-circle">
+                     <v-icon icon="mdi-heart"></v-icon>
+                   </v-avatar>
+                 </template>
+                 <v-list-item-title class="text-body-2 font-weight-bold text-pink">
+                    Apoiador Oficial
+                 </v-list-item-title>
+                 <v-list-item-subtitle class="text-caption">APOIA.se</v-list-item-subtitle>
+              </v-list-item>
             </v-list>
           </v-card>
 

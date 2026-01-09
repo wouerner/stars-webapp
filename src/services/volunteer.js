@@ -171,6 +171,20 @@ async function updateProfileByToken(token, profileData) {
     return response.data;
 }
 
+async function checkApoiaseStatus(volunteerId) {
+    try {
+        const response = await axiosInstance.post(
+            `/volunteers/${volunteerId}/check-apoiase`,
+            null,
+            { headers: headers() }
+        );
+        return response.data;
+    } catch (error) {
+        console.error(`Error checking APOIA.se status for volunteer ID ${volunteerId}:`, error);
+        throw error;
+    }
+}
+
 export default {
     fetchBy,
     del,
@@ -185,5 +199,6 @@ export default {
     requestEditLink,
     fetchByToken,
     updateProfileByToken,
-    getPublicProfile
+    getPublicProfile,
+    checkApoiaseStatus
 };

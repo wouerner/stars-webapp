@@ -83,6 +83,27 @@
                   <v-list-item-title>{{ currentVolunteer.squad.name }}</v-list-item-title>
                   <v-list-item-subtitle>Squad</v-list-item-subtitle>
                 </v-list-item>
+
+                <v-list-item class="px-0">
+                  <template #prepend>
+                    <v-icon icon="mdi-heart" :color="currentVolunteer.is_apoiase_supporter ? 'pink' : 'grey'"></v-icon>
+                  </template>
+                  <v-list-item-title class="d-flex align-center">
+                    <span v-if="currentVolunteer.is_apoiase_supporter" class="text-pink font-weight-bold">Apoiador APOIA.se</span>
+                    <span v-else>Não é apoiador</span>
+                    <v-btn
+                      icon="mdi-refresh"
+                      size="x-small"
+                      variant="text"
+                      color="primary"
+                      class="ml-2"
+                      :loading="isCheckingApoiase"
+                      @click="checkApoiaseStatus"
+                      title="Verificar status APOIA.se"
+                    ></v-btn>
+                  </v-list-item-title>
+                  <v-list-item-subtitle>Status de Apoio</v-list-item-subtitle>
+                </v-list-item>
               </v-list>
             </v-card-text>
           </v-card>
@@ -190,6 +211,7 @@ const selectedStatusId = ref(null);
 const selectedSquadId = ref(null);
 const isLoadingStatus = ref(false);
 const isLoadingSquad = ref(false);
+const isCheckingApoiase = ref(false);
 
 const currentVolunteer = computed(() => volunteerStore.currentVolunteer);
 const statuses = computed(() => volunteerStore.statuses);
@@ -215,6 +237,17 @@ onMounted(async () => {
     selectedSquadId.value = currentVolunteer.value.squad_id;
   }
 });
+
+const checkApoiaseStatus = async () => {
+  if (!currentVolunteer.value) return;
+  
+  isCheckingApoiase.value = true;
+  try {
+    await volunteerStore.checkApoiaseStatus(currentVolunteer.value.id);
+  } finally {
+    isCheckingApoiase.value = false;
+  }
+};
 
 const updateVolunteerStatus = async () => {
   if (selectedStatusId.value && currentVolunteer.value && selectedStatusId.value !== currentVolunteer.value.status_id) {

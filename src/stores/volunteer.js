@@ -138,6 +138,26 @@ export const useVolunteerStore = defineStore('volunteer', () => {
         }
     }
 
+    async function checkApoiaseStatus(volunteerId) {
+        try {
+            const updatedVolunteer = await volunteerService.checkApoiaseStatus(volunteerId);
+            // Update current volunteer
+            if (currentVolunteer.value && currentVolunteer.value.id === volunteerId) {
+                currentVolunteer.value = updatedVolunteer;
+            }
+            return updatedVolunteer;
+        } catch (error) {
+            console.error(`Erro ao verificar status APOIA.se do voluntário ${volunteerId}:`, error);
+            let errorMessage = `Erro ao verificar status APOIA.se.`;
+            if (error.response && error.response.data && error.response.data.detail) {
+                errorMessage = error.response.data.detail;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            throw new Error(errorMessage);
+        }
+    }
+
     return { 
         currentVolunteer, 
         volunteers, 
@@ -150,7 +170,8 @@ export const useVolunteerStore = defineStore('volunteer', () => {
         fetchStatuses,
         fetchVolunteer,
         updateVolunteerStatus,
-        updateVolunteerSquad
+        updateVolunteerSquad,
+        checkApoiaseStatus
     }
 }, 
     { 
