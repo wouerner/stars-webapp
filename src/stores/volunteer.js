@@ -158,6 +158,19 @@ export const useVolunteerStore = defineStore('volunteer', () => {
         }
     }
 
+    async function fetchByEmail(email) {
+        try {
+            const response = await volunteerService.fetchAll({ email: email });
+            // API does partial match, so filter for exact match
+            const match = response.find(v => v.email === email);
+            currentVolunteer.value = match || null;
+            return match;
+        } catch (error) {
+            console.error(`Erro ao buscar voluntário por email ${email}:`, error);
+            throw error;
+        }
+    }
+
     return { 
         currentVolunteer, 
         volunteers, 
@@ -171,7 +184,8 @@ export const useVolunteerStore = defineStore('volunteer', () => {
         fetchVolunteer,
         updateVolunteerStatus,
         updateVolunteerSquad,
-        checkApoiaseStatus
+        checkApoiaseStatus,
+        fetchByEmail
     }
 }, 
     { 

@@ -188,7 +188,102 @@
             </v-card-text>
           </v-card>
         </v-col>
+
+        <!-- Feedbacks -->
+        <v-col cols="12">
+          <v-card elevation="2">
+            <v-card-item class="d-flex justify-space-between align-center">
+              <div class="d-flex justify-space-between w-100 align-center">
+                <v-card-title class="text-h6">Feedbacks</v-card-title>
+                <v-btn 
+                  v-if="authStore.auth.email" 
+                  color="primary" 
+                  size="small" 
+                  variant="flat"
+                  prepend-icon="mdi-plus"
+                  @click="openFeedbackDialog()"
+                >
+                  Adicionar
+                </v-btn>
+              </div>
+            </v-card-item>
+            <v-card-text>
+               <div v-if="!currentVolunteer.feedbacks || currentVolunteer.feedbacks.length === 0" class="text-center text-caption text-medium-emphasis py-4">
+                 <v-icon icon="mdi-message-text-outline" size="large" class="mb-2 text-disabled"></v-icon>
+                 <div>Nenhum feedback ainda.</div>
+               </div>
+               <v-list v-else lines="three" class="pa-0">
+                 <template v-for="(feedback, index) in currentVolunteer.feedbacks" :key="feedback.id">
+                   <v-list-item class="px-0">
+                      <template #prepend>
+                         <v-avatar color="grey-lighten-3" size="40" class="mr-3">
+                           <span class="text-h6 font-weight-bold text-grey-darken-2">
+                             {{ feedback.author?.email?.[0]?.toUpperCase() || '?' }}
+                           </span>
+                         </v-avatar>
+                      </template>
+                      <v-list-item-title class="text-body-2 font-weight-bold">
+                        {{ feedback.author?.email }}
+                        <span class="text-caption text-medium-emphasis ml-2">
+                          {{ formatDateTime(feedback.created_at) }}
+                        </span>
+                      </v-list-item-title>
+                      <v-list-item-subtitle class="mt-2 text-body-2 text-high-emphasis" style="white-space: pre-wrap;">
+                        {{ feedback.content }}
+                      </v-list-item-subtitle>
+                      
+                      <template #append v-if="canEdit(feedback)">
+                         <div class="d-flex gap-1">
+                           <v-btn icon="mdi-pencil" size="small" variant="text" color="primary" @click="editFeedback(feedback)"></v-btn>
+                           <v-btn icon="mdi-delete" size="small" variant="text" color="error" @click="confirmDelete(feedback)"></v-btn>
+                         </div>
+                      </template>
+                   </v-list-item>
+                   <v-divider v-if="index < currentVolunteer.feedbacks.length - 1" class="my-2"></v-divider>
+                 </template>
+               </v-list>
+            </v-card-text>
+          </v-card>
+        </v-col>
       </v-row>
+
+      <!-- Feedback Dialog -->
+      <v-dialog v-model="feedbackDialog" max-width="500px">
+        <v-card class="rounded-lg">
+          <v-card-title class="text-h6 px-6 py-4 border-b">
+            {{ feedbackForm.id ? 'Editar Feedback' : 'Novo Feedback' }}
+          </v-card-title>
+          <v-card-text class="pt-4 px-6">
+            <v-textarea
+              v-model="feedbackForm.content"
+              label="Seu feedback"
+              placeholder="Escreva aqui seu feedback sobre o voluntário..."
+              variant="outlined"
+              rows="4"
+              auto-grow
+              :rules="[v => !!v || 'Campo obrigatório']"
+            ></v-textarea>
+          </v-card-text>
+          <v-card-actions class="px-6 pb-4 pt-0 justify-end">
+            <v-btn color="grey-darken-1" variant="text" @click="feedbackDialog = false">Cancelar</v-btn>
+            <v-btn color="primary" variant="flat" @click="saveFeedback" :loading="feedbackLoading" :disabled="!feedbackForm.content">Salvar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <!-- Delete Dialog -->
+      <v-dialog v-model="deleteDialog" max-width="400px">
+        <v-card class="rounded-lg">
+          <v-card-title class="text-h6 px-6 py-4">Excluir Feedback?</v-card-title>
+          <v-card-text class="px-6 pb-2">
+            Tem certeza que deseja excluir este feedback? Esta ação não pode ser desfeita.
+          </v-card-text>
+          <v-card-actions class="px-6 pb-4 justify-end">
+            <v-btn color="grey-darken-1" variant="text" @click="deleteDialog = false">Cancelar</v-btn>
+            <v-btn color="error" variant="flat" @click="deleteFeedback" :loading="feedbackLoading">Excluir</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
     
     <div v-else class="d-flex justify-center align-center w-100" style="min-height: 400px;">
@@ -202,16 +297,96 @@ import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useVolunteerStore } from '@/stores/volunteer.js';
 import { useSquadStore } from '@/stores/squad.js';
+import feedbackService from '@/services/feedback.js';
+import { useAuthStore } from '@/stores/auth.js';
 
 const route = useRoute();
 const volunteerStore = useVolunteerStore();
 const squadStore = useSquadStore();
+const authStore = useAuthStore();
 
 const selectedStatusId = ref(null);
 const selectedSquadId = ref(null);
 const isLoadingStatus = ref(false);
 const isLoadingSquad = ref(false);
 const isCheckingApoiase = ref(false);
+
+// Feedback State
+const feedbackDialog = ref(false);
+const deleteDialog = ref(false);
+const feedbackForm = ref({
+  id: null,
+  content: ''
+});
+const feedbackToDelete = ref(null);
+const feedbackLoading = ref(false);
+
+const canEdit = (feedback) => {
+  return authStore.auth.email && feedback.author && authStore.auth.email === feedback.author.email;
+};
+
+const openFeedbackDialog = () => {
+  feedbackForm.value = { id: null, content: '' };
+  feedbackDialog.value = true;
+};
+
+const editFeedback = (feedback) => {
+  feedbackForm.value = { 
+    id: feedback.id, 
+    content: feedback.content 
+  };
+  feedbackDialog.value = true;
+};
+
+const saveFeedback = async () => {
+  if (!feedbackForm.value.content) return;
+  
+  feedbackLoading.value = true;
+  try {
+    if (feedbackForm.value.id) {
+      // Update
+      const updatedFeedback = await feedbackService.update(feedbackForm.value.id, { content: feedbackForm.value.content });
+      const index = currentVolunteer.value.feedbacks.findIndex(f => f.id === updatedFeedback.id);
+      if (index !== -1) {
+        // Update local state, keeping author info
+         currentVolunteer.value.feedbacks[index] = { ...currentVolunteer.value.feedbacks[index], ...updatedFeedback };
+      }
+    } else {
+      // Create
+      const newFeedback = await feedbackService.create(currentVolunteer.value.id, { content: feedbackForm.value.content });
+      if (!currentVolunteer.value.feedbacks) currentVolunteer.value.feedbacks = [];
+      currentVolunteer.value.feedbacks.unshift(newFeedback);
+    }
+    feedbackDialog.value = false;
+  } catch (e) {
+    console.error("Error saving feedback", e);
+    alert("Erro ao salvar feedback");
+  } finally {
+    feedbackLoading.value = false;
+  }
+};
+
+const confirmDelete = (feedback) => {
+  feedbackToDelete.value = feedback;
+  deleteDialog.value = true;
+};
+
+const deleteFeedback = async () => {
+  if (!feedbackToDelete.value) return;
+  
+  feedbackLoading.value = true;
+  try {
+    await feedbackService.delete(feedbackToDelete.value.id);
+    currentVolunteer.value.feedbacks = currentVolunteer.value.feedbacks.filter(f => f.id !== feedbackToDelete.value.id);
+    deleteDialog.value = false;
+  } catch (e) {
+    console.error("Error deleting feedback", e);
+    alert("Erro ao excluir feedback");
+  } finally {
+    feedbackLoading.value = false;
+    feedbackToDelete.value = null;
+  }
+};
 
 const currentVolunteer = computed(() => volunteerStore.currentVolunteer);
 const statuses = computed(() => volunteerStore.statuses);
