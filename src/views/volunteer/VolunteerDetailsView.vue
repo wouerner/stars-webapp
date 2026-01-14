@@ -98,8 +98,8 @@
                       color="primary"
                       class="ml-2"
                       :loading="isCheckingApoiase"
-                      @click="checkApoiaseStatus"
                       title="Verificar status APOIA.se"
+                      @click="checkApoiaseStatus"
                     ></v-btn>
                   </v-list-item-title>
                   <v-list-item-subtitle>Status de Apoio</v-list-item-subtitle>
@@ -232,7 +232,7 @@
                         {{ feedback.content }}
                       </v-list-item-subtitle>
                       
-                      <template #append v-if="canEdit(feedback)">
+                      <template v-if="canEdit(feedback)" #append>
                          <div class="d-flex gap-1">
                            <v-btn icon="mdi-pencil" size="small" variant="text" color="primary" @click="editFeedback(feedback)"></v-btn>
                            <v-btn icon="mdi-delete" size="small" variant="text" color="error" @click="confirmDelete(feedback)"></v-btn>
@@ -266,7 +266,7 @@
           </v-card-text>
           <v-card-actions class="px-6 pb-4 pt-0 justify-end">
             <v-btn color="grey-darken-1" variant="text" @click="feedbackDialog = false">Cancelar</v-btn>
-            <v-btn color="primary" variant="flat" @click="saveFeedback" :loading="feedbackLoading" :disabled="!feedbackForm.content">Salvar</v-btn>
+            <v-btn color="primary" variant="flat" :loading="feedbackLoading" :disabled="!feedbackForm.content" @click="saveFeedback">Salvar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -280,7 +280,7 @@
           </v-card-text>
           <v-card-actions class="px-6 pb-4 justify-end">
             <v-btn color="grey-darken-1" variant="text" @click="deleteDialog = false">Cancelar</v-btn>
-            <v-btn color="error" variant="flat" @click="deleteFeedback" :loading="feedbackLoading">Excluir</v-btn>
+            <v-btn color="error" variant="flat" :loading="feedbackLoading" @click="deleteFeedback">Excluir</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>

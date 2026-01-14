@@ -216,12 +216,23 @@
                       <template #prepend>
                          <v-avatar color="grey-lighten-3" size="40" class="mr-3">
                            <span class="text-h6 font-weight-bold text-grey-darken-2">
-                             {{ feedback.author?.email?.[0]?.toUpperCase() || '?' }}
+                             {{ feedback.author_name ? feedback.author_name[0].toUpperCase() : '?' }}
                            </span>
                          </v-avatar>
                       </template>
-                      <v-list-item-title class="text-body-2 font-weight-bold">
-                        {{ feedback.author?.email }}
+                      <v-list-item-title class="text-body-2 font-weight-bold d-flex align-center">
+                        {{ feedback.author_name }}
+                        <v-btn
+                          v-if="feedback.author_linkedin"
+                          icon="mdi-linkedin"
+                          size="x-small"
+                          color="blue"
+                          variant="text"
+                          density="compact"
+                          class="ml-1"
+                          :href="feedback.author_linkedin"
+                          target="_blank"
+                        ></v-btn>
                         <span class="text-caption text-medium-emphasis ml-2">
                           {{ formatDateTime(feedback.created_at) }}
                         </span>
@@ -230,7 +241,7 @@
                         {{ feedback.content }}
                       </v-list-item-subtitle>
                       
-                      <template #append v-if="canEdit(feedback)">
+                      <template v-if="canEdit(feedback)" #append>
                          <div class="d-flex gap-1">
                            <v-btn icon="mdi-pencil" size="small" variant="text" color="primary" @click="editFeedback(feedback)"></v-btn>
                            <v-btn icon="mdi-delete" size="small" variant="text" color="error" @click="confirmDelete(feedback)"></v-btn>
@@ -262,7 +273,7 @@
         </v-card-text>
         <v-card-actions class="px-6 pb-4 pt-0 justify-end">
           <v-btn color="grey-darken-1" variant="text" @click="feedbackDialog = false">Cancelar</v-btn>
-          <v-btn color="primary" variant="flat" @click="saveFeedback" :loading="feedbackLoading" :disabled="!feedbackForm.content">Salvar</v-btn>
+          <v-btn color="primary" variant="flat" :loading="feedbackLoading" :disabled="!feedbackForm.content" @click="saveFeedback">Salvar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -276,7 +287,7 @@
         </v-card-text>
         <v-card-actions class="px-6 pb-4 justify-end">
           <v-btn color="grey-darken-1" variant="text" @click="deleteDialog = false">Cancelar</v-btn>
-          <v-btn color="error" variant="flat" @click="deleteFeedback" :loading="feedbackLoading">Excluir</v-btn>
+          <v-btn color="error" variant="flat" :loading="feedbackLoading" @click="deleteFeedback">Excluir</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
