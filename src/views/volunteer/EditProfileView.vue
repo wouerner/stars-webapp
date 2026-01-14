@@ -40,6 +40,16 @@
           label="Discord"
           variant="outlined"
         ></v-text-field>
+
+        <v-select
+          v-model="profile.volunteer_type_id"
+          :items="volunteerTypes"
+          item-title="name"
+          item-value="id"
+          label="Tipo de Voluntário"
+          variant="outlined"
+          clearable
+        ></v-select>
         
         <!-- Read-only fields for context -->
         <v-text-field
@@ -86,13 +96,15 @@ const loading = ref(true)
 const saving = ref(false)
 const error = ref(null)
 const form = ref(null)
+const volunteerTypes = ref([])
 
 const profile = reactive({
   name: '',
   linkedin: '',
   phone: '',
   discord: '',
-  email: '' // For display only
+  email: '', // For display only
+  volunteer_type_id: null
 })
 
 const snackbar = ref({
@@ -109,12 +121,19 @@ onMounted(async () => {
   }
 
   try {
-    const data = await volunteerService.fetchByToken(token)
+    const [data, types] = await Promise.all([
+      volunteerService.fetchByToken(token),
+      volunteerService.getVolunteerTypes()
+    ])
+    
+    volunteerTypes.value = types
+    
     profile.name = data.name
     profile.linkedin = data.linkedin
     profile.phone = data.phone
     profile.discord = data.discord
     profile.email = data.email
+    profile.volunteer_type_id = data.volunteer_type_id
   } catch (err) {
     if (err.response && err.response.data && err.response.data.detail) {
       error.value = err.response.data.detail
@@ -136,7 +155,8 @@ const submitUpdate = async () => {
       name: profile.name,
       linkedin: profile.linkedin,
       phone: profile.phone,
-      discord: profile.discord
+      discord: profile.discord,
+      volunteer_type_id: profile.volunteer_type_id
     })
     
     snackbar.value = {

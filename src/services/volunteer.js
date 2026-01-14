@@ -92,6 +92,16 @@ async function getStatuses() {
     }
 }
 
+async function getVolunteerTypes() {
+    try {
+        const response = await axiosInstance.get('/volunteer-types/', { headers: headers() });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching volunteer types:', error);
+        throw error;
+    }
+}
+
 async function getById(volunteerId) {
     try {
         const response = await axiosInstance.get(`/volunteers/${volunteerId}`, { headers: headers() });
@@ -193,6 +203,7 @@ export default {
     searchPublic,
     fetchAll,
     getStatuses,
+    getVolunteerTypes,
     getById,
     updateStatus,
     updateSquad,
