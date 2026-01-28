@@ -33,13 +33,14 @@ const vuetify = createVuetify({
 
 import App from './App.vue';
 import router from './router';
+import { useAuthStore } from '@/stores/auth';
+import { setupInterceptors } from '@/services/http';
 
 const app = createApp(App);
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 
 app.use(pinia)
-app.use(createPinia());
 app.use(router);
 app.use(vuetify);
 	
@@ -48,3 +49,8 @@ app.use(VueGtag, {
 });
 
 app.mount('#app');
+
+setupInterceptors(() => {
+    const authStore = useAuthStore();
+    authStore.logout();
+});

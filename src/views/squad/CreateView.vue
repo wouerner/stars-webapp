@@ -11,7 +11,7 @@
 color="primary" class="me-4"
                                            @click="submit">Salvar</v-btn>
                     <v-btn 
-                       :to="{ name: 'onboarding' }"
+                       :to="{ name: 'squads-list' }"
                         class="me-4"
                        >Cancelar</v-btn>
                 </v-form>
@@ -22,16 +22,14 @@ color="primary" class="me-4"
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { reactive, onMounted } from 'vue';
 import { useSquadStore } from '@/stores/squad';
 import { useRoute } from 'vue-router';
-import { useAuthStore } from "@/stores/auth";
 
 import router from "@/router";
 
 const useSquad = useSquadStore();
 const route = useRoute();
-const useAuth = useAuthStore();
 console.log('params:' , route.params);
 const squad = reactive({
     name: '',
@@ -39,20 +37,23 @@ const squad = reactive({
     uuid: ''
 });
 
-if (route.meta.type === 'update') {
-    const s = useAuth.getSquad();
-    squad.name = s.name;
-    squad.description = s.description;
-    squad.uuid = s.uuid;
-}
+onMounted(async () => {
+    if (route.meta.type === 'update') {
+        await useSquad.fetch(route.params.uuid);
+        const s = useSquad.squad;
+        squad.name = s.name;
+        squad.description = s.description;
+        squad.uuid = s.id || s.uuid;
+    }
+});
 
-const submit = () => {
+const submit = async () => {
     if (route.meta.type == 'create') {
-        useSquad.create(squad);
-        router.push({ name: 'onboarding' });
+        await useSquad.create(squad);
+        router.push({ name: 'squads-list' });
     } else {
-        useSquad.update(squad);
-        router.push({ name: 'onboarding' });
+        await useSquad.update(squad);
+        router.push({ name: 'squads-list' });
     }
 };
 </script>

@@ -17,10 +17,9 @@ export const useSquadStore = defineStore('squad', () => {
         }
     }
 
-    async function fetch() {
+    async function fetch(uuid) {
         try {
-            const response = await squadService.fechtBy();
-            const data = response.data;
+            const data = await squadService.fetchBy(uuid);
 
             if (data.error) {
                 alert(data.error)

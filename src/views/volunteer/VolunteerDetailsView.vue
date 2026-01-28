@@ -49,6 +49,14 @@
                   <v-list-item-subtitle>LinkedIn</v-list-item-subtitle>
                 </v-list-item>
 
+                <v-list-item v-if="currentVolunteer.discord" class="px-0">
+                  <template #prepend>
+                    <v-icon icon="mdi-discord" color="deep-purple-accent-1"></v-icon>
+                  </template>
+                  <v-list-item-title>{{ currentVolunteer.discord }}</v-list-item-title>
+                  <v-list-item-subtitle>Discord</v-list-item-subtitle>
+                </v-list-item>
+
                 <v-list-item v-if="currentVolunteer.job_title" class="px-0">
                   <template #prepend>
                     <v-icon icon="mdi-briefcase" color="grey-darken-1"></v-icon>

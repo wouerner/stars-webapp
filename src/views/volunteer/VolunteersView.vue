@@ -132,6 +132,12 @@
                       <a :href="volunteer.linkedin" target="_blank" @click.stop>{{ volunteer.linkedin }}</a>
                     </div>
                   </v-col>
+                  <v-col v-if="volunteer.discord" cols="12" sm="6" md="4">
+                    <div class="d-flex align-center">
+                      <v-icon icon="mdi-discord" class="mr-2"></v-icon>
+                      <span>{{ volunteer.discord }}</span>
+                    </div>
+                  </v-col>
                   <v-col v-if="volunteer.status" cols="12" sm="6" md="4">
                     <div class="d-flex align-center">
                       <v-icon icon="mdi-list-status" class="mr-2"></v-icon>
@@ -204,8 +210,8 @@ const volunteerTypeFilter = ref(null);
 
 async function loadVolunteers() {
   const filters = {};
-  if (nameFilter.value) filters.name = nameFilter.value;
-  if (emailFilter.value) filters.email = emailFilter.value;
+  if (nameFilter.value && nameFilter.value.trim()) filters.name = nameFilter.value.trim();
+  if (emailFilter.value && emailFilter.value.trim()) filters.email = emailFilter.value.trim();
   if (jobtitleFilter.value) filters.jobtitle_id = jobtitleFilter.value;
   if (statusFilter.value) filters.status_id = statusFilter.value; // Add status filter
   if (squadFilter.value) filters.squad_id = squadFilter.value;

@@ -16,4 +16,18 @@ function headers () {
     }
 }
 
+export const setupInterceptors = (onUnauthorized) => {
+    instance.interceptors.response.use(
+        (response) => response,
+        (error) => {
+            if (error.response && error.response.status === 401) {
+                if (onUnauthorized) {
+                    onUnauthorized();
+                }
+            }
+            return Promise.reject(error);
+        }
+    );
+};
+
 export default instance;
