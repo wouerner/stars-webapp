@@ -25,7 +25,11 @@
           <v-btn color="primary" type="submit" block @click="submitLogin">Login</v-btn>
           <v-btn block class="mt-2 cancelButton" :to="{ name: 'user-register' }">Registrar</v-btn>
           <div class="mt-4 text-center">
-            <router-link :to="{ name: 'request-edit' }" class="text-body-2 text-decoration-none text-primary" style="font-family: 'Radio Canada', serif !important; font-weight: 600;">
+            <router-link
+              :to="{ name: 'request-edit' }"
+              class="text-body-2 text-decoration-none text-primary"
+              style="font-family: 'Radio Canada', serif !important; font-weight: 600"
+            >
               Já é voluntário? Edite seu perfil aqui
             </router-link>
           </div>

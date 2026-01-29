@@ -1,56 +1,56 @@
 // import './assets/main.css';
 
-import { createApp } from 'vue';
-import { createPinia } from 'pinia';
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
-import 'vuetify/styles';
-import { createVuetify } from 'vuetify';
-import * as components from 'vuetify/components';
-import * as directives from 'vuetify/directives';
-import '@mdi/font/css/materialdesignicons.css';
-import '@/assets/main.scss';
-import VueGtag from "vue-gtag";
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+import '@mdi/font/css/materialdesignicons.css'
+import '@/assets/main.scss'
+import VueGtag from 'vue-gtag'
 
-const savedTheme = localStorage.getItem('theme') || 'dark';
+const savedTheme = localStorage.getItem('theme') || 'dark'
 
 const vuetify = createVuetify({
-	components,
-	directives,
-	theme: {
-		defaultTheme: 'myTheme',
-		themes: {
-			myTheme: {
-				dark: savedTheme == 'light' ? false : true,
-				colors: {
-					primary: '#d7a006',
-                    background: "#212121",
-				}
-			}
-		},
-	}
-});
+  components,
+  directives,
+  theme: {
+    defaultTheme: 'myTheme',
+    themes: {
+      myTheme: {
+        dark: savedTheme == 'light' ? false : true,
+        colors: {
+          primary: '#d7a006',
+          background: '#212121'
+        }
+      }
+    }
+  }
+})
 
-import App from './App.vue';
-import router from './router';
-import { useAuthStore } from '@/stores/auth';
-import { setupInterceptors } from '@/services/http';
+import App from './App.vue'
+import router from './router'
+import { useAuthStore } from '@/stores/auth'
+import { setupInterceptors } from '@/services/http'
 
-const app = createApp(App);
+const app = createApp(App)
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 
 app.use(pinia)
-app.use(router);
-app.use(vuetify);
-	
-app.use(VueGtag, {
-    config: { id: "G-Z322K0TK90" }
-});
+app.use(router)
+app.use(vuetify)
 
-app.mount('#app');
+app.use(VueGtag, {
+  config: { id: 'G-Z322K0TK90' }
+})
+
+app.mount('#app')
 
 setupInterceptors(() => {
-    const authStore = useAuthStore();
-    authStore.logout();
-});
+  const authStore = useAuthStore()
+  authStore.logout()
+})

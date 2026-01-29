@@ -2,7 +2,11 @@
   <v-container>
     <h1 class="text-h4 mb-6">Dashboard</h1>
 
-    <div v-if="dashboardStore.loading" class="d-flex justify-center align-center" style="min-height: 300px;">
+    <div
+      v-if="dashboardStore.loading"
+      class="d-flex justify-center align-center"
+      style="min-height: 300px"
+    >
       <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
     </div>
 
@@ -17,7 +21,9 @@
               <v-card-subtitle>Cadastrados desde 00:00</v-card-subtitle>
             </v-card-item>
             <v-card-text class="d-flex align-center justify-center">
-              <span class="text-h2 font-weight-bold">{{ dashboardStore.stats.total_volunteers_registered_today }}</span>
+              <span class="text-h2 font-weight-bold">{{
+                dashboardStore.stats.total_volunteers_registered_today
+              }}</span>
             </v-card-text>
           </v-card>
         </v-col>
@@ -30,7 +36,9 @@
               <v-card-subtitle>Base completa</v-card-subtitle>
             </v-card-item>
             <v-card-text class="d-flex align-center justify-center">
-              <span class="text-h2 font-weight-bold">{{ dashboardStore.stats.total_volunteers }}</span>
+              <span class="text-h2 font-weight-bold">{{
+                dashboardStore.stats.total_volunteers
+              }}</span>
             </v-card-text>
           </v-card>
         </v-col>
@@ -45,8 +53,8 @@
           sm="6"
           md="3"
         >
-          <v-card 
-            v-ripple 
+          <v-card
+            v-ripple
             class="h-100 cursor-pointer"
             elevation="2"
             @click="navigateToVolunteers(statusStat.status)"
@@ -54,7 +62,10 @@
             <v-card-item>
               <v-card-title class="d-flex justify-space-between align-center">
                 <span>{{ statusStat.status }}</span>
-                <v-icon :color="getStatusColor(statusStat.status)" icon="mdi-circle-slice-8"></v-icon>
+                <v-icon
+                  :color="getStatusColor(statusStat.status)"
+                  icon="mdi-circle-slice-8"
+                ></v-icon>
               </v-card-title>
             </v-card-item>
             <v-card-text>
@@ -74,8 +85,8 @@
           sm="6"
           md="3"
         >
-          <v-card 
-            v-ripple 
+          <v-card
+            v-ripple
             class="h-100 cursor-pointer"
             elevation="2"
             @click="navigateToSquad(squadStat.squad)"
@@ -103,8 +114,8 @@
           sm="6"
           md="3"
         >
-          <v-card 
-            v-ripple 
+          <v-card
+            v-ripple
             class="h-100 cursor-pointer"
             elevation="2"
             @click="navigateToType(typeStat.volunteer_type)"
@@ -131,18 +142,18 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { useDashboardStore } from '@/stores/dashboard';
-import { useVolunteerStore } from '@/stores/volunteer';
-import { useSquadStore } from '@/stores/squad';
-import { useVolunteerTypeStore } from '@/stores/volunteerType';
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useDashboardStore } from '@/stores/dashboard'
+import { useVolunteerStore } from '@/stores/volunteer'
+import { useSquadStore } from '@/stores/squad'
+import { useVolunteerTypeStore } from '@/stores/volunteerType'
 
-const dashboardStore = useDashboardStore();
-const volunteerStore = useVolunteerStore();
-const squadStore = useSquadStore();
-const volunteerTypeStore = useVolunteerTypeStore();
-const router = useRouter();
+const dashboardStore = useDashboardStore()
+const volunteerStore = useVolunteerStore()
+const squadStore = useSquadStore()
+const volunteerTypeStore = useVolunteerTypeStore()
+const router = useRouter()
 
 onMounted(async () => {
   await Promise.all([
@@ -150,38 +161,44 @@ onMounted(async () => {
     volunteerStore.fetchStatuses(),
     squadStore.fetchAllSquads(),
     volunteerTypeStore.fetchVolunteerTypes()
-  ]);
-});
+  ])
+})
 
 const navigateToVolunteers = (statusName) => {
-  const status = volunteerStore.statuses.find(s => s.name === statusName);
+  const status = volunteerStore.statuses.find((s) => s.name === statusName)
   if (status) {
-    router.push({ name: 'volunteers', query: { status: status.id } });
+    router.push({ name: 'volunteers', query: { status: status.id } })
   }
-};
+}
 
 const navigateToSquad = (squadName) => {
-  const squad = squadStore.squads.find(s => s.name === squadName);
+  const squad = squadStore.squads.find((s) => s.name === squadName)
   if (squad) {
-    router.push({ name: 'volunteers', query: { squad: squad.id } });
+    router.push({ name: 'volunteers', query: { squad: squad.id } })
   }
-};
+}
 
 const navigateToType = (typeName) => {
-  const type = volunteerTypeStore.data.find(t => t.name === typeName);
+  const type = volunteerTypeStore.data.find((t) => t.name === typeName)
   if (type) {
-    router.push({ name: 'volunteers', query: { volunteer_type: type.id } });
+    router.push({ name: 'volunteers', query: { volunteer_type: type.id } })
   }
-};
+}
 
 const getStatusColor = (statusName) => {
   switch (statusName) {
-    case 'INTERESTED': return 'warning';
-    case 'CONTACTED': return 'info';
-    case 'SCREENING': return 'deep-purple';
-    case 'ACTIVE': return 'success';
-    case 'INACTIVE': return 'error';
-    default: return 'grey';
+    case 'INTERESTED':
+      return 'warning'
+    case 'CONTACTED':
+      return 'info'
+    case 'SCREENING':
+      return 'deep-purple'
+    case 'ACTIVE':
+      return 'success'
+    case 'INACTIVE':
+      return 'error'
+    default:
+      return 'grey'
   }
-};
+}
 </script>

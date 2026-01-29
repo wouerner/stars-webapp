@@ -4,9 +4,7 @@
       <v-col cols="6" xs="12" align="center">
         <label class="d-flex align-center justify-center">
           <a class="d-flex align-center logo">
-            <h1 class="text-h5 font-weight-bold font-semibold ml-3 logo-text">
-              Criar Conta
-            </h1>
+            <h1 class="text-h5 font-weight-bold font-semibold ml-3 logo-text">Criar Conta</h1>
           </a>
         </label>
       </v-col>
@@ -40,7 +38,7 @@
               label="Confirme sua senha"
               placeholder="Digite sua senha novamente"
               variant="outlined"
-              :rules="[v => v === user.password || 'As senhas não conferem']"
+              :rules="[(v) => v === user.password || 'As senhas não conferem']"
             ></v-text-field>
 
             <v-text-field
@@ -48,12 +46,14 @@
               label="Código de Registro"
               placeholder="Digite o código de convite"
               variant="outlined"
-              :rules="[v => !!v || 'Código de registro é obrigatório']"
+              :rules="[(v) => !!v || 'Código de registro é obrigatório']"
             ></v-text-field>
 
             <v-row class="mt-4">
               <v-col align="center">
-                <v-btn color="primary" type="submit" :loading="loading" block size="large">Cadastrar</v-btn>
+                <v-btn color="primary" type="submit" :loading="loading" block size="large"
+                  >Cadastrar</v-btn
+                >
               </v-col>
             </v-row>
             <v-row>

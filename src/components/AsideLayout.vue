@@ -1,7 +1,17 @@
 <script setup>
 import { ref } from 'vue'
 import CheckboxList from './CheckboxList.vue'
-import { roles, headAreas, juniorAreas, productManagerSubAreas, designSubAreas, dataSubAreas, businessSubAreas, availabilities, periods } from '../config/options'
+import {
+  roles,
+  headAreas,
+  juniorAreas,
+  productManagerSubAreas,
+  designSubAreas,
+  dataSubAreas,
+  businessSubAreas,
+  availabilities,
+  periods
+} from '../config/options'
 
 const selectedArea = ref('')
 const selectedRole = ref('')
@@ -48,10 +58,9 @@ const handleAreaSelection = (area) => {
         :label="'SUB-ÁREA'"
         :values="businessSubAreas"
       />
-      
     </div>
 
     <CheckboxList :label="'DISPONIBILIDADE'" :values="availabilities" />
-    <CheckboxList :label="'PERÍODO DE DISPONIBILIDADE'" :values="periods"/>
+    <CheckboxList :label="'PERÍODO DE DISPONIBILIDADE'" :values="periods" />
   </aside>
 </template>

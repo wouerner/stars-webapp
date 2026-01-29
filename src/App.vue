@@ -1,10 +1,18 @@
 <template>
   <v-app :class="ef">
-    <v-app-bar v-if="route.name !== 'public-profile'" class="header" color="transparent" app elevation="4">
+    <v-app-bar
+      v-if="route.name !== 'public-profile'"
+      class="header"
+      color="transparent"
+      app
+      elevation="4"
+    >
       <div class="w-100 d-flex align-center justify-space-between main-container">
         <a class="d-flex align-center logo">
-          <h1 class=" d-none d-sm-block text-h5 font-weight-bold font-semibold primary-color ml-3 logo-text">
-            Stars 
+          <h1
+            class="d-none d-sm-block text-h5 font-weight-bold font-semibold primary-color ml-3 logo-text"
+          >
+            Stars
           </h1>
         </a>
         <div class="d-flex align-center ga-2">
@@ -105,11 +113,16 @@
             class="font-weight-semibold"
             :to="{ name: 'search' }"
           >
-           Pesquise 
+            Pesquise
           </v-btn>
           <v-menu v-if="logged === true" open-on-hover>
             <template #activator="{ props }">
-              <v-btn variant="text" class="font-weight-semibold" v-bind="props" style="max-width: 200px;">
+              <v-btn
+                variant="text"
+                class="font-weight-semibold"
+                v-bind="props"
+                style="max-width: 200px"
+              >
                 <span class="text-truncate">
                   {{ formattedName }}
                 </span>
@@ -130,24 +143,25 @@
       </div>
     </v-app-bar>
 
-
     <transition name="fade" mode="out-in">
-      <v-main class="d-flex flex-grow-1 " :style="route.name !== 'public-profile' ? 'margin-top: 64px' : ''">
+      <v-main
+        class="d-flex flex-grow-1"
+        :style="route.name !== 'public-profile' ? 'margin-top: 64px' : ''"
+      >
         <RouterView />
 
-    <v-snackbar v-model="snackbarStore.snack.show" v-bind="snackbarStore.snack" location="top right">
-      {{ text }}
-      <template #actions>
-        <v-btn  variant="text" @click="snackbar = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
-
+        <v-snackbar
+          v-model="snackbarStore.snack.show"
+          v-bind="snackbarStore.snack"
+          location="top right"
+        >
+          {{ text }}
+          <template #actions>
+            <v-btn variant="text" @click="snackbar = false"> Close </v-btn>
+          </template>
+        </v-snackbar>
       </v-main>
     </transition>
-
-
   </v-app>
 </template>
 
@@ -171,12 +185,12 @@ const ef = computed(() => (route.path === '/' ? 'homeBackgroundEffect' : ''))
 const formattedName = computed(() => {
   const name = auth.getName()
   if (!name) return ''
-  
+
   // Se for email, pega a parte antes do @
   if (name.includes('@')) {
     return name.split('@')[0]
   }
-  
+
   // Se for nome completo, pega o primeiro e segundo nome se couber, senão só o primeiro
   const parts = name.split(' ')
   if (parts.length > 1) {
@@ -184,14 +198,12 @@ const formattedName = computed(() => {
     const shortName = `${parts[0]} ${parts[1]}`
     if (shortName.length <= 15) return shortName
   }
-  
+
   return parts[0]
 })
-
 </script>
 
 <style lang="scss">
-
 .header {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -207,7 +219,6 @@ const formattedName = computed(() => {
     margin-right: 120px;
   }
 }
-
 
 .logo {
   cursor: pointer;

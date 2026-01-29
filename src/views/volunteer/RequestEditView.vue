@@ -3,7 +3,9 @@
     <v-col class="d-flex flex-grow-0 justify-center">
       <v-card class="request-form secondary elevation-4">
         <p class="text-center mb-4">Editar Meu Perfil</p>
-        <p class="text-body-2 text-center mb-6">Informe seu e-mail para receber um link de acesso seguro.</p>
+        <p class="text-body-2 text-center mb-6">
+          Informe seu e-mail para receber um link de acesso seguro.
+        </p>
         <hr class="mt-1 mb-8" />
         <v-form ref="form" @submit.prevent="submitRequest">
           <v-text-field
@@ -14,27 +16,16 @@
             class="mb-2"
             prepend-inner-icon="mdi-email"
           />
-          <v-btn
-            color="primary"
-            type="submit"
-            block
-            :loading="loading"
-            class="mt-4"
-          >
+          <v-btn color="primary" type="submit" block :loading="loading" class="mt-4">
             Enviar Link
           </v-btn>
-          <v-btn
-            variant="text"
-            block
-            class="mt-2"
-            @click="$router.push({ name: 'home' })"
-          >
+          <v-btn variant="text" block class="mt-2" @click="$router.push({ name: 'home' })">
             Voltar
           </v-btn>
         </v-form>
       </v-card>
     </v-col>
-    
+
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" location="top right">
       {{ snackbar.text }}
       <template #actions>

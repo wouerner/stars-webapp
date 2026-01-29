@@ -9,20 +9,13 @@
               <v-text-field
                 v-model="project.name"
                 label="Nome do Projeto"
-                :rules="[v => !!v || 'Nome é obrigatório']"
+                :rules="[(v) => !!v || 'Nome é obrigatório']"
                 required
               ></v-text-field>
 
-              <v-textarea
-                v-model="project.description"
-                label="Descrição"
-                rows="3"
-              ></v-textarea>
+              <v-textarea v-model="project.description" label="Descrição" rows="3"></v-textarea>
 
-              <v-text-field
-                v-model="project.link"
-                label="Link do Projeto"
-              ></v-text-field>
+              <v-text-field v-model="project.link" label="Link do Projeto"></v-text-field>
 
               <v-select
                 v-model="project.squad_ids"
@@ -33,7 +26,6 @@
                 multiple
                 chips
               ></v-select>
-
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -50,42 +42,42 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
-import { useRouter } from 'vue-router';
-import { useProjectStore } from '@/stores/project';
-import { useSquadStore } from '@/stores/squad';
+import { ref, onMounted, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { useProjectStore } from '@/stores/project'
+import { useSquadStore } from '@/stores/squad'
 
-const router = useRouter();
-const projectStore = useProjectStore();
-const squadStore = useSquadStore();
+const router = useRouter()
+const projectStore = useProjectStore()
+const squadStore = useSquadStore()
 
-const valid = ref(false);
-const loading = ref(false);
-const form = ref(null);
+const valid = ref(false)
+const loading = ref(false)
+const form = ref(null)
 
 const project = reactive({
   name: '',
   description: '',
   link: '',
   squad_ids: []
-});
+})
 
 onMounted(async () => {
-    await squadStore.fetchAllSquads();
-});
+  await squadStore.fetchAllSquads()
+})
 
 const submit = async () => {
-  if (!form.value) return;
-  const { valid: isValid } = await form.value.validate();
-  
+  if (!form.value) return
+  const { valid: isValid } = await form.value.validate()
+
   if (isValid) {
-    loading.value = true;
-    const success = await projectStore.create(project);
-    loading.value = false;
-    
+    loading.value = true
+    const success = await projectStore.create(project)
+    loading.value = false
+
     if (success) {
-      router.push({ name: 'projects-list' });
+      router.push({ name: 'projects-list' })
     }
   }
-};
+}
 </script>

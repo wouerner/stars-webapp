@@ -26,9 +26,9 @@
                 <h2 class="text-h5 font-weight-bold mb-4 text-primary-darken-1">
                   Olá! Quer participar do SouJunior?
                 </h2>
-                <p class="text-body-1 text-medium-emphasis mb-8 mx-auto" style="max-width: 600px;">
-                  Para prosseguir e fazer parte da nossa comunidade, precisamos que você realize um breve cadastro.
-                  É rápido e fácil!
+                <p class="text-body-1 text-medium-emphasis mb-8 mx-auto" style="max-width: 600px">
+                  Para prosseguir e fazer parte da nossa comunidade, precisamos que você realize um
+                  breve cadastro. É rápido e fácil!
                 </p>
 
                 <div class="d-flex justify-center flex-wrap gap-4">
@@ -65,19 +65,19 @@
                     <v-col cols="12">
                       <v-text-field
                         v-model="applicant.name"
-                        label="Nome Completo"
+                        label="Nome Completo*"
                         placeholder="Ex: Junior da Silva"
                         variant="outlined"
                         density="comfortable"
                         prepend-inner-icon="mdi-account"
-                        :rules="[v => !!v || 'Nome é obrigatório']"
+                        :rules="[(v) => !!v || 'Nome é obrigatório']"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" md="6">
                       <v-text-field
                         v-model="applicant.email"
-                        label="E-mail"
+                        label="E-mail*"
                         placeholder="exemplo@email.com"
                         variant="outlined"
                         density="comfortable"
@@ -89,22 +89,24 @@
                     <v-col cols="12" md="6">
                       <v-text-field
                         v-model="applicant.phone"
-                        label="Telefone / WhatsApp"
+                        label="Telefone / WhatsApp*"
                         placeholder="Ex: (11) 99999-9999"
                         variant="outlined"
                         density="comfortable"
                         prepend-inner-icon="mdi-phone"
+                        :rules="phoneRules"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" md="6">
                       <v-text-field
                         v-model="applicant.linkedin"
-                        label="LinkedIn"
+                        label="LinkedIn*"
                         placeholder="https://linkedin.com/in/..."
                         variant="outlined"
                         density="comfortable"
                         prepend-inner-icon="mdi-linkedin"
+                        :rules="linkedinRules"
                       ></v-text-field>
                     </v-col>
 
@@ -122,32 +124,30 @@
                     <v-col cols="12" md="6">
                       <v-select
                         v-model="applicant.volunteer_type_id"
-                        label="Tipo de Voluntário"
+                        label="Tipo de Voluntário*"
                         variant="outlined"
                         density="comfortable"
                         item-title="name"
                         item-value="id"
                         :items="volunteerTypeStore.data"
                         prepend-inner-icon="mdi-account-group"
-                        :rules="[v => !!v || 'Selecione um tipo']"
+                        :rules="[(v) => !!v || 'Selecione um tipo']"
                       ></v-select>
                     </v-col>
 
                     <v-col cols="12" md="6">
                       <v-select
                         v-model="applicant.jobtitle_id"
-                        label="Cargo Pretendido"
+                        label="Cargo Pretendido*"
                         variant="outlined"
                         density="comfortable"
                         item-title="title"
                         item-value="id"
                         :items="jobTitleStore.data"
                         prepend-inner-icon="mdi-briefcase"
-                        :rules="[v => !!v || 'Selecione um cargo']"
+                        :rules="[(v) => !!v || 'Selecione um cargo']"
                       ></v-select>
                     </v-col>
-
-
 
                     <v-col cols="12">
                       <v-checkbox
@@ -164,8 +164,8 @@
                               class="text-primary font-weight-bold text-decoration-none"
                               @click.prevent.stop="dialog = true"
                             >
-                              Termos e Condições
-                            </a>.
+                              Termos e Condições </a
+                            >.
                           </span>
                         </template>
                       </v-checkbox>
@@ -204,13 +204,12 @@
                 <v-scale-transition appear>
                   <v-icon size="100" color="success" class="mb-6">mdi-check-circle-outline</v-icon>
                 </v-scale-transition>
-                
-                <h2 class="text-h4 font-weight-bold text-success mb-4">
-                  Cadastro Realizado!
-                </h2>
-                
-                <p class="text-body-1 text-medium-emphasis mb-8 mx-auto" style="max-width: 500px;">
-                  Seu registro foi efetuado com sucesso. Você receberá um e-mail de confirmação em breve.
+
+                <h2 class="text-h4 font-weight-bold text-success mb-4">Cadastro Realizado!</h2>
+
+                <p class="text-body-1 text-medium-emphasis mb-8 mx-auto" style="max-width: 500px">
+                  Seu registro foi efetuado com sucesso. Você receberá um e-mail de confirmação em
+                  breve.
                 </p>
 
                 <div class="video-container mb-8">
@@ -222,7 +221,7 @@
                     allowfullscreen
                   ></iframe>
                 </div>
-                
+
                 <div class="d-flex justify-center flex-column align-center">
                   <v-btn
                     color="primary"
@@ -235,10 +234,18 @@
                   >
                     Acompanhar Cadastro
                   </v-btn>
-                  <a href="https://apoia.se/soujunior" target="_blank" class="text-decoration-none text-primary">
+                  <a
+                    href="https://apoia.se/soujunior"
+                    target="_blank"
+                    class="text-decoration-none text-primary"
+                  >
                     Apoie o SouJunior!
                   </a>
-                  <a href="https://linktr.ee/wouerner" target="_blank" class="text-decoration-none text-primary mt-2">
+                  <a
+                    href="https://linktr.ee/wouerner"
+                    target="_blank"
+                    class="text-decoration-none text-primary mt-2"
+                  >
                     Redes Sociais do Fundador: Wouerner Brandão
                   </a>
                 </div>
@@ -252,25 +259,26 @@
     <!-- Terms Dialog -->
     <v-dialog v-model="dialog" max-width="600" scrollable>
       <v-card rounded="lg">
-        <v-card-title class="text-h5 bg-primary text-white pa-4">
-          Termos e Condições
-        </v-card-title>
+        <v-card-title class="text-h5 bg-primary text-white pa-4"> Termos e Condições </v-card-title>
         <v-divider></v-divider>
-        <v-card-text class="pa-4 text-body-1" style="max-height: 400px;">
+        <v-card-text class="pa-4 text-body-1" style="max-height: 400px">
           <p>
-            Todas as participações no SouJunior são <strong>VOLUNTÁRIAS</strong>, não remuneradas e sem qualquer
-            vínculo empregatício. As participações visam, unicamente, servir de experiência ao
-            voluntário que também contribuirá com o crescimento do projeto.
+            Todas as participações no SouJunior são <strong>VOLUNTÁRIAS</strong>, não remuneradas e
+            sem qualquer vínculo empregatício. As participações visam, unicamente, servir de
+            experiência ao voluntário que também contribuirá com o crescimento do projeto.
           </p>
           <p class="mt-4">
-            A SouJunior não garante vaga de trabalho à pessoa voluntária, embora exista a possibilidade de que
-            receba convites para oportunidades em empresas parceiras, externas e/ou recrutadores.
+            A SouJunior não garante vaga de trabalho à pessoa voluntária, embora exista a
+            possibilidade de que receba convites para oportunidades em empresas parceiras, externas
+            e/ou recrutadores.
           </p>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions class="pa-4 justify-end">
           <v-btn variant="text" color="error" @click="rejectTerms">Recusar</v-btn>
-          <v-btn color="primary" variant="elevated" elevation="1" @click="acceptTerms">Aceitar e Concordar</v-btn>
+          <v-btn color="primary" variant="elevated" elevation="1" @click="acceptTerms"
+            >Aceitar e Concordar</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -287,7 +295,6 @@ import { useVolunteerTypeStore } from '@/stores/volunteerType.js'
 
 const $router = useRouter()
 
-
 const volunteerStore = useVolunteerStore()
 const jobTitleStore = useJobtitleStore()
 const volunteerTypeStore = useVolunteerTypeStore()
@@ -295,6 +302,7 @@ const volunteerTypeStore = useVolunteerTypeStore()
 jobTitleStore.fetchJobtitles()
 volunteerTypeStore.fetchVolunteerTypes()
 
+const form = ref(null)
 const step = ref(1)
 const items = [
   { step: 1, title: 'Bem-vindo' },
@@ -309,9 +317,8 @@ const applicant = reactive({
   email: '',
   jobtitle_id: null,
   volunteer_type_id: 1, // Default to Junior
-  terms: false,
+  terms: false
 })
-
 
 const loading = ref(false)
 const dialog = ref(false)
@@ -325,7 +332,9 @@ const emailRules = [
   (v) => /.+@.+\..+/.test(v) || 'E-mail deve ser válido'
 ]
 
+const phoneRules = [(v) => !!v || 'Telefone é obrigatório']
 
+const linkedinRules = [(v) => !!v || 'LinkedIn é obrigatório']
 
 const resetForm = () => {
   applicant.name = ''
@@ -340,40 +349,39 @@ const resetForm = () => {
 }
 
 const submitApplicant = async () => {
-  const { ...newApplicantData } = applicant
+  const { valid } = await form.value.validate()
 
-  if (
-    !newApplicantData.name ||
-    !newApplicantData.email
-  ) {
-    return alert('Preencha todos os campos obrigatórios')
-  } else if (!newApplicantData.terms) {
+  if (!valid) {
+    return
+  }
+
+  if (!applicant.terms) {
     return alert('Você precisa concordar com os termos e condições!')
-  } else {
-    try {
-      loading.value = true
-      
-      const payload = {
-        name: newApplicantData.name,
-        linkedin: newApplicantData.linkedin || '', // Ensure string
-        phone: newApplicantData.phone || null,
-        discord: newApplicantData.discord || null,
-        is_active: true,
-        email: newApplicantData.email,
-        jobtitle_id: newApplicantData.jobtitle_id,
-        volunteer_type_id: newApplicantData.volunteer_type_id
-      }
+  }
 
-      // Create the volunteer profile directly
-      await volunteerStore.create(payload)
-      nextStep()
+  const { ...newApplicantData } = applicant
+  try {
+    loading.value = true
 
-    } catch (error) {
-      console.error(error.message)
-      alert('Erro ao realizar cadastro: ' + error.message)
-    } finally {
-      loading.value = false
+    const payload = {
+      name: newApplicantData.name,
+      linkedin: newApplicantData.linkedin || '', // Ensure string
+      phone: newApplicantData.phone || null,
+      discord: newApplicantData.discord || null,
+      is_active: true,
+      email: newApplicantData.email,
+      jobtitle_id: newApplicantData.jobtitle_id,
+      volunteer_type_id: newApplicantData.volunteer_type_id
     }
+
+    // Create the volunteer profile directly
+    await volunteerStore.create(payload)
+    nextStep()
+  } catch (error) {
+    console.error(error.message)
+    alert('Erro ao realizar cadastro: ' + error.message)
+  } finally {
+    loading.value = false
   }
 }
 
@@ -423,7 +431,7 @@ const rejectTerms = () => {
   margin: 0 auto 24px; /* Center horizontally */
   border-radius: 12px; /* Optional: Rounded corners for better aesthetics */
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Optional: Subtle shadow */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Optional: Subtle shadow */
 }
 
 .video-container iframe {

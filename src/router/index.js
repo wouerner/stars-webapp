@@ -6,7 +6,7 @@ import LoginView from '@/views/user/LoginView.vue'
 import ProfileView from '../views/user/ProfileView.vue'
 import UserRegisterView from '../views/user/UserRegisterView.vue'
 
-// squad 
+// squad
 import SquadsView from '../views/squad/SquadsView.vue'
 import SquadView from '../views/squad/SquadView.vue'
 import SquadCreateView from '../views/squad/CreateView.vue'
@@ -22,8 +22,7 @@ import EditProfileView from '@/views/volunteer/EditProfileView.vue'
 import ProjectsListView from '@/views/project/ProjectsListView.vue'
 import ProjectCreateView from '@/views/project/ProjectCreateView.vue'
 
-import { useAuthStore } from '@/stores/auth';
-
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -75,38 +74,36 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'profile',
-      component: ProfileView, 
-        meta : {
-            auth: true
-        }
+      component: ProfileView,
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/squads/:uuid',
       name: 'squads',
-      component: SquadsView, 
-        meta : {
-            auth: true
-        }
-
+      component: SquadsView,
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/squad/:uuid',
       name: 'squad-by-id',
       component: SquadView,
-      props: true, 
-        meta : {
-            auth: true
-        }
-
+      props: true,
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/squad/create',
       name: 'squad-create',
       component: SquadCreateView,
-        meta : {
-            auth: true,
-            type: 'create'
-        }
+      meta: {
+        auth: true,
+        type: 'create'
+      }
     },
     {
       path: '/squads', // New route for listing all squads
@@ -120,13 +117,13 @@ const router = createRouter({
       path: '/squad/:uuid/update',
       name: 'squad-update',
       component: SquadCreateView,
-        meta : {
-            auth: true,
-            type: 'update'
-        }
+      meta: {
+        auth: true,
+        type: 'update'
+      }
     },
     {
-      path: '/projects', 
+      path: '/projects',
       name: 'projects-list',
       component: ProjectsListView,
       meta: {
@@ -134,7 +131,7 @@ const router = createRouter({
       }
     },
     {
-      path: '/projects/create', 
+      path: '/projects/create',
       name: 'project-create',
       component: ProjectCreateView,
       meta: {
@@ -145,34 +142,34 @@ const router = createRouter({
       path: '/onboarding',
       name: 'onboarding',
       component: () => import('../views/OnboardingView.vue'),
-        meta : {
-            auth: true
-        }
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/search',
       name: 'search',
       component: () => import('../views/user/SearchView.vue'),
-        meta : {
-            auth: false 
-        }
+      meta: {
+        auth: false
+      }
     },
     {
       path: '/volunteers',
       name: 'volunteers',
       component: VolunteersView,
-        meta : {
-            auth: true
-        }
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/volunteers/:id', // New route for volunteer details
       name: 'volunteer-details',
       component: VolunteerDetailsView,
       props: true,
-        meta: {
-            auth: true
-        }
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/dashboard',
@@ -196,19 +193,19 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    const token = localStorage.getItem('token')
+  const token = localStorage.getItem('token')
 
-    const auth = useAuthStore();
+  const auth = useAuthStore()
 
-    if (to.meta.auth === true && (token === '' || token === null)) {
-        router.push({ name: 'login' })
-    } 
+  if (to.meta.auth === true && (token === '' || token === null)) {
+    router.push({ name: 'login' })
+  }
 
-    if (auth.auth.name === '') {
-        auth.loginByToken()
-    }
+  if (auth.auth.name === '') {
+    auth.loginByToken()
+  }
 
-    return next()
-});
+  return next()
+})
 
 export default router

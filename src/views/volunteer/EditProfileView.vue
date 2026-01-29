@@ -19,14 +19,14 @@
           v-model="profile.name"
           label="Nome Completo"
           variant="outlined"
-          :rules="[v => !!v || 'Nome é obrigatório']"
+          :rules="[(v) => !!v || 'Nome é obrigatório']"
         ></v-text-field>
 
         <v-text-field
           v-model="profile.linkedin"
           label="LinkedIn"
           variant="outlined"
-          :rules="[v => !!v || 'LinkedIn é obrigatório']"
+          :rules="[(v) => !!v || 'LinkedIn é obrigatório']"
         ></v-text-field>
 
         <v-text-field
@@ -35,11 +35,7 @@
           variant="outlined"
         ></v-text-field>
 
-        <v-text-field
-          v-model="profile.discord"
-          label="Discord"
-          variant="outlined"
-        ></v-text-field>
+        <v-text-field v-model="profile.discord" label="Discord" variant="outlined"></v-text-field>
 
         <v-select
           v-model="profile.volunteer_type_id"
@@ -50,7 +46,7 @@
           variant="outlined"
           clearable
         ></v-select>
-        
+
         <!-- Read-only fields for context -->
         <v-text-field
           v-model="profile.email"
@@ -61,14 +57,7 @@
           persistent-hint
         ></v-text-field>
 
-        <v-btn
-          color="primary"
-          type="submit"
-          block
-          size="large"
-          class="mt-6"
-          :loading="saving"
-        >
+        <v-btn color="primary" type="submit" block size="large" class="mt-6" :loading="saving">
           Salvar Alterações
         </v-btn>
       </v-form>
@@ -125,9 +114,9 @@ onMounted(async () => {
       volunteerService.fetchByToken(token),
       volunteerService.getVolunteerTypes()
     ])
-    
+
     volunteerTypes.value = types
-    
+
     profile.name = data.name
     profile.linkedin = data.linkedin
     profile.phone = data.phone
@@ -158,16 +147,15 @@ const submitUpdate = async () => {
       discord: profile.discord,
       volunteer_type_id: profile.volunteer_type_id
     })
-    
+
     snackbar.value = {
       show: true,
       text: 'Perfil atualizado com sucesso!',
       color: 'success'
     }
-    
+
     // Redirect to search page with updated email
     router.push({ name: 'search', query: { email: profile.email } })
-
   } catch (err) {
     let msg = 'Erro ao salvar alterações.'
     if (err.response && err.response.data && err.response.data.detail) {
@@ -182,5 +170,4 @@ const submitUpdate = async () => {
     saving.value = false
   }
 }
-
 </script>

@@ -11,13 +11,7 @@
     </v-row>
 
     <v-row v-if="projectStore.projects.length > 0">
-      <v-col 
-        v-for="project in projectStore.projects" 
-        :key="project.id" 
-        cols="12" 
-        md="6" 
-        lg="4"
-      >
+      <v-col v-for="project in projectStore.projects" :key="project.id" cols="12" md="6" lg="4">
         <v-card class="pa-4 h-100">
           <v-card-title class="text-h6 pb-2">{{ project.name }}</v-card-title>
           <v-card-text>
@@ -33,9 +27,9 @@
             <v-btn v-if="project.link" :href="project.link" target="_blank" text color="primary">
               Ver Link
             </v-btn>
-             <v-spacer></v-spacer>
+            <v-spacer></v-spacer>
             <v-btn icon color="error" variant="text" @click="deleteProject(project.id)">
-                <v-icon>mdi-delete</v-icon>
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -59,19 +53,18 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
-import { useProjectStore } from '@/stores/project';
+import { onMounted } from 'vue'
+import { useProjectStore } from '@/stores/project'
 
-const projectStore = useProjectStore();
+const projectStore = useProjectStore()
 
 onMounted(() => {
-  projectStore.fetchAllProjects();
-});
+  projectStore.fetchAllProjects()
+})
 
 const deleteProject = async (id) => {
-    if(confirm("Tem certeza que deseja deletar este projeto?")) {
-        await projectStore.del(id);
-    }
+  if (confirm('Tem certeza que deseja deletar este projeto?')) {
+    await projectStore.del(id)
+  }
 }
-
 </script>

@@ -11,24 +11,22 @@
     </v-row>
 
     <v-row v-if="squadStore.squads.length > 0">
-      <v-col 
-        v-for="squad in squadStore.squads" 
-        :key="squad.id" 
-        cols="12" 
-        md="6" 
-        lg="4"
-      >
+      <v-col v-for="squad in squadStore.squads" :key="squad.id" cols="12" md="6" lg="4">
         <v-card class="pa-4 h-100" @click="goToSquadDetails(squad.id)">
           <v-card-title class="text-h6 pb-2">{{ squad.name }}</v-card-title>
           <v-card-text>
             <p class="mb-2">{{ squad.description || 'Sem descrição' }}</p>
             <div class="d-flex align-center text-caption text-grey">
-                <v-icon size="small" class="mr-1">mdi-account-group</v-icon>
-                <span>{{ squad.members_count }} voluntário{{ squad.members_count !== 1 ? 's' : '' }}</span>
+              <v-icon size="small" class="mr-1">mdi-account-group</v-icon>
+              <span
+                >{{ squad.members_count }} voluntário{{
+                  squad.members_count !== 1 ? 's' : ''
+                }}</span
+              >
             </div>
           </v-card-text>
           <v-card-actions>
-            <v-btn text color="primary" :to="{ name: 'squad-by-id', params: { uuid: squad.id }}">
+            <v-btn text color="primary" :to="{ name: 'squad-by-id', params: { uuid: squad.id } }">
               Ver Detalhes
             </v-btn>
           </v-card-actions>
@@ -53,20 +51,20 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { useSquadStore } from '@/stores/squad';
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useSquadStore } from '@/stores/squad'
 
-const squadStore = useSquadStore();
-const router = useRouter();
+const squadStore = useSquadStore()
+const router = useRouter()
 
 onMounted(() => {
-  squadStore.fetchAllSquads();
-});
+  squadStore.fetchAllSquads()
+})
 
 const goToSquadDetails = (squadId) => {
-  router.push({ name: 'squad-by-id', params: { uuid: squadId } });
-};
+  router.push({ name: 'squad-by-id', params: { uuid: squadId } })
+}
 </script>
 
 <style scoped>
