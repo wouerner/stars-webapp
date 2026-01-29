@@ -42,11 +42,67 @@
                 <v-progress-circular indeterminate></v-progress-circular>
             </div>
 		</v-sheet>
+
+        <v-sheet v-if="squad" class="pa-4 rounded-lg mt-4">
+            <h2 class="mb-4">Participantes</h2>
+            
+            <div v-if="mentors.length > 0">
+                <h3 class="text-subtitle-1 text-primary mb-2">Mentores</h3>
+                <v-list>
+                    <v-list-item
+                        v-for="volunteer in mentors"
+                        :key="volunteer.id"
+                        :to="{ name: 'volunteer-details', params: { id: volunteer.id } }"
+                        prepend-icon="mdi-account-school"
+                    >
+                        <v-list-item-title class="font-weight-bold">{{ volunteer.name }}</v-list-item-title>
+                        <v-list-item-subtitle v-if="volunteer.jobtitle">{{ volunteer.jobtitle.title }}</v-list-item-subtitle>
+                        <v-list-item-subtitle v-else class="text-caption text-grey">Sem cargo definido</v-list-item-subtitle>
+                    </v-list-item>
+                </v-list>
+            </div>
+
+            <div v-if="juniors.length > 0">
+                <h3 class="text-subtitle-1 text-primary mb-2 mt-4">Juniores</h3>
+                <v-list>
+                    <v-list-item
+                        v-for="volunteer in juniors"
+                        :key="volunteer.id"
+                        :to="{ name: 'volunteer-details', params: { id: volunteer.id } }"
+                        prepend-icon="mdi-account"
+                    >
+                        <v-list-item-title class="font-weight-bold">{{ volunteer.name }}</v-list-item-title>
+                        <v-list-item-subtitle v-if="volunteer.jobtitle">{{ volunteer.jobtitle.title }}</v-list-item-subtitle>
+                        <v-list-item-subtitle v-else class="text-caption text-grey">Sem cargo definido</v-list-item-subtitle>
+                    </v-list-item>
+                </v-list>
+            </div>
+
+            <div v-if="others.length > 0">
+                <h3 class="text-subtitle-1 text-primary mb-2 mt-4">Outros</h3>
+                <v-list>
+                    <v-list-item
+                        v-for="volunteer in others"
+                        :key="volunteer.id"
+                        :to="{ name: 'volunteer-details', params: { id: volunteer.id } }"
+                        prepend-icon="mdi-account-outline"
+                    >
+                        <v-list-item-title class="font-weight-bold">{{ volunteer.name }}</v-list-item-title>
+                        <v-list-item-subtitle v-if="volunteer.jobtitle">{{ volunteer.jobtitle.title }}</v-list-item-subtitle>
+                        <v-list-item-subtitle v-else class="text-caption text-grey">Sem cargo definido</v-list-item-subtitle>
+                    </v-list-item>
+                </v-list>
+            </div>
+
+            <div v-if="mentors.length === 0 && juniors.length === 0 && others.length === 0" class="text-center py-4 text-grey">
+                Nenhum participante nesta squad.
+            </div>
+        </v-sheet>
 	</v-container>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useSquadStore } from '@/stores/squad';
 
@@ -54,6 +110,10 @@ const router = useRouter();
 const route = useRoute();
 const squadStore = useSquadStore();
 const squad = ref(null);
+
+const mentors = computed(() => squad.value?.volunteers?.filter(v => v.volunteer_type?.name === 'Mentor') || []);
+const juniors = computed(() => squad.value?.volunteers?.filter(v => v.volunteer_type?.name === 'Junior') || []);
+const others = computed(() => squad.value?.volunteers?.filter(v => v.volunteer_type?.name !== 'Mentor' && v.volunteer_type?.name !== 'Junior') || []);
 
 onMounted(async () => {
     await squadStore.fetch(route.params.uuid);
