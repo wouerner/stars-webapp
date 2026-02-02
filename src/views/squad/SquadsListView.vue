@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12" class="d-flex justify-space-between align-center">
         <h1 class="text-h4">Squads</h1>
-        <v-btn color="primary" :to="{ name: 'squad-create' }">
+        <v-btn v-if="authStore.auth.email" color="primary" :to="{ name: 'squad-create' }">
           <v-icon left>mdi-plus</v-icon>
           Criar Nova Squad
         </v-btn>
@@ -54,8 +54,10 @@
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSquadStore } from '@/stores/squad'
+import { useAuthStore } from '@/stores/auth'
 
 const squadStore = useSquadStore()
+const authStore = useAuthStore()
 const router = useRouter()
 
 onMounted(() => {

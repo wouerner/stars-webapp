@@ -75,6 +75,14 @@
           >
             Projetos
           </v-btn>
+          <v-btn
+            v-if="logged === true"
+            variant="text"
+            class="font-weight-semibold"
+            :to="{ name: 'jobs-list' }"
+          >
+            Vagas
+          </v-btn>
           <!--v-btn
             v-if="logged === false"
             variant="text"
@@ -114,6 +122,22 @@
             :to="{ name: 'search' }"
           >
             Pesquise
+          </v-btn>
+          <v-btn
+            v-if="logged === false"
+            variant="text"
+            class="font-weight-semibold"
+            :to="{ name: 'jobs-list' }"
+          >
+            Vagas
+          </v-btn>
+          <v-btn
+            v-if="logged === false"
+            variant="text"
+            class="font-weight-semibold"
+            :to="{ name: 'squads-list' }"
+          >
+            Squads
           </v-btn>
           <v-menu v-if="logged === true" open-on-hover>
             <template #activator="{ props }">

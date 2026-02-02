@@ -22,6 +22,11 @@ import EditProfileView from '@/views/volunteer/EditProfileView.vue'
 import ProjectsListView from '@/views/project/ProjectsListView.vue'
 import ProjectCreateView from '@/views/project/ProjectCreateView.vue'
 
+// job
+import JobListView from '@/views/job/JobListView.vue'
+import JobCreateView from '@/views/job/JobCreateView.vue'
+import JobDetailsView from '@/views/job/JobDetailsView.vue'
+
 import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
@@ -31,6 +36,32 @@ const router = createRouter({
       path: '/home',
       name: 'home',
       component: HomeView
+    },
+    {
+      path: '/jobs',
+      name: 'jobs-list',
+      component: JobListView
+    },
+    {
+      path: '/jobs/create',
+      name: 'job-create',
+      component: JobCreateView,
+      meta: {
+        auth: true
+      }
+    },
+    {
+      path: '/jobs/:id',
+      name: 'job-details',
+      component: JobDetailsView
+    },
+    {
+      path: '/jobs/:id/update',
+      name: 'job-update',
+      component: JobCreateView,
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/u/:id',
@@ -84,7 +115,7 @@ const router = createRouter({
       name: 'squads',
       component: SquadsView,
       meta: {
-        auth: true
+        auth: false
       }
     },
     {
@@ -93,7 +124,7 @@ const router = createRouter({
       component: SquadView,
       props: true,
       meta: {
-        auth: true
+        auth: false
       }
     },
     {
@@ -110,7 +141,7 @@ const router = createRouter({
       name: 'squads-list',
       component: SquadsListView,
       meta: {
-        auth: true
+        auth: false
       }
     },
     {

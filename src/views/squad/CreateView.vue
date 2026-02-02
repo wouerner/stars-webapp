@@ -11,6 +11,11 @@
             variant="outlined"
             label="Descrição"
           ></v-text-field>
+          <v-text-field
+            v-model="squad.discord_role_id"
+            variant="outlined"
+            label="ID do cargo no Discord"
+          ></v-text-field>
           <v-btn color="primary" class="me-4" @click="submit">Salvar</v-btn>
           <v-btn :to="{ name: 'squads-list' }" class="me-4">Cancelar</v-btn>
         </v-form>
@@ -32,6 +37,7 @@ console.log('params:', route.params)
 const squad = reactive({
   name: '',
   description: '',
+  discord_role_id: '',
   uuid: ''
 })
 
@@ -41,6 +47,7 @@ onMounted(async () => {
     const s = useSquad.squad
     squad.name = s.name
     squad.description = s.description
+    squad.discord_role_id = s.discord_role_id
     squad.uuid = s.id || s.uuid
   }
 })

@@ -22,6 +22,7 @@
         </div>
         <div class="mt-8 d-flex align-center ga-4">
           <v-btn
+            v-if="authStore.auth.email"
             color="primary"
             :to="{ name: 'squad-update', params: { uuid: squad.id || squad.uuid } }"
           >
@@ -44,7 +45,7 @@
           <v-list-item
             v-for="volunteer in mentors"
             :key="volunteer.id"
-            :to="{ name: 'volunteer-details', params: { id: volunteer.id } }"
+            :to="getVolunteerLink(volunteer.id)"
             prepend-icon="mdi-account-school"
           >
             <v-list-item-title class="font-weight-bold">{{ volunteer.name }}</v-list-item-title>
@@ -64,7 +65,7 @@
           <v-list-item
             v-for="volunteer in juniors"
             :key="volunteer.id"
-            :to="{ name: 'volunteer-details', params: { id: volunteer.id } }"
+            :to="getVolunteerLink(volunteer.id)"
             prepend-icon="mdi-account"
           >
             <v-list-item-title class="font-weight-bold">{{ volunteer.name }}</v-list-item-title>
@@ -84,7 +85,7 @@
           <v-list-item
             v-for="volunteer in others"
             :key="volunteer.id"
-            :to="{ name: 'volunteer-details', params: { id: volunteer.id } }"
+            :to="getVolunteerLink(volunteer.id)"
             prepend-icon="mdi-account-outline"
           >
             <v-list-item-title class="font-weight-bold">{{ volunteer.name }}</v-list-item-title>
@@ -112,10 +113,12 @@
 import { onMounted, ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useSquadStore } from '@/stores/squad'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const route = useRoute()
 const squadStore = useSquadStore()
+const authStore = useAuthStore()
 const squad = ref(null)
 
 const mentors = computed(
@@ -138,5 +141,13 @@ onMounted(async () => {
 
 function cancel() {
   router.back()
+}
+
+function getVolunteerLink(volunteerId) {
+  if (authStore.auth.email) {
+    return { name: 'volunteer-details', params: { id: volunteerId } }
+  } else {
+    return { name: 'public-profile', params: { id: volunteerId } }
+  }
 }
 </script>
