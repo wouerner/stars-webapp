@@ -2,7 +2,7 @@ import http from './http'
 
 export const createJob = (job) => http.post('/jobs/', job)
 
-export const getJobs = (params) => http.get('/jobs/', { params })
+export const getJobs = (params) => http.get('/jobs/', { params, timeout: 30000 })
 
 export const getJob = (id) => http.get(`/jobs/${id}`)
 
