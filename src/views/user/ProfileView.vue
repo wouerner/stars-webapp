@@ -98,6 +98,19 @@
                   prepend-inner-icon="mdi-list-status"
                 ></v-text-field>
               </v-col>
+              <v-col cols="12" md="6">
+                <v-select
+                  v-model="profile.volunteer_type_id"
+                  :items="volunteerTypes"
+                  item-title="name"
+                  item-value="id"
+                  label="Tipo de Voluntário"
+                  variant="outlined"
+                  prepend-inner-icon="mdi-account-star"
+                  @update:model-value="onTypeChange"
+                  :loading="updatingType"
+                ></v-select>
+              </v-col>
             </v-row>
 
             <v-alert
@@ -110,6 +123,13 @@
               Perfil de voluntário não encontrado para este usuário. Se você é um voluntário,
               verifique se o email cadastrado é o mesmo.
             </v-alert>
+
+            <v-snackbar v-model="snackbar.show" :color="snackbar.color" location="top right">
+              {{ snackbar.text }}
+              <template #actions>
+                <v-btn variant="text" @click="snackbar.show = false">Fechar</v-btn>
+              </template>
+            </v-snackbar>
           </v-form>
         </v-card>
       </v-col>
@@ -121,13 +141,23 @@
 import { reactive, onMounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth.js'
 import { useVolunteerStore } from '@/stores/volunteer.js'
+import volunteerService from '@/services/volunteer.js'
 
 const auth = useAuthStore()
 const volunteerStore = useVolunteerStore()
 
 const volunteerFound = ref(true)
+const volunteerTypes = ref([])
+const updatingType = ref(false)
+
+const snackbar = ref({
+  show: false,
+  text: '',
+  color: 'success'
+})
 
 const profile = reactive({
+  id: null,
   name: '',
   email: auth.auth.email,
   phone: '',
@@ -135,15 +165,23 @@ const profile = reactive({
   discord: '',
   squad: '',
   jobtitle: '',
-  status: ''
+  status: '',
+  volunteer_type_id: null
 })
 
 onMounted(async () => {
   if (auth.auth.email) {
     try {
-      await volunteerStore.fetchByEmail(auth.auth.email)
+      const [volMatch, types] = await Promise.all([
+         volunteerStore.fetchByEmail(auth.auth.email),
+         volunteerService.getVolunteerTypes()
+      ])
+      
+      volunteerTypes.value = types
+
       const vol = volunteerStore.currentVolunteer
       if (vol) {
+        profile.id = vol.id
         profile.name = vol.name || ''
         profile.phone = vol.phone || ''
         profile.linkedin = vol.linkedin || ''
@@ -152,6 +190,7 @@ onMounted(async () => {
         profile.squad = vol.squad?.name || 'Sem Squad'
         profile.jobtitle = vol.jobtitle?.title || 'Sem Cargo'
         profile.status = vol.status?.name || 'Sem Status'
+        profile.volunteer_type_id = vol.volunteer_type_id
 
         volunteerFound.value = true
       } else {
@@ -163,4 +202,30 @@ onMounted(async () => {
     }
   }
 })
+
+const onTypeChange = async (newTypeId) => {
+  if (!profile.id) return
+  
+  updatingType.value = true
+  try {
+    await volunteerStore.updateVolunteerType(profile.id, newTypeId)
+    snackbar.value = {
+      show: true,
+      text: 'Tipo de voluntário atualizado com sucesso!',
+      color: 'success'
+    }
+  } catch (error) {
+    snackbar.value = {
+      show: true,
+      text: 'Erro ao atualizar tipo de voluntário.',
+      color: 'error'
+    }
+    // Revert change if needed, but currentVolunteer should be updated from store fetch
+    if (volunteerStore.currentVolunteer) {
+        profile.volunteer_type_id = volunteerStore.currentVolunteer.volunteer_type_id
+    }
+  } finally {
+    updatingType.value = false
+  }
+}
 </script>

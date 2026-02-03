@@ -184,6 +184,31 @@
           </v-card>
         </v-col>
 
+        <!-- Gerenciar Tipo de Voluntário -->
+        <v-col cols="12" md="6">
+          <v-card class="h-100" elevation="2">
+            <v-card-item>
+              <v-card-title class="text-h6">Gerenciar Tipo</v-card-title>
+            </v-card-item>
+            <v-card-text>
+              <p class="text-body-2 mb-4">Atualize o nível/tipo do voluntário.</p>
+              <v-select
+                v-model="selectedTypeId"
+                :items="volunteerTypes"
+                item-title="name"
+                item-value="id"
+                label="Selecione o novo tipo"
+                variant="outlined"
+                color="primary"
+                hide-details
+                :loading="isLoadingType"
+                :disabled="isLoadingType"
+                @update:model-value="updateVolunteerType"
+              ></v-select>
+            </v-card-text>
+          </v-card>
+        </v-col>
+
         <!-- Histórico -->
         <v-col cols="12">
           <v-card elevation="2">
@@ -371,18 +396,22 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useVolunteerStore } from '@/stores/volunteer.js'
 import { useSquadStore } from '@/stores/squad.js'
+import { useVolunteerTypeStore } from '@/stores/volunteerType.js'
 import feedbackService from '@/services/feedback.js'
 import { useAuthStore } from '@/stores/auth.js'
 
 const route = useRoute()
 const volunteerStore = useVolunteerStore()
 const squadStore = useSquadStore()
+const volunteerTypeStore = useVolunteerTypeStore()
 const authStore = useAuthStore()
 
 const selectedStatusId = ref(null)
 const selectedSquadId = ref(null)
+const selectedTypeId = ref(null)
 const isLoadingStatus = ref(false)
 const isLoadingSquad = ref(false)
+const isLoadingType = ref(false)
 const isCheckingApoiase = ref(false)
 
 // Feedback State
@@ -474,6 +503,7 @@ const deleteFeedback = async () => {
 const currentVolunteer = computed(() => volunteerStore.currentVolunteer)
 const statuses = computed(() => volunteerStore.statuses)
 const squads = computed(() => squadStore.squads)
+const volunteerTypes = computed(() => volunteerTypeStore.data)
 
 const sortedStatusHistory = computed(() => {
   if (currentVolunteer.value && currentVolunteer.value.status_history) {
@@ -489,12 +519,14 @@ onMounted(async () => {
   await Promise.all([
     volunteerStore.fetchStatuses(),
     squadStore.fetchAllSquads(),
+    volunteerTypeStore.fetchVolunteerTypes(),
     volunteerStore.fetchVolunteer(volunteerId)
   ])
 
   if (currentVolunteer.value) {
     selectedStatusId.value = currentVolunteer.value.status_id
     selectedSquadId.value = currentVolunteer.value.squad_id
+    selectedTypeId.value = currentVolunteer.value.volunteer_type_id
   }
 })
 
@@ -535,6 +567,21 @@ const updateVolunteerSquad = async () => {
       await volunteerStore.updateVolunteerSquad(currentVolunteer.value.id, selectedSquadId.value)
     } finally {
       isLoadingSquad.value = false
+    }
+  }
+}
+
+const updateVolunteerType = async () => {
+  if (
+    selectedTypeId.value &&
+    currentVolunteer.value &&
+    selectedTypeId.value !== currentVolunteer.value.volunteer_type_id
+  ) {
+    isLoadingType.value = true
+    try {
+      await volunteerStore.updateVolunteerType(currentVolunteer.value.id, selectedTypeId.value)
+    } finally {
+      isLoadingType.value = false
     }
   }
 }

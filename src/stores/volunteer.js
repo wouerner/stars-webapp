@@ -140,6 +140,30 @@ export const useVolunteerStore = defineStore(
       }
     }
 
+    async function updateVolunteerType(volunteerId, newTypeId) {
+      try {
+        await volunteerService.updateType(volunteerId, newTypeId)
+        // Check if we are updating the current volunteer (logged in user)
+        if (currentVolunteer.value && currentVolunteer.value.id === volunteerId) {
+             // We can either fetch again or just update the local state if we trust the backend
+             // Let's fetch to be safe and get related objects if needed
+             await fetchByEmail(currentVolunteer.value.email)
+        } else {
+             // If it's another volunteer (admin view), fetch that specific one
+             await fetchVolunteer(volunteerId)
+        }
+      } catch (error) {
+        console.error(`Erro ao atualizar tipo do voluntário ${volunteerId}:`, error)
+        let errorMessage = `Erro ao atualizar tipo do voluntário ${volunteerId}.`
+        if (error.response && error.response.data && error.response.data.detail) {
+          errorMessage = error.response.data.detail
+        } else if (error.message) {
+          errorMessage = error.message
+        }
+        throw new Error(errorMessage)
+      }
+    }
+
     async function checkApoiaseStatus(volunteerId) {
       try {
         const updatedVolunteer = await volunteerService.checkApoiaseStatus(volunteerId)
@@ -186,6 +210,7 @@ export const useVolunteerStore = defineStore(
       fetchVolunteer,
       updateVolunteerStatus,
       updateVolunteerSquad,
+      updateVolunteerType,
       checkApoiaseStatus,
       fetchByEmail
     }

@@ -151,6 +151,21 @@ async function updateSquad(volunteerId, newSquadId) {
   }
 }
 
+async function updateType(volunteerId, newTypeId) {
+  try {
+    const response = await axiosInstance.patch(`/volunteers/${volunteerId}/type/`, null, {
+      headers: headers(),
+      params: {
+        new_type_id: newTypeId
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error(`Error updating type for volunteer ID ${volunteerId}:`, error)
+    throw error
+  }
+}
+
 async function requestEditLink(email) {
   const response = await axiosInstance.post('/volunteers/request-edit-link', { email })
   return response.data
@@ -190,6 +205,7 @@ export default {
   getById,
   updateStatus,
   updateSquad,
+  updateType,
   requestEditLink,
   fetchByToken,
   updateProfileByToken,
