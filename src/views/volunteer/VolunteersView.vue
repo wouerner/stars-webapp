@@ -138,9 +138,17 @@
                       }}</a>
                     </div>
                   </v-col>
+                  <v-col v-if="volunteer.github" cols="12" sm="6" md="4">
+                    <div class="d-flex align-center">
+                      <v-icon icon="mdi-github" class="mr-2"></v-icon>
+                      <a :href="volunteer.github" target="_blank" @click.stop>{{
+                        volunteer.github
+                      }}</a>
+                    </div>
+                  </v-col>
                   <v-col v-if="volunteer.discord" cols="12" sm="6" md="4">
                     <div class="d-flex align-center">
-                      <v-icon icon="mdi-discord" class="mr-2"></v-icon>
+                      <v-icon icon="fa:fab fa-discord" class="mr-2"></v-icon>
                       <span>{{ volunteer.discord }}</span>
                     </div>
                   </v-col>

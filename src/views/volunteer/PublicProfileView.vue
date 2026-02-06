@@ -101,6 +101,34 @@
 
               <v-divider v-if="volunteer.linkedin" inset></v-divider>
 
+              <!-- GitHub -->
+              <v-list-item
+                v-if="volunteer.github"
+                :href="volunteer.github"
+                target="_blank"
+                link
+                class="px-6 py-3"
+              >
+                <template #prepend>
+                  <v-avatar color="black" variant="tonal" class="mr-4 rounded-circle">
+                    <v-icon icon="mdi-github"></v-icon>
+                  </v-avatar>
+                </template>
+                <v-list-item-title class="text-body-2 font-weight-medium text-truncate">
+                  {{ volunteer.github.replace('https://', '').replace('www.', '') }}
+                </v-list-item-title>
+                <v-list-item-subtitle class="text-caption">GitHub</v-list-item-subtitle>
+                <template #append>
+                  <v-icon
+                    size="small"
+                    class="text-medium-emphasis"
+                    icon="mdi-chevron-right"
+                  ></v-icon>
+                </template>
+              </v-list-item>
+
+              <v-divider v-if="volunteer.github" inset></v-divider>
+
               <!-- Discord -->
               <v-list-item v-if="volunteer.discord" class="px-6 py-3">
                 <template #prepend>
@@ -109,7 +137,7 @@
                     variant="tonal"
                     class="mr-4 rounded-circle"
                   >
-                    <v-icon icon="mdi-discord"></v-icon>
+                    <v-icon icon="fa:fab fa-discord"></v-icon>
                   </v-avatar>
                 </template>
                 <v-list-item-title class="text-body-2 font-weight-medium">{{

@@ -57,9 +57,25 @@
                   <v-list-item-subtitle>LinkedIn</v-list-item-subtitle>
                 </v-list-item>
 
+                <v-list-item v-if="currentVolunteer.github" class="px-0">
+                  <template #prepend>
+                    <v-icon icon="mdi-github" color="grey-darken-3"></v-icon>
+                  </template>
+                  <v-list-item-title>
+                    <a
+                      :href="currentVolunteer.github"
+                      target="_blank"
+                      class="text-decoration-none text-primary"
+                    >
+                      {{ currentVolunteer.github }}
+                    </a>
+                  </v-list-item-title>
+                  <v-list-item-subtitle>GitHub</v-list-item-subtitle>
+                </v-list-item>
+
                 <v-list-item v-if="currentVolunteer.discord" class="px-0">
                   <template #prepend>
-                    <v-icon icon="mdi-discord" color="deep-purple-accent-1"></v-icon>
+                    <v-icon icon="fa:fab fa-discord" color="indigo-lighten-1"></v-icon>
                   </template>
                   <v-list-item-title>{{ currentVolunteer.discord }}</v-list-item-title>
                   <v-list-item-subtitle>Discord</v-list-item-subtitle>

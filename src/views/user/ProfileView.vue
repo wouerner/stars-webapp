@@ -47,7 +47,7 @@
                   label="Discord"
                   variant="outlined"
                   readonly
-                  prepend-inner-icon="mdi-discord"
+                  prepend-inner-icon="fa:fab fa-discord"
                 ></v-text-field>
               </v-col>
             </v-row>

@@ -176,7 +176,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <v-img height="36" width="36" :src="footerIcon1" alt="Github" />
+                  <v-icon icon="mdi-github" size="36" color="white"></v-icon>
                 </a>
               </section>
               <section>
@@ -185,7 +185,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <v-img height="36" width="36" :src="footerIcon2" alt="Discord" />
+                  <v-icon icon="fa:fab fa-discord" size="36" color="white"></v-icon>
                 </a>
               </section>
               <section>
@@ -194,7 +194,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <v-img height="36" width="36" :src="footerIcon3" alt="Linkedin" />
+                  <v-icon icon="mdi-linkedin" size="36" color="white"></v-icon>
                 </a>
               </section>
               <section>
@@ -203,7 +203,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <v-img height="36" width="36" :src="footerIcon4" alt="Instagram" />
+                  <v-icon icon="mdi-instagram" size="36" color="white"></v-icon>
                 </a>
               </section>
               <section>
@@ -212,7 +212,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <v-img height="36" width="36" :src="footerIcon5" alt="Youtube" />
+                  <v-icon icon="mdi-youtube" size="36" color="white"></v-icon>
                 </a>
               </section>
               <section>
@@ -221,7 +221,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <v-img height="36" width="36" :src="footerIcon6" alt="Twitter" />
+                  <v-icon icon="mdi-twitter" size="36" color="white"></v-icon>
                 </a>
               </section>
               <section>
@@ -230,7 +230,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <v-img height="36" width="36" :src="footerIcon7" alt="Facebook" />
+                  <v-icon icon="mdi-facebook" size="36" color="white"></v-icon>
                 </a>
               </section>
             </div>
@@ -265,13 +265,6 @@ import areaIcon10 from '@/assets/home/areaIcon10.png'
 import areaIcon11 from '@/assets/home/areaIcon11.png'
 import areaIcon12 from '@/assets/home/areaIcon12.png'
 import howToUse from '@/assets/home/howToUse.png'
-import footerIcon1 from '@/assets/home/Github.png'
-import footerIcon2 from '@/assets/home/Discord.png'
-import footerIcon3 from '@/assets/home/Linkedin.png'
-import footerIcon4 from '@/assets/home/Instagram.png'
-import footerIcon5 from '@/assets/home/YouTube.png'
-import footerIcon6 from '@/assets/home/Twitter.png'
-import footerIcon7 from '@/assets/home/Facebook.png'
 
 const carouselItems = [
   { title: 'Business', icon: areaIcon1 },

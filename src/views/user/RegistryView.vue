@@ -112,12 +112,23 @@
 
                     <v-col cols="12" md="6">
                       <v-text-field
+                        v-model="applicant.github"
+                        label="GitHub (Opcional)"
+                        placeholder="https://github.com/..."
+                        variant="outlined"
+                        density="comfortable"
+                        prepend-inner-icon="mdi-github"
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" md="6">
+                      <v-text-field
                         v-model="applicant.discord"
                         label="Discord (Opcional)"
                         placeholder="Ex: wouerner"
                         variant="outlined"
                         density="comfortable"
-                        prepend-inner-icon="mdi-account-voice"
+                        prepend-inner-icon="fa:fab fa-discord"
                       ></v-text-field>
                     </v-col>
 
@@ -313,6 +324,7 @@ const applicant = reactive({
   name: '',
   phone: '',
   linkedin: '',
+  github: '',
   discord: '',
   email: '',
   jobtitle_id: null,
@@ -340,6 +352,7 @@ const resetForm = () => {
   applicant.name = ''
   applicant.phone = ''
   applicant.linkedin = ''
+  applicant.github = ''
   applicant.discord = ''
   applicant.email = ''
   applicant.jobtitle_id = null
@@ -366,6 +379,7 @@ const submitApplicant = async () => {
     const payload = {
       name: newApplicantData.name,
       linkedin: newApplicantData.linkedin || '', // Ensure string
+      github: newApplicantData.github || null,
       phone: newApplicantData.phone || null,
       discord: newApplicantData.discord || null,
       is_active: true,

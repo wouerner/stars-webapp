@@ -19,6 +19,7 @@
           v-model="profile.name"
           label="Nome Completo"
           variant="outlined"
+          prepend-inner-icon="mdi-account"
           :rules="[(v) => !!v || 'Nome é obrigatório']"
         ></v-text-field>
 
@@ -26,16 +27,30 @@
           v-model="profile.linkedin"
           label="LinkedIn"
           variant="outlined"
+          prepend-inner-icon="mdi-linkedin"
           :rules="[(v) => !!v || 'LinkedIn é obrigatório']"
+        ></v-text-field>
+
+        <v-text-field
+          v-model="profile.github"
+          label="GitHub"
+          variant="outlined"
+          prepend-inner-icon="mdi-github"
         ></v-text-field>
 
         <v-text-field
           v-model="profile.phone"
           label="Telefone / WhatsApp"
           variant="outlined"
+          prepend-inner-icon="mdi-phone"
         ></v-text-field>
 
-        <v-text-field v-model="profile.discord" label="Discord" variant="outlined"></v-text-field>
+        <v-text-field
+          v-model="profile.discord"
+          label="Discord"
+          variant="outlined"
+          prepend-inner-icon="fa:fab fa-discord"
+        ></v-text-field>
 
         <v-select
           v-model="profile.volunteer_type_id"
@@ -44,6 +59,7 @@
           item-value="id"
           label="Tipo de Voluntário"
           variant="outlined"
+          prepend-inner-icon="mdi-account-star"
           clearable
         ></v-select>
 
@@ -52,6 +68,7 @@
           v-model="profile.email"
           label="E-mail"
           variant="outlined"
+          prepend-inner-icon="mdi-email"
           disabled
           hint="O e-mail não pode ser alterado."
           persistent-hint
@@ -90,6 +107,7 @@ const volunteerTypes = ref([])
 const profile = reactive({
   name: '',
   linkedin: '',
+  github: '',
   phone: '',
   discord: '',
   email: '', // For display only
@@ -119,6 +137,7 @@ onMounted(async () => {
 
     profile.name = data.name
     profile.linkedin = data.linkedin
+    profile.github = data.github
     profile.phone = data.phone
     profile.discord = data.discord
     profile.email = data.email
@@ -143,6 +162,7 @@ const submitUpdate = async () => {
     await volunteerService.updateProfileByToken(token, {
       name: profile.name,
       linkedin: profile.linkedin,
+      github: profile.github,
       phone: profile.phone,
       discord: profile.discord,
       volunteer_type_id: profile.volunteer_type_id
