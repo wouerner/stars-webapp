@@ -16,13 +16,23 @@
           <v-card-title class="text-h6 pb-2">{{ squad.name }}</v-card-title>
           <v-card-text>
             <p class="mb-2">{{ squad.description || 'Sem descrição' }}</p>
-            <div class="d-flex align-center text-caption text-grey">
-              <v-icon size="small" class="mr-1">mdi-account-group</v-icon>
-              <span
-                >{{ squad.members_count }} voluntário{{
-                  squad.members_count !== 1 ? 's' : ''
-                }}</span
-              >
+            <div class="d-flex flex-column ga-1 text-caption text-grey">
+              <div class="d-flex align-center">
+                <v-icon size="small" class="mr-1">mdi-account-group</v-icon>
+                <span
+                  >{{ squad.members_count }} voluntário{{
+                    squad.members_count !== 1 ? 's' : ''
+                  }}</span
+                >
+              </div>
+              <div class="d-flex align-center">
+                <v-icon size="small" class="mr-1">mdi-briefcase-variant</v-icon>
+                <span
+                  >{{ squad.projects_count }} projeto{{
+                    squad.projects_count !== 1 ? 's' : ''
+                  }}</span
+                >
+              </div>
             </div>
           </v-card-text>
           <v-card-actions>
