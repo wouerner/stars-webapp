@@ -118,6 +118,25 @@
                   <v-list-item-subtitle>Squad</v-list-item-subtitle>
                 </v-list-item>
 
+                <v-list-item v-if="currentVolunteer.verticals && currentVolunteer.verticals.length > 0" class="px-0">
+                  <template #prepend>
+                    <v-icon icon="mdi-layers" color="indigo"></v-icon>
+                  </template>
+                  <v-list-item-title class="d-flex flex-wrap gap-2">
+                    <v-chip
+                      v-for="vertical in currentVolunteer.verticals"
+                      :key="vertical.id"
+                      size="small"
+                      color="indigo-lighten-4"
+                      text-color="indigo-darken-4"
+                      label
+                    >
+                      {{ vertical.name }}
+                    </v-chip>
+                  </v-list-item-title>
+                  <v-list-item-subtitle>Verticais</v-list-item-subtitle>
+                </v-list-item>
+
                 <v-list-item class="px-0">
                   <template #prepend>
                     <v-icon
@@ -220,6 +239,33 @@
                 :loading="isLoadingType"
                 :disabled="isLoadingType"
                 @update:model-value="updateVolunteerType"
+              ></v-select>
+            </v-card-text>
+          </v-card>
+        </v-col>
+
+        <!-- Gerenciar Verticais -->
+        <v-col cols="12" md="6">
+          <v-card class="h-100" elevation="2">
+            <v-card-item>
+              <v-card-title class="text-h6">Gerenciar Verticais</v-card-title>
+            </v-card-item>
+            <v-card-text>
+              <p class="text-body-2 mb-4">Atualize as verticais do voluntário.</p>
+              <v-select
+                v-model="selectedVerticalIds"
+                :items="verticals"
+                item-title="name"
+                item-value="id"
+                label="Selecione as verticais"
+                variant="outlined"
+                color="primary"
+                hide-details
+                multiple
+                chips
+                :loading="isLoadingVerticals"
+                :disabled="isLoadingVerticals"
+                @update:model-value="updateVolunteerVerticals"
               ></v-select>
             </v-card-text>
           </v-card>
@@ -413,6 +459,7 @@ import { useRoute } from 'vue-router'
 import { useVolunteerStore } from '@/stores/volunteer.js'
 import { useSquadStore } from '@/stores/squad.js'
 import { useVolunteerTypeStore } from '@/stores/volunteerType.js'
+import { useVerticalStore } from '@/stores/vertical.js'
 import feedbackService from '@/services/feedback.js'
 import { useAuthStore } from '@/stores/auth.js'
 
@@ -420,14 +467,17 @@ const route = useRoute()
 const volunteerStore = useVolunteerStore()
 const squadStore = useSquadStore()
 const volunteerTypeStore = useVolunteerTypeStore()
+const verticalStore = useVerticalStore()
 const authStore = useAuthStore()
 
 const selectedStatusId = ref(null)
 const selectedSquadId = ref(null)
 const selectedTypeId = ref(null)
+const selectedVerticalIds = ref([])
 const isLoadingStatus = ref(false)
 const isLoadingSquad = ref(false)
 const isLoadingType = ref(false)
+const isLoadingVerticals = ref(false)
 const isCheckingApoiase = ref(false)
 
 // Feedback State
@@ -520,6 +570,7 @@ const currentVolunteer = computed(() => volunteerStore.currentVolunteer)
 const statuses = computed(() => volunteerStore.statuses)
 const squads = computed(() => squadStore.squads)
 const volunteerTypes = computed(() => volunteerTypeStore.data)
+const verticals = computed(() => verticalStore.data)
 
 const sortedStatusHistory = computed(() => {
   if (currentVolunteer.value && currentVolunteer.value.status_history) {
@@ -536,6 +587,7 @@ onMounted(async () => {
     volunteerStore.fetchStatuses(),
     squadStore.fetchAllSquads(),
     volunteerTypeStore.fetchVolunteerTypes(),
+    verticalStore.fetchVerticals(),
     volunteerStore.fetchVolunteer(volunteerId)
   ])
 
@@ -543,6 +595,9 @@ onMounted(async () => {
     selectedStatusId.value = currentVolunteer.value.status_id
     selectedSquadId.value = currentVolunteer.value.squad_id
     selectedTypeId.value = currentVolunteer.value.volunteer_type_id
+    selectedVerticalIds.value = currentVolunteer.value.verticals
+      ? currentVolunteer.value.verticals.map((v) => v.id)
+      : []
   }
 })
 
@@ -598,6 +653,23 @@ const updateVolunteerType = async () => {
       await volunteerStore.updateVolunteerType(currentVolunteer.value.id, selectedTypeId.value)
     } finally {
       isLoadingType.value = false
+    }
+  }
+}
+
+const updateVolunteerVerticals = async () => {
+  if (currentVolunteer.value) {
+    isLoadingVerticals.value = true
+    try {
+      await verticalStore.updateVolunteerVerticals(currentVolunteer.value.id, selectedVerticalIds.value)
+      // Update the current volunteer's verticals in the store
+      if (currentVolunteer.value.verticals) {
+        currentVolunteer.value.verticals = verticals.value.filter((v) =>
+          selectedVerticalIds.value.includes(v.id)
+        )
+      }
+    } finally {
+      isLoadingVerticals.value = false
     }
   }
 }

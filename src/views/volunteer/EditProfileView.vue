@@ -63,6 +63,19 @@
           clearable
         ></v-select>
 
+        <v-select
+          v-model="profile.vertical_ids"
+          :items="verticals"
+          item-title="name"
+          item-value="id"
+          label="Verticais"
+          variant="outlined"
+          prepend-inner-icon="mdi-layers"
+          multiple
+          chips
+          clearable
+        ></v-select>
+
         <!-- Read-only fields for context -->
         <v-text-field
           v-model="profile.email"
@@ -93,16 +106,19 @@
 import { ref, onMounted, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import volunteerService from '@/services/volunteer.js'
+import { useVerticalStore } from '@/stores/vertical.js'
 
 const route = useRoute()
 const router = useRouter()
 const token = route.params.token
+const verticalStore = useVerticalStore()
 
 const loading = ref(true)
 const saving = ref(false)
 const error = ref(null)
 const form = ref(null)
 const volunteerTypes = ref([])
+const verticals = ref([])
 
 const profile = reactive({
   name: '',
@@ -111,7 +127,8 @@ const profile = reactive({
   phone: '',
   discord: '',
   email: '', // For display only
-  volunteer_type_id: null
+  volunteer_type_id: null,
+  vertical_ids: []
 })
 
 const snackbar = ref({
@@ -128,12 +145,14 @@ onMounted(async () => {
   }
 
   try {
-    const [data, types] = await Promise.all([
+    const [data, types, verticalData] = await Promise.all([
       volunteerService.fetchByToken(token),
-      volunteerService.getVolunteerTypes()
+      volunteerService.getVolunteerTypes(),
+      verticalStore.fetchVerticals()
     ])
 
     volunteerTypes.value = types
+    verticals.value = verticalData
 
     profile.name = data.name
     profile.linkedin = data.linkedin
@@ -142,6 +161,7 @@ onMounted(async () => {
     profile.discord = data.discord
     profile.email = data.email
     profile.volunteer_type_id = data.volunteer_type_id
+    profile.vertical_ids = data.verticals ? data.verticals.map((v) => v.id) : []
   } catch (err) {
     if (err.response && err.response.data && err.response.data.detail) {
       error.value = err.response.data.detail
@@ -165,7 +185,8 @@ const submitUpdate = async () => {
       github: profile.github,
       phone: profile.phone,
       discord: profile.discord,
-      volunteer_type_id: profile.volunteer_type_id
+      volunteer_type_id: profile.volunteer_type_id,
+      vertical_ids: profile.vertical_ids
     })
 
     snackbar.value = {

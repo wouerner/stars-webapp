@@ -16,7 +16,7 @@
             variant="outlined"
             label="ID do cargo no Discord"
           ></v-text-field>
-          <v-select
+          <v-autocomplete
             v-model="squad.project_ids"
             :items="projectStore.projects"
             item-title="name"
@@ -24,8 +24,9 @@
             label="Projetos"
             multiple
             chips
+            closable-chips
             variant="outlined"
-          ></v-select>
+          ></v-autocomplete>
           <v-btn color="primary" class="me-4" @click="submit">Salvar</v-btn>
           <v-btn :to="{ name: 'squads-list' }" class="me-4">Cancelar</v-btn>
         </v-form>

@@ -209,7 +209,31 @@
                 <v-list-item-subtitle class="text-caption">Squad</v-list-item-subtitle>
               </v-list-item>
 
-              <v-divider v-if="volunteer.squad && volunteer.is_apoiase_supporter" inset></v-divider>
+              <v-divider v-if="volunteer.squad || volunteer.verticals.length > 0" inset></v-divider>
+
+              <!-- Verticals -->
+              <v-list-item v-if="volunteer.verticals && volunteer.verticals.length > 0" class="px-6 py-3">
+                <template #prepend>
+                  <v-avatar color="indigo" variant="tonal" class="mr-4 rounded-circle">
+                    <v-icon icon="mdi-layers"></v-icon>
+                  </v-avatar>
+                </template>
+                <v-list-item-title class="d-flex flex-wrap gap-2 align-center">
+                  <v-chip
+                    v-for="vertical in volunteer.verticals"
+                    :key="vertical.id"
+                    size="small"
+                    color="indigo-lighten-4"
+                    text-color="indigo-darken-4"
+                    label
+                  >
+                    {{ vertical.name }}
+                  </v-chip>
+                </v-list-item-title>
+                <v-list-item-subtitle class="text-caption mt-2">Verticais</v-list-item-subtitle>
+              </v-list-item>
+
+              <v-divider v-if="volunteer.verticals && volunteer.verticals.length > 0 && volunteer.is_apoiase_supporter" inset></v-divider>
 
               <!-- Apoiador APOIA.se -->
               <v-list-item v-if="volunteer.is_apoiase_supporter" class="px-6 py-3">

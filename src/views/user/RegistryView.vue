@@ -329,6 +329,7 @@ const applicant = reactive({
   email: '',
   jobtitle_id: null,
   volunteer_type_id: 1, // Default to Junior
+  vertical_ids: [],
   terms: false
 })
 
@@ -357,6 +358,7 @@ const resetForm = () => {
   applicant.email = ''
   applicant.jobtitle_id = null
   applicant.volunteer_type_id = 1
+  applicant.vertical_ids = []
   applicant.terms = false
   step.value = 1
 }
@@ -385,7 +387,8 @@ const submitApplicant = async () => {
       is_active: true,
       email: newApplicantData.email,
       jobtitle_id: newApplicantData.jobtitle_id,
-      volunteer_type_id: newApplicantData.volunteer_type_id
+      volunteer_type_id: newApplicantData.volunteer_type_id,
+      vertical_ids: newApplicantData.vertical_ids || []
     }
 
     // Create the volunteer profile directly

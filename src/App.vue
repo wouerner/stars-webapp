@@ -83,6 +83,14 @@
           >
             Vagas
           </v-btn>
+          <v-btn
+            v-if="logged === true"
+            variant="text"
+            class="font-weight-semibold"
+            :to="{ name: 'verticals-list' }"
+          >
+            Verticais
+          </v-btn>
           <!--v-btn
             v-if="logged === false"
             variant="text"

@@ -27,6 +27,10 @@ import JobListView from '@/views/job/JobListView.vue'
 import JobCreateView from '@/views/job/JobCreateView.vue'
 import JobDetailsView from '@/views/job/JobDetailsView.vue'
 
+// vertical
+import VerticalsListView from '@/views/vertical/VerticalsListView.vue'
+import VerticalDetailsView from '@/views/vertical/VerticalDetailsView.vue'
+
 import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
@@ -206,6 +210,23 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: () => import('../views/DashboardView.vue'),
+      meta: {
+        auth: true
+      }
+    },
+    {
+      path: '/verticals',
+      name: 'verticals-list',
+      component: VerticalsListView,
+      meta: {
+        auth: true
+      }
+    },
+    {
+      path: '/verticals/:id',
+      name: 'vertical-details',
+      component: VerticalDetailsView,
+      props: true,
       meta: {
         auth: true
       }
