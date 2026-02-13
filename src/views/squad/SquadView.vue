@@ -68,7 +68,10 @@
             :to="getVolunteerLink(volunteer.id)"
             prepend-icon="mdi-account-school"
           >
-            <v-list-item-title class="font-weight-bold">{{ volunteer.name }}</v-list-item-title>
+            <v-list-item-title class="font-weight-bold">
+              {{ volunteer.name }}
+              <v-chip size="x-small" color="success" class="ml-2" variant="tonal">Ativo</v-chip>
+            </v-list-item-title>
             <v-list-item-subtitle v-if="volunteer.jobtitle">{{
               volunteer.jobtitle.title
             }}</v-list-item-subtitle>
@@ -88,7 +91,10 @@
             :to="getVolunteerLink(volunteer.id)"
             prepend-icon="mdi-account"
           >
-            <v-list-item-title class="font-weight-bold">{{ volunteer.name }}</v-list-item-title>
+            <v-list-item-title class="font-weight-bold">
+              {{ volunteer.name }}
+              <v-chip size="x-small" color="success" class="ml-2" variant="tonal">Ativo</v-chip>
+            </v-list-item-title>
             <v-list-item-subtitle v-if="volunteer.jobtitle">{{
               volunteer.jobtitle.title
             }}</v-list-item-subtitle>
@@ -108,7 +114,10 @@
             :to="getVolunteerLink(volunteer.id)"
             prepend-icon="mdi-account-outline"
           >
-            <v-list-item-title class="font-weight-bold">{{ volunteer.name }}</v-list-item-title>
+            <v-list-item-title class="font-weight-bold">
+              {{ volunteer.name }}
+              <v-chip size="x-small" color="success" class="ml-2" variant="tonal">Ativo</v-chip>
+            </v-list-item-title>
             <v-list-item-subtitle v-if="volunteer.jobtitle">{{
               volunteer.jobtitle.title
             }}</v-list-item-subtitle>
@@ -120,11 +129,35 @@
       </div>
 
       <div
-        v-if="mentors.length === 0 && juniors.length === 0 && others.length === 0"
+        v-if="mentors.length === 0 && juniors.length === 0 && others.length === 0 && inactiveVolunteers.length === 0"
         class="text-center py-4 text-grey"
       >
         Nenhum participante nesta squad.
       </div>
+
+      <v-expansion-panels v-if="inactiveVolunteers.length > 0" class="mt-6">
+        <v-expansion-panel>
+          <v-expansion-panel-title class="text-grey-darken-1">
+            Participantes Inativos ({{ inactiveVolunteers.length }})
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <v-list>
+              <v-list-item
+                v-for="volunteer in inactiveVolunteers"
+                :key="volunteer.id"
+                :to="getVolunteerLink(volunteer.id)"
+                prepend-icon="mdi-account-off-outline"
+                class="text-grey"
+              >
+                <v-list-item-title>{{ volunteer.name }}</v-list-item-title>
+                <v-list-item-subtitle v-if="volunteer.jobtitle">
+                  {{ volunteer.jobtitle.title }} ({{ volunteer.volunteer_type?.name || 'Tipo não definido' }})
+                </v-list-item-subtitle>
+              </v-list-item>
+            </v-list>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
     </v-sheet>
   </v-container>
 </template>
@@ -141,15 +174,18 @@ const squadStore = useSquadStore()
 const authStore = useAuthStore()
 const squad = ref(null)
 
+const activeVolunteers = computed(() => squad.value?.volunteers?.filter((v) => v.status?.name !== 'INACTIVE') || [])
+const inactiveVolunteers = computed(() => squad.value?.volunteers?.filter((v) => v.status?.name === 'INACTIVE') || [])
+
 const mentors = computed(
-  () => squad.value?.volunteers?.filter((v) => v.volunteer_type?.name === 'Mentor') || []
+  () => activeVolunteers.value?.filter((v) => v.volunteer_type?.name === 'Mentor') || []
 )
 const juniors = computed(
-  () => squad.value?.volunteers?.filter((v) => v.volunteer_type?.name === 'Junior') || []
+  () => activeVolunteers.value?.filter((v) => v.volunteer_type?.name === 'Junior') || []
 )
 const others = computed(
   () =>
-    squad.value?.volunteers?.filter(
+    activeVolunteers.value?.filter(
       (v) => v.volunteer_type?.name !== 'Mentor' && v.volunteer_type?.name !== 'Junior'
     ) || []
 )
