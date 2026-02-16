@@ -23,7 +23,7 @@
           @update:model-value="fetchJobs"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" v-if="logged">
+      <v-col v-if="logged" cols="12" sm="6">
         <v-switch
           v-model="activeOnly"
           label="Apenas Vagas Ativas"

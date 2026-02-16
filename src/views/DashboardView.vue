@@ -54,8 +54,8 @@
           md="3"
         >
           <v-card
-            v-ripple
-            class="h-100 cursor-pointer"
+            v-ripple="!!authStore.auth.email"
+            :class="{ 'h-100': true, 'cursor-pointer': !!authStore.auth.email }"
             elevation="2"
             @click="navigateToVolunteers(statusStat.status)"
           >
@@ -86,8 +86,8 @@
           md="3"
         >
           <v-card
-            v-ripple
-            class="h-100 cursor-pointer"
+            v-ripple="!!authStore.auth.email"
+            :class="{ 'h-100': true, 'cursor-pointer': !!authStore.auth.email }"
             elevation="2"
             @click="navigateToSquad(squadStat.squad)"
           >
@@ -115,8 +115,8 @@
           md="3"
         >
           <v-card
-            v-ripple
-            class="h-100 cursor-pointer"
+            v-ripple="!!authStore.auth.email"
+            :class="{ 'h-100': true, 'cursor-pointer': !!authStore.auth.email }"
             elevation="2"
             @click="navigateToType(typeStat.volunteer_type)"
           >
@@ -148,11 +148,13 @@ import { useDashboardStore } from '@/stores/dashboard'
 import { useVolunteerStore } from '@/stores/volunteer'
 import { useSquadStore } from '@/stores/squad'
 import { useVolunteerTypeStore } from '@/stores/volunteerType'
+import { useAuthStore } from '@/stores/auth'
 
 const dashboardStore = useDashboardStore()
 const volunteerStore = useVolunteerStore()
 const squadStore = useSquadStore()
 const volunteerTypeStore = useVolunteerTypeStore()
+const authStore = useAuthStore()
 const router = useRouter()
 
 onMounted(async () => {
@@ -165,6 +167,7 @@ onMounted(async () => {
 })
 
 const navigateToVolunteers = (statusName) => {
+  if (!authStore.auth.email) return
   const status = volunteerStore.statuses.find((s) => s.name === statusName)
   if (status) {
     router.push({ name: 'volunteers', query: { status: status.id } })
@@ -172,6 +175,7 @@ const navigateToVolunteers = (statusName) => {
 }
 
 const navigateToSquad = (squadName) => {
+  if (!authStore.auth.email) return
   const squad = squadStore.squads.find((s) => s.name === squadName)
   if (squad) {
     router.push({ name: 'volunteers', query: { squad: squad.id } })
@@ -179,6 +183,7 @@ const navigateToSquad = (squadName) => {
 }
 
 const navigateToType = (typeName) => {
+  if (!authStore.auth.email) return
   const type = volunteerTypeStore.data.find((t) => t.name === typeName)
   if (type) {
     router.push({ name: 'volunteers', query: { volunteer_type: type.id } })

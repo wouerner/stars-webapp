@@ -3,11 +3,16 @@ import axiosInstance from '@/services/http.js'
 function headers() {
   const token = localStorage.getItem('token')
 
-  return {
-    Authorization: 'Bearer ' + token,
+  const h = {
     'Content-Type': 'application/json',
     Accept: 'application/json'
   }
+
+  if (token) {
+    h.Authorization = 'Bearer ' + token
+  }
+
+  return h
 }
 
 async function fetch() {

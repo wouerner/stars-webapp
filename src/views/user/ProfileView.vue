@@ -107,8 +107,8 @@
                   label="Tipo de Voluntário"
                   variant="outlined"
                   prepend-inner-icon="mdi-account-star"
-                  @update:model-value="onTypeChange"
                   :loading="updatingType"
+                  @update:model-value="onTypeChange"
                 ></v-select>
               </v-col>
             </v-row>

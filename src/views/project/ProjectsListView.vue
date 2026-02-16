@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12" class="d-flex justify-space-between align-center">
         <h1 class="text-h4">Projetos</h1>
-        <v-btn color="primary" :to="{ name: 'project-create' }">
+        <v-btn v-if="authStore.auth.email" color="primary" :to="{ name: 'project-create' }">
           <v-icon left>mdi-plus</v-icon>
           Criar Novo Projeto
         </v-btn>
@@ -28,7 +28,13 @@
               Ver Link
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn icon color="error" variant="text" @click="deleteProject(project.id)">
+            <v-btn
+              v-if="authStore.auth.email"
+              icon
+              color="error"
+              variant="text"
+              @click="deleteProject(project.id)"
+            >
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-card-actions>
@@ -39,7 +45,11 @@
     <v-row v-else-if="!projectStore.loading">
       <v-col cols="12">
         <v-alert type="info" variant="tonal">
-          Nenhum projeto encontrado. Comece criando um!
+          {{
+            authStore.auth.email
+              ? 'Nenhum projeto encontrado. Comece criando um!'
+              : 'Nenhum projeto encontrado.'
+          }}
         </v-alert>
       </v-col>
     </v-row>
@@ -55,8 +65,10 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useProjectStore } from '@/stores/project'
+import { useAuthStore } from '@/stores/auth'
 
 const projectStore = useProjectStore()
+const authStore = useAuthStore()
 
 onMounted(() => {
   projectStore.fetchAllProjects()

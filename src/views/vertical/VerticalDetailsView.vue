@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-btn color="tertiary" variant="text" @click="router.back()" class="mb-4">
+        <v-btn color="tertiary" variant="text" class="mb-4" @click="router.back()">
           <v-icon left>mdi-arrow-left</v-icon>
           Voltar
         </v-btn>
@@ -48,38 +48,53 @@
 
             <v-divider class="mb-6"></v-divider>
 
-            <v-row v-if="vertical.volunteers && vertical.volunteers.length > 0">
-              <v-col
-                v-for="volunteer in vertical.volunteers"
-                :key="volunteer.id"
-                cols="12"
-                sm="6"
-                md="4"
-                lg="3"
-              >
-                <v-card
-                  variant="outlined"
-                  class="rounded-lg h-100"
-                  :to="getVolunteerLink(volunteer.id)"
-                >
-                  <v-card-text class="d-flex align-center">
-                    <v-avatar color="primary" size="48" class="mr-4">
-                      <span class="text-white font-weight-bold">
-                        {{ volunteer.name.charAt(0).toUpperCase() }}
-                      </span>
-                    </v-avatar>
-                    <div class="overflow-hidden">
-                      <div class="text-subtitle-1 font-weight-bold text-truncate">
-                        {{ volunteer.name }}
-                      </div>
-                      <div class="text-caption text-medium-emphasis text-truncate">
-                        {{ volunteer.jobtitle?.title || 'Sem cargo' }}
-                      </div>
-                    </div>
-                  </v-card-text>
-                </v-card>
-              </v-col>
-            </v-row>
+            <div v-if="vertical.volunteers && vertical.volunteers.length > 0">
+              <div v-for="group in sortedGroups" :key="group.name" class="mb-8">
+                <h3 class="text-subtitle-1 font-weight-bold text-primary mb-4 d-flex align-center">
+                  <v-icon size="small" class="mr-2">
+                    {{ 
+                      group.name === 'Head' ? 'mdi-account-star' : 
+                      group.name === 'Mentor' ? 'mdi-account-school' : 
+                      group.name === 'Junior' ? 'mdi-account' : 
+                      'mdi-account-outline' 
+                    }}
+                  </v-icon>
+                  {{ group.name }}
+                </h3>
+                <v-row>
+                  <v-col
+                    v-for="volunteer in group.volunteers"
+                    :key="volunteer.id"
+                    cols="12"
+                    sm="6"
+                    md="4"
+                    lg="3"
+                  >
+                    <v-card
+                      variant="outlined"
+                      class="rounded-lg h-100"
+                      :to="getVolunteerLink(volunteer.id)"
+                    >
+                      <v-card-text class="d-flex align-center">
+                        <v-avatar color="primary" size="48" class="mr-4">
+                          <span class="text-white font-weight-bold">
+                            {{ volunteer.name.charAt(0).toUpperCase() }}
+                          </span>
+                        </v-avatar>
+                        <div class="overflow-hidden">
+                          <div class="text-subtitle-1 font-weight-bold text-truncate">
+                            {{ volunteer.name }}
+                          </div>
+                          <div class="text-caption text-medium-emphasis text-truncate">
+                            {{ volunteer.jobtitle?.title || 'Sem cargo' }}
+                          </div>
+                        </div>
+                      </v-card-text>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </div>
+            </div>
 
             <v-row v-else>
               <v-col cols="12" class="text-center py-12">
@@ -140,7 +155,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useVerticalStore } from '@/stores/vertical.js'
 import { useAuthStore } from '@/stores/auth.js'
@@ -159,6 +174,26 @@ const form = ref(null)
 const formData = ref({
   name: '',
   description: ''
+})
+
+const sortedGroups = computed(() => {
+  if (!vertical.value?.volunteers) return []
+
+  const groupsMap = {}
+  vertical.value.volunteers.forEach((v) => {
+    const type = v.volunteer_type || { name: 'Outros', order: 999 }
+    const typeName = type.name
+    if (!groupsMap[typeName]) {
+      groupsMap[typeName] = {
+        name: typeName,
+        order: type.order ?? 999,
+        volunteers: []
+      }
+    }
+    groupsMap[typeName].volunteers.push(v)
+  })
+
+  return Object.values(groupsMap).sort((a, b) => a.order - b.order)
 })
 
 onMounted(async () => {

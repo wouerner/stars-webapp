@@ -147,6 +147,30 @@
           >
             Squads
           </v-btn>
+          <v-btn
+            v-if="logged === false"
+            variant="text"
+            class="font-weight-semibold"
+            :to="{ name: 'verticals-list' }"
+          >
+            Verticais
+          </v-btn>
+          <v-btn
+            v-if="logged === false"
+            variant="text"
+            class="font-weight-semibold"
+            :to="{ name: 'projects-list' }"
+          >
+            Projetos
+          </v-btn>
+          <v-btn
+            v-if="logged === false"
+            variant="text"
+            class="font-weight-semibold"
+            :to="{ name: 'dashboard' }"
+          >
+            Dashboard
+          </v-btn>
           <v-menu v-if="logged === true" open-on-hover>
             <template #activator="{ props }">
               <v-btn

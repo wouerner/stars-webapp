@@ -162,7 +162,7 @@ const router = createRouter({
       name: 'projects-list',
       component: ProjectsListView,
       meta: {
-        auth: true
+        auth: false
       }
     },
     {
@@ -211,7 +211,7 @@ const router = createRouter({
       name: 'dashboard',
       component: () => import('../views/DashboardView.vue'),
       meta: {
-        auth: true
+        auth: false
       }
     },
     {
@@ -219,7 +219,7 @@ const router = createRouter({
       name: 'verticals-list',
       component: VerticalsListView,
       meta: {
-        auth: true
+        auth: false
       }
     },
     {
@@ -228,7 +228,7 @@ const router = createRouter({
       component: VerticalDetailsView,
       props: true,
       meta: {
-        auth: true
+        auth: false
       }
     },
     {

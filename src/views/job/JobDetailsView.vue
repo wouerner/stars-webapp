@@ -43,7 +43,7 @@
             <v-card-text style="white-space: pre-wrap">{{ job.description }}</v-card-text>
           </v-card>
 
-          <v-card class="mb-4" v-if="job.requirements">
+          <v-card v-if="job.requirements" class="mb-4">
             <v-card-title>Requisitos</v-card-title>
             <v-card-text style="white-space: pre-wrap">{{ job.requirements }}</v-card-text>
           </v-card>
@@ -105,7 +105,7 @@
                   :key="app.id"
                   :to="{ name: 'volunteer-details', params: { id: app.volunteer_id } }"
                 >
-                  <template v-slot:prepend>
+                  <template #prepend>
                     <v-avatar color="primary">
                       <span class="text-white">{{ app.volunteer.name.charAt(0) }}</span>
                     </v-avatar>
@@ -115,7 +115,7 @@
                     >Aplicado em:
                     {{ new Date(app.created_at).toLocaleString() }}</v-list-item-subtitle
                   >
-                  <template v-slot:append>
+                  <template #append>
                     <v-icon>mdi-chevron-right</v-icon>
                   </template>
                 </v-list-item>

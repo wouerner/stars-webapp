@@ -48,7 +48,7 @@
         >
           <v-list-item-title class="font-weight-bold">{{ project.name }}</v-list-item-title>
           <v-list-item-subtitle>{{ project.description || 'Sem descrição' }}</v-list-item-subtitle>
-          <template v-if="project.link" v-slot:append>
+          <template v-if="project.link" #append>
             <v-icon size="small">mdi-open-in-new</v-icon>
           </template>
         </v-list-item>
@@ -59,60 +59,19 @@
     <v-sheet v-if="squad" class="pa-4 rounded-lg mt-4">
       <h2 class="mb-4">Participantes</h2>
 
-      <div v-if="mentors.length > 0">
-        <h3 class="text-subtitle-1 text-primary mb-2">Mentores</h3>
+      <div v-for="group in sortedGroups" :key="group.name" class="mb-4">
+        <h3 class="text-subtitle-1 text-primary mb-2">{{ group.name }}</h3>
         <v-list>
           <v-list-item
-            v-for="volunteer in mentors"
+            v-for="volunteer in group.volunteers"
             :key="volunteer.id"
             :to="getVolunteerLink(volunteer.id)"
-            prepend-icon="mdi-account-school"
-          >
-            <v-list-item-title class="font-weight-bold">
-              {{ volunteer.name }}
-              <v-chip size="x-small" color="success" class="ml-2" variant="tonal">Ativo</v-chip>
-            </v-list-item-title>
-            <v-list-item-subtitle v-if="volunteer.jobtitle">{{
-              volunteer.jobtitle.title
-            }}</v-list-item-subtitle>
-            <v-list-item-subtitle v-else class="text-caption text-grey"
-              >Sem cargo definido</v-list-item-subtitle
-            >
-          </v-list-item>
-        </v-list>
-      </div>
-
-      <div v-if="juniors.length > 0">
-        <h3 class="text-subtitle-1 text-primary mb-2 mt-4">Juniores</h3>
-        <v-list>
-          <v-list-item
-            v-for="volunteer in juniors"
-            :key="volunteer.id"
-            :to="getVolunteerLink(volunteer.id)"
-            prepend-icon="mdi-account"
-          >
-            <v-list-item-title class="font-weight-bold">
-              {{ volunteer.name }}
-              <v-chip size="x-small" color="success" class="ml-2" variant="tonal">Ativo</v-chip>
-            </v-list-item-title>
-            <v-list-item-subtitle v-if="volunteer.jobtitle">{{
-              volunteer.jobtitle.title
-            }}</v-list-item-subtitle>
-            <v-list-item-subtitle v-else class="text-caption text-grey"
-              >Sem cargo definido</v-list-item-subtitle
-            >
-          </v-list-item>
-        </v-list>
-      </div>
-
-      <div v-if="others.length > 0">
-        <h3 class="text-subtitle-1 text-primary mb-2 mt-4">Outros</h3>
-        <v-list>
-          <v-list-item
-            v-for="volunteer in others"
-            :key="volunteer.id"
-            :to="getVolunteerLink(volunteer.id)"
-            prepend-icon="mdi-account-outline"
+            :prepend-icon="
+              group.name === 'Head' ? 'mdi-account-star' : 
+              group.name === 'Mentor' ? 'mdi-account-school' : 
+              group.name === 'Junior' ? 'mdi-account' : 
+              'mdi-account-outline'
+            "
           >
             <v-list-item-title class="font-weight-bold">
               {{ volunteer.name }}
@@ -129,7 +88,7 @@
       </div>
 
       <div
-        v-if="mentors.length === 0 && juniors.length === 0 && others.length === 0 && inactiveVolunteers.length === 0"
+        v-if="activeVolunteers.length === 0 && inactiveVolunteers.length === 0"
         class="text-center py-4 text-grey"
       >
         Nenhum participante nesta squad.
@@ -177,18 +136,23 @@ const squad = ref(null)
 const activeVolunteers = computed(() => squad.value?.volunteers?.filter((v) => v.status?.name !== 'INACTIVE') || [])
 const inactiveVolunteers = computed(() => squad.value?.volunteers?.filter((v) => v.status?.name === 'INACTIVE') || [])
 
-const mentors = computed(
-  () => activeVolunteers.value?.filter((v) => v.volunteer_type?.name === 'Mentor') || []
-)
-const juniors = computed(
-  () => activeVolunteers.value?.filter((v) => v.volunteer_type?.name === 'Junior') || []
-)
-const others = computed(
-  () =>
-    activeVolunteers.value?.filter(
-      (v) => v.volunteer_type?.name !== 'Mentor' && v.volunteer_type?.name !== 'Junior'
-    ) || []
-)
+const sortedGroups = computed(() => {
+  const groupsMap = {}
+  activeVolunteers.value.forEach((v) => {
+    const type = v.volunteer_type || { name: 'Outros', order: 999 }
+    const typeName = type.name
+    if (!groupsMap[typeName]) {
+      groupsMap[typeName] = {
+        name: typeName,
+        order: type.order ?? 999,
+        volunteers: []
+      }
+    }
+    groupsMap[typeName].volunteers.push(v)
+  })
+
+  return Object.values(groupsMap).sort((a, b) => a.order - b.order)
+})
 
 onMounted(async () => {
   await squadStore.fetch(route.params.uuid)
