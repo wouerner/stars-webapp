@@ -43,7 +43,7 @@
             <v-chip v-else size="x-small" color="success">Ativa</v-chip>
           </v-card-title>
           <v-card-subtitle>
-            Criado em: {{ new Date(job.created_at).toLocaleDateString() }}
+            Criado em: {{ formatDate(job.created_at) }}
           </v-card-subtitle>
           <v-card-text class="flex-grow-1">
             <p class="text-body-2 mb-2 line-clamp-3">{{ job.description }}</p>
@@ -98,6 +98,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { getJobs } from '@/services/job'
 import { useAuthStore } from '@/stores/auth'
+import { formatDate } from '@/utils/date'
 
 const authStore = useAuthStore()
 const jobs = ref([])

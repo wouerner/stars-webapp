@@ -163,7 +163,7 @@
                   <v-col v-if="volunteer.created_at" cols="12" sm="6" md="4">
                     <div class="d-flex align-center">
                       <v-icon icon="mdi-clock-outline" class="mr-2"></v-icon>
-                      <span>Cadastrado {{ timeAgo(volunteer.created_at) }}</span>
+                      <span>Cadastrado {{ formatTimeAgo(volunteer.created_at) }}</span>
                     </div>
                   </v-col>
                   <v-col v-if="volunteer.volunteer_type" cols="12" sm="6" md="4">
@@ -209,12 +209,7 @@ import { useJobtitleStore } from '@/stores/jobtitle'
 import { useSquadStore } from '@/stores/squad'
 import { useVolunteerTypeStore } from '@/stores/volunteerType'
 import { useRouter, useRoute } from 'vue-router' // Import useRouter and useRoute
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import 'dayjs/locale/pt-br' // Import Portuguese locale
-
-dayjs.extend(relativeTime)
-dayjs.locale('pt-br') // Use Portuguese locale globally
+import { formatTimeAgo } from '@/utils/date'
 
 const volunteerStore = useVolunteerStore()
 const jobtitleStore = useJobtitleStore()
@@ -277,10 +272,6 @@ function getJobTitle(id) {
   if (!jobtitleStore.data || !Array.isArray(jobtitleStore.data)) return ''
   const job = jobtitleStore.data.find((j) => j.id === id)
   return job ? job.title : ''
-}
-
-function timeAgo(date) {
-  return dayjs(date).fromNow()
 }
 
 const getStatusClass = (statusName) => {

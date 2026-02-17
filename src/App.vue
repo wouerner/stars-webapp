@@ -1,7 +1,7 @@
 <template>
   <v-app :class="ef">
     <v-app-bar
-      v-if="route.name !== 'public-profile'"
+      v-if="route.name !== 'public-profile' && route.name !== 'certificate'"
       class="header"
       color="transparent"
       app
@@ -202,7 +202,11 @@
     <transition name="fade" mode="out-in">
       <v-main
         class="d-flex flex-grow-1"
-        :style="route.name !== 'public-profile' ? 'margin-top: 64px' : ''"
+        :style="
+          route.name !== 'public-profile' && route.name !== 'certificate'
+            ? 'margin-top: 64px'
+            : ''
+        "
       >
         <RouterView />
 

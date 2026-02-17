@@ -21,7 +21,7 @@
                   {{ job.is_active ? 'Ativa' : 'Inativa' }}
                 </v-chip>
                 <span class="text-caption text-grey ml-2"
-                  >Publicado em {{ new Date(job.created_at).toLocaleDateString() }}</span
+                  >Publicado em {{ formatDate(job.created_at) }}</span
                 >
               </div>
                          </div>
@@ -113,7 +113,7 @@
                   <v-list-item-title>{{ app.volunteer.name }}</v-list-item-title>
                   <v-list-item-subtitle
                     >Aplicado em:
-                    {{ new Date(app.created_at).toLocaleString() }}</v-list-item-subtitle
+                    {{ formatDateTime(app.created_at) }}</v-list-item-subtitle
                   >
                   <template #append>
                     <v-icon>mdi-chevron-right</v-icon>
@@ -143,6 +143,7 @@ import { useRoute } from 'vue-router'
 import { getJob, applyForJob, getJobApplications } from '@/services/job'
 import { useAuthStore } from '@/stores/auth'
 import { useSnackbarStore } from '@/stores/snackbar'
+import { formatDate, formatDateTime } from '@/utils/date'
 
 const authStore = useAuthStore()
 const snackbar = useSnackbarStore()

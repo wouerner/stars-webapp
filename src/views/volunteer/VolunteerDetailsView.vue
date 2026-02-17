@@ -271,6 +271,43 @@
           </v-card>
         </v-col>
 
+        <!-- Gerenciar Certificados -->
+        <v-col cols="12" md="6">
+          <v-card class="h-100" elevation="2">
+            <v-card-item>
+              <v-card-title class="text-h6">Gerenciar Certificados</v-card-title>
+            </v-card-item>
+            <v-card-text>
+              <p class="text-body-2 mb-4">Emita um novo certificado para o voluntário.</p>
+              <v-btn color="primary" @click="certificateDialog = true">Emitir Certificado</v-btn>
+
+              <v-list class="mt-4">
+                <v-list-item
+                  v-for="certificate in currentVolunteer.certificates"
+                  :key="certificate.id"
+                  :to="{ name: 'certificate', params: { id: certificate.id } }"
+                >
+                  <v-list-item-title>Certificado de {{ certificate.hours }} horas</v-list-item-title>
+                  <v-list-item-subtitle>
+                    Emitido em: {{ formatDateTime(certificate.issued_at) }}
+                    <v-chip v-if="certificate.is_cancelled" color="error" size="x-small" class="ml-2">Cancelado</v-chip>
+                  </v-list-item-subtitle>
+                  <template #append>
+                    <v-btn
+                      v-if="!certificate.is_cancelled"
+                      icon="mdi-delete"
+                      size="small"
+                      variant="text"
+                      color="error"
+                      @click.prevent="confirmCancelCertificate(certificate)"
+                    ></v-btn>
+                  </template>
+                </v-list-item>
+              </v-list>
+            </v-card-text>
+          </v-card>
+        </v-col>
+
         <!-- Histórico -->
         <v-col cols="12">
           <v-card elevation="2">
@@ -436,12 +473,50 @@
             Tem certeza que deseja excluir este feedback? Esta ação não pode ser desfeita.
           </v-card-text>
           <v-card-actions class="px-6 pb-4 justify-end">
-            <v-btn color="grey-darken-1" variant="text" @click="deleteDialog = false"
-              >Cancelar</v-btn
-            >
-            <v-btn color="error" variant="flat" :loading="feedbackLoading" @click="deleteFeedback"
-              >Excluir</v-btn
-            >
+            <v-btn color="grey-darken-1" variant="text" @click="deleteDialog = false">Cancelar</v-btn>
+            <v-btn color="error" variant="flat" :loading="feedbackLoading" @click="deleteFeedback">Excluir</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <!-- Certificate Dialog -->
+      <v-dialog v-model="certificateDialog" max-width="500px">
+        <v-card class="rounded-lg">
+          <v-card-title class="text-h6 px-6 py-4 border-b">
+            Emitir Certificado
+          </v-card-title>
+          <v-card-text class="pt-4 px-6">
+            <v-form ref="certificateForm" v-model="certificateValid">
+              <v-text-field
+                v-model.number="certificateHours"
+                label="Horas"
+                type="number"
+                :rules="[v => !!v || 'Horas é obrigatório', v => v > 0 || 'Horas deve ser maior que 0']"
+              ></v-text-field>
+            </v-form>
+          </v-card-text>
+          <v-card-actions class="px-6 pb-4 pt-0 justify-end">
+            <v-btn color="grey-darken-1" variant="text" @click="certificateDialog = false">Cancelar</v-btn>
+            <v-btn
+              color="primary"
+              variant="flat"
+              :loading="certificateLoading"
+              @click="createCertificate"
+            >Emitir</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <!-- Cancel Certificate Dialog -->
+      <v-dialog v-model="cancelCertificateDialog" max-width="400px">
+        <v-card class="rounded-lg">
+          <v-card-title class="text-h6 px-6 py-4">Cancelar Certificado?</v-card-title>
+          <v-card-text class="px-6 pb-2">
+            Tem certeza que deseja cancelar este certificado? Esta ação não pode ser desfeita.
+          </v-card-text>
+          <v-card-actions class="px-6 pb-4 justify-end">
+            <v-btn color="grey-darken-1" variant="text" @click="cancelCertificateDialog = false">Voltar</v-btn>
+            <v-btn color="error" variant="flat" :loading="certificateLoading" @click="cancelCertificate">Cancelar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -461,7 +536,9 @@ import { useSquadStore } from '@/stores/squad.js'
 import { useVolunteerTypeStore } from '@/stores/volunteerType.js'
 import { useVerticalStore } from '@/stores/vertical.js'
 import feedbackService from '@/services/feedback.js'
+import certificateService from '@/services/certificate.js'
 import { useAuthStore } from '@/stores/auth.js'
+import { formatDateTime } from '@/utils/date'
 
 const route = useRoute()
 const volunteerStore = useVolunteerStore()
@@ -479,6 +556,15 @@ const isLoadingSquad = ref(false)
 const isLoadingType = ref(false)
 const isLoadingVerticals = ref(false)
 const isCheckingApoiase = ref(false)
+
+// Certificate State
+const certificateDialog = ref(false)
+const certificateForm = ref(null)
+const certificateValid = ref(false)
+const certificateHours = ref(null)
+const certificateLoading = ref(false)
+const cancelCertificateDialog = ref(false)
+const certificateToCancel = ref(null)
 
 // Feedback State
 const feedbackDialog = ref(false)
@@ -563,6 +649,60 @@ const deleteFeedback = async () => {
   } finally {
     feedbackLoading.value = false
     feedbackToDelete.value = null
+  }
+}
+
+const createCertificate = async () => {
+  const { valid } = await certificateForm.value.validate()
+
+  if (valid) {
+    certificateLoading.value = true
+    try {
+      const certificate = await certificateService.create(currentVolunteer.value.id, {
+        volunteer_id: currentVolunteer.value.id,
+        hours: certificateHours.value
+      })
+      
+      if (!currentVolunteer.value.certificates) {
+        currentVolunteer.value.certificates = []
+      }
+      currentVolunteer.value.certificates.push(certificate)
+
+      certificateDialog.value = false
+      certificateHours.value = null
+    } catch (error) {
+      console.error(error)
+      // TODO: show error to user
+    } finally {
+      certificateLoading.value = false
+    }
+  }
+}
+
+const confirmCancelCertificate = (certificate) => {
+  certificateToCancel.value = certificate
+  cancelCertificateDialog.value = true
+}
+
+const cancelCertificate = async () => {
+  if (!certificateToCancel.value) return
+
+  certificateLoading.value = true
+  try {
+    await certificateService.cancel(certificateToCancel.value.id)
+    const index = currentVolunteer.value.certificates.findIndex(
+      (c) => c.id === certificateToCancel.value.id
+    )
+    if (index !== -1) {
+      currentVolunteer.value.certificates[index].is_cancelled = true
+    }
+    cancelCertificateDialog.value = false
+  } catch (error) {
+    console.error(error)
+    // TODO: show error to user
+  } finally {
+    certificateLoading.value = false
+    certificateToCancel.value = null
   }
 }
 
@@ -672,12 +812,6 @@ const updateVolunteerVerticals = async () => {
       isLoadingVerticals.value = false
     }
   }
-}
-
-const formatDateTime = (isoString) => {
-  if (!isoString) return ''
-  const date = new Date(isoString)
-  return date.toLocaleString()
 }
 
 const getStatusColor = (statusName) => {

@@ -240,6 +240,22 @@ const router = createRouter({
       path: '/404',
       name: 'not-found',
       component: () => import('../views/NotFoundView.vue')
+    },
+    {
+      path: '/certificate/:id',
+      name: 'certificate',
+      component: () => import('../views/CertificateView.vue'),
+      meta: {
+        auth: false
+      }
+    },
+    {
+      path: '/certificate/create',
+      name: 'create-certificate',
+      component: () => import('../views/CreateCertificateView.vue'),
+      meta: {
+        auth: true
+      }
     }
   ]
 })

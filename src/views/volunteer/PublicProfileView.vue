@@ -250,6 +250,41 @@
             </v-list>
           </v-card>
 
+          <!-- Certificates Card -->
+          <v-card v-if="volunteer.certificates && volunteer.certificates.length > 0" class="rounded-xl" elevation="1">
+            <div class="px-6 py-4 border-b">
+              <h2 class="text-subtitle-1 font-weight-bold">Certificados</h2>
+            </div>
+            <v-list class="py-0">
+              <v-list-item
+                v-for="certificate in volunteer.certificates.filter(c => !c.is_cancelled)"
+                :key="certificate.id"
+                link
+                :to="{ name: 'certificate', params: { id: certificate.id } }"
+                class="px-6 py-3"
+              >
+                <template #prepend>
+                  <v-avatar color="yellow-darken-2" variant="tonal" class="mr-4 rounded-circle">
+                    <v-icon icon="mdi-certificate"></v-icon>
+                  </v-avatar>
+                </template>
+                <v-list-item-title class="text-body-2 font-weight-medium">
+                  Certificado de {{ certificate.hours }} horas
+                </v-list-item-title>
+                <v-list-item-subtitle class="text-caption">
+                  Emitido em: {{ formatDateTime(certificate.issued_at) }}
+                </v-list-item-subtitle>
+                <template #append>
+                  <v-icon
+                    size="small"
+                    class="text-medium-emphasis"
+                    icon="mdi-chevron-right"
+                  ></v-icon>
+                </template>
+              </v-list-item>
+            </v-list>
+          </v-card>
+
           <!-- History Card -->
           <v-card class="rounded-xl" elevation="1">
             <div class="px-6 py-4 border-b">
@@ -443,6 +478,7 @@ import { useRoute } from 'vue-router'
 import volunteerService from '@/services/volunteer.js'
 import feedbackService from '@/services/feedback.js'
 import { useAuthStore } from '@/stores/auth.js'
+import { formatDateTime } from '@/utils/date'
 
 const route = useRoute()
 const authStore = useAuthStore()
@@ -565,16 +601,6 @@ onMounted(async () => {
     error.value = true
   }
 })
-
-const formatDateTime = (isoString) => {
-  if (!isoString) return ''
-  const date = new Date(isoString)
-  return (
-    date.toLocaleDateString() +
-    ' ' +
-    date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  )
-}
 
 const getStatusColor = (statusName) => {
   switch (statusName) {
