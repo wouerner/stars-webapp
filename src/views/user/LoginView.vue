@@ -41,8 +41,8 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-
 import { useAuthStore } from '@/stores/auth'
+import { event } from 'vue-gtag'
 
 const authStore = useAuthStore()
 
@@ -54,6 +54,7 @@ const user = reactive({
 const submitLogin = async () => {
   try {
     await authStore.login(user)
+    event('login', { method: 'email' })
   } catch (error) {
     console.log(error)
   }

@@ -55,9 +55,13 @@ app.use(pinia)
 app.use(router)
 app.use(vuetify)
 
-app.use(VueGtag, {
-  config: { id: 'G-Z322K0TK90' }
-})
+app.use(
+  VueGtag,
+  {
+    config: { id: 'G-Z322K0TK90' }
+  },
+  router
+)
 
 app.mount('#app')
 

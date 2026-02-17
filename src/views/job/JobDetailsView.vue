@@ -140,6 +140,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { event } from 'vue-gtag'
 import { getJob, applyForJob, getJobApplications } from '@/services/job'
 import { useAuthStore } from '@/stores/auth'
 import { useSnackbarStore } from '@/stores/snackbar'
@@ -201,6 +202,11 @@ const submitApplication = async () => {
   applying.value = true
   try {
     await applyForJob(job.value.id, email.value)
+    event('job_application_success', {
+      job_id: job.value.id,
+      job_title: job.value.title,
+      email: email.value
+    })
     snackbar.showSnackbar({ show: true, text: 'Candidatura enviada com sucesso!', color: 'success' })
     email.value = ''
     applyForm.value.resetValidation()

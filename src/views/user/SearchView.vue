@@ -110,6 +110,7 @@ import { useVolunteerStore } from '@/stores/volunteer.js'
 import { useJobtitleStore } from '@/stores/jobtitle.js'
 import volunteerService from '@/services/volunteer.js'
 import { useRoute, useRouter } from 'vue-router'
+import { event } from 'vue-gtag'
 
 const volunteerStore = useVolunteerStore()
 const jobtitleStore = useJobtitleStore()
@@ -158,6 +159,11 @@ const onClick = async () => {
     if (selectedJobTitle.value) params.jobtitle_id = selectedJobTitle.value
 
     await volunteerStore.searchPublic(params)
+
+    event('search', {
+      search_term: email.value || 'all',
+      job_title_filter: selectedJobTitle.value || 'none'
+    })
 
     // Only set searchedEmail if email was actually used in search
     searchedEmail.value = email.value || ''

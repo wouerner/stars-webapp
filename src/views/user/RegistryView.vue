@@ -300,6 +300,7 @@
 import { ref, reactive } from 'vue'
 
 import { useRouter } from 'vue-router'
+import { event } from 'vue-gtag'
 import { useVolunteerStore } from '@/stores/volunteer.js'
 import { useJobtitleStore } from '@/stores/jobtitle.js'
 import { useVolunteerTypeStore } from '@/stores/volunteerType.js'
@@ -393,6 +394,11 @@ const submitApplicant = async () => {
 
     // Create the volunteer profile directly
     await volunteerStore.create(payload)
+    event('sign_up', {
+      method: 'email',
+      volunteer_type: applicant.volunteer_type_id,
+      job_title: applicant.jobtitle_id
+    })
     nextStep()
   } catch (error) {
     console.error(error.message)

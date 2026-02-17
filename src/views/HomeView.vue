@@ -8,7 +8,7 @@
             Aqui você desenvolve produtos reais e aprimora habilidades práticas para conquistar o
             mercado de trabalho.
           </p>
-          <a href="https://forms.gle/uptNHWPrLn4CgqMf9" target="_blank" rel="noopener noreferrer">
+          <a href="https://forms.gle/uptNHWPrLn4CgqMf9" target="_blank" rel="noopener noreferrer" @click="trackCTA('hero')">
             <v-btn class="font-weight-semibold">Quero fazer parte</v-btn>
           </a>
         </div>
@@ -98,7 +98,7 @@
         <h2>Aqui, todas as áreas são bem-vindas:</h2>
         <div class="occupation-info">
           <p>Participe da nossa comunidade e explore diversas oportunidades disponíveis</p>
-          <a href="https://forms.gle/uptNHWPrLn4CgqMf9" target="_blank" rel="noopener noreferrer">
+          <a href="https://forms.gle/uptNHWPrLn4CgqMf9" target="_blank" rel="noopener noreferrer" @click="trackCTA('occupation')">
             <v-btn class="font-weight-semibold">Quero fazer parte</v-btn>
           </a>
         </div>
@@ -175,6 +175,7 @@
                   href="https://github.com/SouJunior-Labs"
                   target="_blank"
                   rel="noopener noreferrer"
+                  @click="trackSocial('github')"
                 >
                   <v-icon icon="mdi-github" size="36" color="white"></v-icon>
                 </a>
@@ -184,6 +185,7 @@
                   href="https://forms.gle/uptNHWPrLn4CgqMf9"
                   target="_blank"
                   rel="noopener noreferrer"
+                  @click="trackSocial('discord')"
                 >
                   <v-icon icon="fa:fab fa-discord" size="36" color="white"></v-icon>
                 </a>
@@ -193,6 +195,7 @@
                   href="https://www.linkedin.com/company/soujunior-labs/"
                   target="_blank"
                   rel="noopener noreferrer"
+                  @click="trackSocial('linkedin')"
                 >
                   <v-icon icon="mdi-linkedin" size="36" color="white"></v-icon>
                 </a>
@@ -202,6 +205,7 @@
                   href="https://www.instagram.com/soujunior.tech/"
                   target="_blank"
                   rel="noopener noreferrer"
+                  @click="trackSocial('instagram')"
                 >
                   <v-icon icon="mdi-instagram" size="36" color="white"></v-icon>
                 </a>
@@ -211,6 +215,7 @@
                   href="https://www.youtube.com/@soujuniortech"
                   target="_blank"
                   rel="noopener noreferrer"
+                  @click="trackSocial('youtube')"
                 >
                   <v-icon icon="mdi-youtube" size="36" color="white"></v-icon>
                 </a>
@@ -220,6 +225,7 @@
                   href="https://twitter.com/SouJunior_Tech"
                   target="_blank"
                   rel="noopener noreferrer"
+                  @click="trackSocial('twitter')"
                 >
                   <v-icon icon="mdi-twitter" size="36" color="white"></v-icon>
                 </a>
@@ -229,6 +235,7 @@
                   href="https://www.facebook.com/people/SouJunior/100086671131030"
                   target="_blank"
                   rel="noopener noreferrer"
+                  @click="trackSocial('facebook')"
                 >
                   <v-icon icon="mdi-facebook" size="36" color="white"></v-icon>
                 </a>
@@ -244,6 +251,7 @@
 <script setup>
 import { ref } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
+import { event } from 'vue-gtag'
 import 'swiper/css'
 import imgUrl from '@/assets/logo-green-transparent.png'
 import logo_white from '@/assets/logo-white-transparent.png'
@@ -265,6 +273,7 @@ import areaIcon10 from '@/assets/home/areaIcon10.png'
 import areaIcon11 from '@/assets/home/areaIcon11.png'
 import areaIcon12 from '@/assets/home/areaIcon12.png'
 import howToUse from '@/assets/home/howToUse.png'
+
 
 const carouselItems = [
   { title: 'Business', icon: areaIcon1 },
@@ -290,6 +299,20 @@ const navigationPrev = () => {
   carouselItemsRef.value = carouselItemsRef.value
     .slice(-1)
     .concat(carouselItemsRef.value.slice(0, -1))
+}
+
+const trackCTA = (location) => {
+  event('cta_click', {
+    event_category: 'engagement',
+    event_label: `Quero fazer parte - ${location}`
+  })
+}
+
+const trackSocial = (platform) => {
+  event('social_click', {
+    event_category: 'social',
+    event_label: platform
+  })
 }
 </script>
 
