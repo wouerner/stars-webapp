@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12" class="d-flex justify-space-between align-center">
         <h1 class="text-h4">Vagas de Voluntariado</h1>
-        <v-btn v-if="logged" color="primary" :to="{ name: 'job-create' }">
+        <v-btn v-if="authStore.isHead()" color="primary" :to="{ name: 'job-create' }">
           <v-icon left>mdi-plus</v-icon>
           Criar Nova Vaga
         </v-btn>
@@ -57,7 +57,7 @@
               Ver Detalhes
             </v-btn>
             <v-spacer></v-spacer>
-            <template v-if="logged">
+            <template v-if="authStore.isHead()">
               <v-btn
                 icon="mdi-pencil"
                 size="small"

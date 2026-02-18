@@ -138,175 +138,176 @@
                 </v-list-item>
 
                 <v-list-item class="px-0">
-                  <template #prepend>
-                    <v-icon
-                      icon="mdi-heart"
-                      :color="currentVolunteer.is_apoiase_supporter ? 'pink' : 'grey'"
-                    ></v-icon>
-                  </template>
-                  <v-list-item-title class="d-flex align-center">
-                    <span
-                      v-if="currentVolunteer.is_apoiase_supporter"
-                      class="text-pink font-weight-bold"
-                      >Apoiador APOIA.se</span
-                    >
-                    <span v-else>Não é apoiador</span>
-                    <v-btn
-                      icon="mdi-refresh"
-                      size="x-small"
-                      variant="text"
-                      color="primary"
-                      class="ml-2"
-                      :loading="isCheckingApoiase"
-                      title="Verificar status APOIA.se"
-                      @click="checkApoiaseStatus"
-                    ></v-btn>
-                  </v-list-item-title>
-                  <v-list-item-subtitle>Status de Apoio</v-list-item-subtitle>
-                </v-list-item>
-              </v-list>
-            </v-card-text>
-          </v-card>
-        </v-col>
+          <template #prepend>
+            <v-icon
+              icon="mdi-heart"
+              :color="currentVolunteer.is_apoiase_supporter ? 'pink' : 'grey'"
+            ></v-icon>
+          </template>
+          <v-list-item-title class="d-flex align-center">
+            <span
+              v-if="currentVolunteer.is_apoiase_supporter"
+              class="text-pink font-weight-bold"
+              >Apoiador APOIA.se</span
+            >
+            <span v-else>Não é apoiador</span>
+            <v-btn
+              v-if="authStore.isHead()"
+              icon="mdi-refresh"
+              size="x-small"
+              variant="text"
+              color="primary"
+              class="ml-2"
+              :loading="isCheckingApoiase"
+              title="Verificar status APOIA.se"
+              @click="checkApoiaseStatus"
+            ></v-btn>
+          </v-list-item-title>
+          <v-list-item-subtitle>Status de Apoio</v-list-item-subtitle>
+        </v-list-item>
+      </v-list>
+    </v-card-text>
+  </v-card>
+</v-col>
 
-        <!-- Gerenciar Status -->
-        <v-col cols="12" md="6">
-          <v-card class="h-100" elevation="2">
-            <v-card-item>
-              <v-card-title class="text-h6">Gerenciar Status</v-card-title>
-            </v-card-item>
-            <v-card-text>
-              <p class="text-body-2 mb-4">Atualize o status do voluntário no processo seletivo.</p>
-              <v-select
-                v-model="selectedStatusId"
-                :items="statuses"
-                item-title="name"
-                item-value="id"
-                label="Selecione o novo status"
-                variant="outlined"
-                color="primary"
-                hide-details
-                :loading="isLoadingStatus"
-                :disabled="isLoadingStatus"
-                @update:model-value="updateVolunteerStatus"
-              ></v-select>
-            </v-card-text>
-          </v-card>
-        </v-col>
+<!-- Gerenciar Status -->
+<v-col v-if="authStore.isHead()" cols="12" md="6">
+  <v-card class="h-100" elevation="2">
+    <v-card-item>
+      <v-card-title class="text-h6">Gerenciar Status</v-card-title>
+    </v-card-item>
+    <v-card-text>
+      <p class="text-body-2 mb-4">Atualize o status do voluntário no processo seletivo.</p>
+      <v-select
+        v-model="selectedStatusId"
+        :items="statuses"
+        item-title="name"
+        item-value="id"
+        label="Selecione o novo status"
+        variant="outlined"
+        color="primary"
+        hide-details
+        :loading="isLoadingStatus"
+        :disabled="isLoadingStatus"
+        @update:model-value="updateVolunteerStatus"
+      ></v-select>
+    </v-card-text>
+  </v-card>
+</v-col>
 
-        <!-- Gerenciar Squad -->
-        <v-col cols="12" md="6">
-          <v-card class="h-100" elevation="2">
-            <v-card-item>
-              <v-card-title class="text-h6">Gerenciar Squad</v-card-title>
-            </v-card-item>
-            <v-card-text>
-              <p class="text-body-2 mb-4">Atualize a Squad do voluntário.</p>
-              <v-select
-                v-model="selectedSquadId"
-                :items="squads"
-                item-title="name"
-                item-value="id"
-                label="Selecione a nova Squad"
-                variant="outlined"
-                color="primary"
-                hide-details
-                :loading="isLoadingSquad"
-                :disabled="isLoadingSquad"
-                @update:model-value="updateVolunteerSquad"
-              ></v-select>
-            </v-card-text>
-          </v-card>
-        </v-col>
+<!-- Gerenciar Squad -->
+<v-col v-if="authStore.isHead()" cols="12" md="6">
+  <v-card class="h-100" elevation="2">
+    <v-card-item>
+      <v-card-title class="text-h6">Gerenciar Squad</v-card-title>
+    </v-card-item>
+    <v-card-text>
+      <p class="text-body-2 mb-4">Atualize a Squad do voluntário.</p>
+      <v-select
+        v-model="selectedSquadId"
+        :items="squads"
+        item-title="name"
+        item-value="id"
+        label="Selecione a nova Squad"
+        variant="outlined"
+        color="primary"
+        hide-details
+        :loading="isLoadingSquad"
+        :disabled="isLoadingSquad"
+        @update:model-value="updateVolunteerSquad"
+      ></v-select>
+    </v-card-text>
+  </v-card>
+</v-col>
 
-        <!-- Gerenciar Tipo de Voluntário -->
-        <v-col cols="12" md="6">
-          <v-card class="h-100" elevation="2">
-            <v-card-item>
-              <v-card-title class="text-h6">Gerenciar Tipo</v-card-title>
-            </v-card-item>
-            <v-card-text>
-              <p class="text-body-2 mb-4">Atualize o nível/tipo do voluntário.</p>
-              <v-select
-                v-model="selectedTypeId"
-                :items="volunteerTypes"
-                item-title="name"
-                item-value="id"
-                label="Selecione o novo tipo"
-                variant="outlined"
-                color="primary"
-                hide-details
-                :loading="isLoadingType"
-                :disabled="isLoadingType"
-                @update:model-value="updateVolunteerType"
-              ></v-select>
-            </v-card-text>
-          </v-card>
-        </v-col>
+<!-- Gerenciar Tipo de Voluntário -->
+<v-col v-if="authStore.isHead()" cols="12" md="6">
+  <v-card class="h-100" elevation="2">
+    <v-card-item>
+      <v-card-title class="text-h6">Gerenciar Tipo</v-card-title>
+    </v-card-item>
+    <v-card-text>
+      <p class="text-body-2 mb-4">Atualize o nível/tipo do voluntário.</p>
+      <v-select
+        v-model="selectedTypeId"
+        :items="volunteerTypes"
+        item-title="name"
+        item-value="id"
+        label="Selecione o novo tipo"
+        variant="outlined"
+        color="primary"
+        hide-details
+        :loading="isLoadingType"
+        :disabled="isLoadingType"
+        @update:model-value="updateVolunteerType"
+      ></v-select>
+    </v-card-text>
+  </v-card>
+</v-col>
 
-        <!-- Gerenciar Verticais -->
-        <v-col cols="12" md="6">
-          <v-card class="h-100" elevation="2">
-            <v-card-item>
-              <v-card-title class="text-h6">Gerenciar Verticais</v-card-title>
-            </v-card-item>
-            <v-card-text>
-              <p class="text-body-2 mb-4">Atualize as verticais do voluntário.</p>
-              <v-select
-                v-model="selectedVerticalIds"
-                :items="verticals"
-                item-title="name"
-                item-value="id"
-                label="Selecione as verticais"
-                variant="outlined"
-                color="primary"
-                hide-details
-                multiple
-                chips
-                :loading="isLoadingVerticals"
-                :disabled="isLoadingVerticals"
-                @update:model-value="updateVolunteerVerticals"
-              ></v-select>
-            </v-card-text>
-          </v-card>
-        </v-col>
+<!-- Gerenciar Verticais -->
+<v-col v-if="authStore.isHead()" cols="12" md="6">
+  <v-card class="h-100" elevation="2">
+    <v-card-item>
+      <v-card-title class="text-h6">Gerenciar Verticais</v-card-title>
+    </v-card-item>
+    <v-card-text>
+      <p class="text-body-2 mb-4">Atualize as verticais do voluntário.</p>
+      <v-select
+        v-model="selectedVerticalIds"
+        :items="verticals"
+        item-title="name"
+        item-value="id"
+        label="Selecione as verticais"
+        variant="outlined"
+        color="primary"
+        hide-details
+        multiple
+        chips
+        :loading="isLoadingVerticals"
+        :disabled="isLoadingVerticals"
+        @update:model-value="updateVolunteerVerticals"
+      ></v-select>
+    </v-card-text>
+  </v-card>
+</v-col>
 
-        <!-- Gerenciar Certificados -->
-        <v-col cols="12" md="6">
-          <v-card class="h-100" elevation="2">
-            <v-card-item>
-              <v-card-title class="text-h6">Gerenciar Certificados</v-card-title>
-            </v-card-item>
-            <v-card-text>
-              <p class="text-body-2 mb-4">Emita um novo certificado para o voluntário.</p>
-              <v-btn color="primary" @click="certificateDialog = true">Emitir Certificado</v-btn>
+<!-- Gerenciar Certificados -->
+<v-col cols="12" md="6">
+  <v-card class="h-100" elevation="2">
+    <v-card-item>
+      <v-card-title class="text-h6">Gerenciar Certificados</v-card-title>
+    </v-card-item>
+    <v-card-text>
+      <p v-if="authStore.isHead()" class="text-body-2 mb-4">Emita um novo certificado para o voluntário.</p>
+      <v-btn v-if="authStore.isHead()" color="primary" @click="certificateDialog = true">Emitir Certificado</v-btn>
 
-              <v-list class="mt-4">
-                <v-list-item
-                  v-for="certificate in currentVolunteer.certificates"
-                  :key="certificate.id"
-                  :to="{ name: 'certificate', params: { id: certificate.id } }"
-                >
-                  <v-list-item-title>Certificado de {{ certificate.hours }} horas</v-list-item-title>
-                  <v-list-item-subtitle>
-                    Emitido em: {{ formatDateTime(certificate.issued_at) }}
-                    <v-chip v-if="certificate.is_cancelled" color="error" size="x-small" class="ml-2">Cancelado</v-chip>
-                  </v-list-item-subtitle>
-                  <template #append>
-                    <v-btn
-                      v-if="!certificate.is_cancelled"
-                      icon="mdi-delete"
-                      size="small"
-                      variant="text"
-                      color="error"
-                      @click.prevent="confirmCancelCertificate(certificate)"
-                    ></v-btn>
-                  </template>
-                </v-list-item>
-              </v-list>
-            </v-card-text>
-          </v-card>
-        </v-col>
+      <v-list class="mt-4">
+        <v-list-item
+          v-for="certificate in currentVolunteer.certificates"
+          :key="certificate.id"
+          :to="{ name: 'certificate', params: { id: certificate.id } }"
+        >
+          <v-list-item-title>Certificado de {{ certificate.hours }} horas</v-list-item-title>
+          <v-list-item-subtitle>
+            Emitido em: {{ formatDateTime(certificate.issued_at) }}
+            <v-chip v-if="certificate.is_cancelled" color="error" size="x-small" class="ml-2">Cancelado</v-chip>
+          </v-list-item-subtitle>
+          <template #append>
+            <v-btn
+              v-if="!certificate.is_cancelled && authStore.isHead()"
+              icon="mdi-delete"
+              size="small"
+              variant="text"
+              color="error"
+              @click.prevent="confirmCancelCertificate(certificate)"
+            ></v-btn>
+          </template>
+        </v-list-item>
+      </v-list>
+    </v-card-text>
+  </v-card>
+</v-col>
 
         <!-- Histórico -->
         <v-col cols="12">
@@ -577,6 +578,7 @@ const feedbackToDelete = ref(null)
 const feedbackLoading = ref(false)
 
 const canEdit = (feedback) => {
+  if (authStore.isAdmin()) return true
   return authStore.auth.email && feedback.author && authStore.auth.email === feedback.author.email
 }
 

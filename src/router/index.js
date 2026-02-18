@@ -5,6 +5,7 @@ import RegistryView from '../views/user/RegistryView.vue'
 import LoginView from '@/views/user/LoginView.vue'
 import ProfileView from '../views/user/ProfileView.vue'
 import UserRegisterView from '../views/user/UserRegisterView.vue'
+import UsersListView from '../views/user/UsersListView.vue'
 
 // squad
 import SquadsView from '../views/squad/SquadsView.vue'
@@ -51,7 +52,8 @@ const router = createRouter({
       name: 'job-create',
       component: JobCreateView,
       meta: {
-        auth: true
+        auth: true,
+        roles: ['ADMIN', 'HEAD']
       }
     },
     {
@@ -64,7 +66,8 @@ const router = createRouter({
       name: 'job-update',
       component: JobCreateView,
       meta: {
-        auth: true
+        auth: true,
+        roles: ['ADMIN', 'HEAD']
       }
     },
     {
@@ -115,6 +118,15 @@ const router = createRouter({
       }
     },
     {
+      path: '/users-management',
+      name: 'users-management',
+      component: UsersListView,
+      meta: {
+        auth: true,
+        roles: ['ADMIN']
+      }
+    },
+    {
       path: '/squads/:uuid',
       name: 'squads',
       component: SquadsView,
@@ -137,7 +149,8 @@ const router = createRouter({
       component: SquadCreateView,
       meta: {
         auth: true,
-        type: 'create'
+        type: 'create',
+        roles: ['ADMIN', 'HEAD']
       }
     },
     {
@@ -154,7 +167,8 @@ const router = createRouter({
       component: SquadCreateView,
       meta: {
         auth: true,
-        type: 'update'
+        type: 'update',
+        roles: ['ADMIN', 'HEAD']
       }
     },
     {
@@ -170,7 +184,8 @@ const router = createRouter({
       name: 'project-create',
       component: ProjectCreateView,
       meta: {
-        auth: true
+        auth: true,
+        roles: ['ADMIN', 'HEAD']
       }
     },
     {
@@ -178,7 +193,8 @@ const router = createRouter({
       name: 'onboarding',
       component: () => import('../views/OnboardingView.vue'),
       meta: {
-        auth: true
+        auth: true,
+        roles: ['ADMIN', 'HEAD', 'MENTOR']
       }
     },
     {
@@ -194,7 +210,8 @@ const router = createRouter({
       name: 'volunteers',
       component: VolunteersView,
       meta: {
-        auth: true
+        auth: true,
+        roles: ['ADMIN', 'HEAD', 'MENTOR']
       }
     },
     {
@@ -203,7 +220,8 @@ const router = createRouter({
       component: VolunteerDetailsView,
       props: true,
       meta: {
-        auth: true
+        auth: true,
+        roles: ['ADMIN', 'HEAD', 'MENTOR']
       }
     },
     {
@@ -262,15 +280,22 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
-
   const auth = useAuthStore()
-
-  if (to.meta.auth === true && (token === '' || token === null)) {
-    router.push({ name: 'login' })
-  }
 
   if (auth.auth.name === '') {
     auth.loginByToken()
+  }
+
+  if (to.meta.auth === true && (token === '' || token === null)) {
+    return next({ name: 'login' })
+  }
+
+  // Check if route has restricted roles
+  if (to.meta.roles && to.meta.roles.length > 0) {
+    if (!auth.auth.role || !to.meta.roles.includes(auth.auth.role)) {
+      // User doesn't have the required role
+      return next({ name: 'home' }) // or some "Access Denied" page
+    }
   }
 
   return next()

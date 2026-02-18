@@ -54,8 +54,8 @@
           md="3"
         >
           <v-card
-            v-ripple="!!authStore.auth.email"
-            :class="{ 'h-100': true, 'cursor-pointer': !!authStore.auth.email }"
+            v-ripple="authStore.isMentor()"
+            :class="{ 'h-100': true, 'cursor-pointer': authStore.isMentor() }"
             elevation="2"
             @click="navigateToVolunteers(statusStat.status)"
           >
@@ -86,8 +86,8 @@
           md="3"
         >
           <v-card
-            v-ripple="!!authStore.auth.email"
-            :class="{ 'h-100': true, 'cursor-pointer': !!authStore.auth.email }"
+            v-ripple="authStore.isMentor()"
+            :class="{ 'h-100': true, 'cursor-pointer': authStore.isMentor() }"
             elevation="2"
             @click="navigateToSquad(squadStat.squad)"
           >
@@ -115,8 +115,8 @@
           md="3"
         >
           <v-card
-            v-ripple="!!authStore.auth.email"
-            :class="{ 'h-100': true, 'cursor-pointer': !!authStore.auth.email }"
+            v-ripple="authStore.isMentor()"
+            :class="{ 'h-100': true, 'cursor-pointer': authStore.isMentor() }"
             elevation="2"
             @click="navigateToType(typeStat.volunteer_type)"
           >
@@ -167,7 +167,7 @@ onMounted(async () => {
 })
 
 const navigateToVolunteers = (statusName) => {
-  if (!authStore.auth.email) return
+  if (!authStore.isMentor()) return
   const status = volunteerStore.statuses.find((s) => s.name === statusName)
   if (status) {
     router.push({ name: 'volunteers', query: { status: status.id } })
@@ -175,7 +175,7 @@ const navigateToVolunteers = (statusName) => {
 }
 
 const navigateToSquad = (squadName) => {
-  if (!authStore.auth.email) return
+  if (!authStore.isMentor()) return
   const squad = squadStore.squads.find((s) => s.name === squadName)
   if (squad) {
     router.push({ name: 'volunteers', query: { squad: squad.id } })
@@ -183,7 +183,7 @@ const navigateToSquad = (squadName) => {
 }
 
 const navigateToType = (typeName) => {
-  if (!authStore.auth.email) return
+  if (!authStore.isMentor()) return
   const type = volunteerTypeStore.data.find((t) => t.name === typeName)
   if (type) {
     router.push({ name: 'volunteers', query: { volunteer_type: type.id } })

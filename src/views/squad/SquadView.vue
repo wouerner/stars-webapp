@@ -22,11 +22,19 @@
         </div>
         <div class="mt-8 d-flex align-center ga-4">
           <v-btn
-            v-if="authStore.auth.email"
+            v-if="authStore.isHead()"
             color="primary"
             :to="{ name: 'squad-update', params: { uuid: squad.id || squad.uuid } }"
           >
             Editar
+          </v-btn>
+          <v-btn
+            v-if="authStore.isAdmin()"
+            color="error"
+            variant="outlined"
+            @click="confirmDelete"
+          >
+            Deletar
           </v-btn>
           <v-btn color="tertiary" @click="cancel"> Voltar </v-btn>
         </div>
@@ -34,6 +42,20 @@
       <div v-else>
         <v-progress-circular indeterminate></v-progress-circular>
       </div>
+
+      <!-- Delete Dialog -->
+      <v-dialog v-model="deleteDialog" max-width="400px">
+        <v-card class="rounded-lg">
+          <v-card-title class="text-h6 px-6 py-4">Deletar Squad?</v-card-title>
+          <v-card-text class="px-6 pb-2">
+            Tem certeza que deseja deletar a squad <strong>{{ squad.name }}</strong>? Esta ação não pode ser desfeita.
+          </v-card-text>
+          <v-card-actions class="px-6 pb-4 justify-end">
+            <v-btn color="grey-darken-1" variant="text" @click="deleteDialog = false">Cancelar</v-btn>
+            <v-btn color="error" variant="flat" :loading="isDeleting" @click="deleteSquad">Deletar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-sheet>
 
     <v-sheet v-if="squad" class="pa-4 rounded-lg mt-4">
@@ -132,6 +154,8 @@ const route = useRoute()
 const squadStore = useSquadStore()
 const authStore = useAuthStore()
 const squad = ref(null)
+const deleteDialog = ref(false)
+const isDeleting = ref(false)
 
 const activeVolunteers = computed(() => squad.value?.volunteers?.filter((v) => v.status?.name !== 'INACTIVE') || [])
 const inactiveVolunteers = computed(() => squad.value?.volunteers?.filter((v) => v.status?.name === 'INACTIVE') || [])
@@ -161,6 +185,24 @@ onMounted(async () => {
 
 function cancel() {
   router.back()
+}
+
+function confirmDelete() {
+  deleteDialog.value = true
+}
+
+async function deleteSquad() {
+  isDeleting.value = true
+  try {
+    await squadStore.delete(squad.value.id)
+    router.push({ name: 'squads-list' })
+  } catch (error) {
+    console.error('Error deleting squad', error)
+    alert('Erro ao deletar squad')
+  } finally {
+    isDeleting.value = false
+    deleteDialog.value = false
+  }
 }
 
 function getVolunteerLink(volunteerId) {

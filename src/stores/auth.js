@@ -9,7 +9,7 @@ export const useAuthStore = defineStore(
   () => {
     const axiosInstance = instance
 
-    const auth = ref({ name: '', email: '', uuid: '', iat: '' })
+    const auth = ref({ name: '', email: '', role: '', uuid: '', iat: '' })
     const squads = ref([])
     const useSnackbar = useSnackbarStore()
 
@@ -27,11 +27,15 @@ export const useAuthStore = defineStore(
         const data = response.data
 
         const token = data.access_token
+        const role = data.role
 
         localStorage.setItem('token', token)
         axiosInstance.defaults.headers['Authorization'] = 'Bearer ' + token
 
         auth.value = parseJwt(token)
+        if (role) {
+          auth.value.role = role
+        }
 
         useSnackbar.showSnackbar({
           text: 'Bem vindo! ' + auth.value.email,
@@ -73,6 +77,10 @@ export const useAuthStore = defineStore(
     function getUuid() {
       return auth.value.uuid
     }
+
+    const isAdmin = () => auth.value.role === 'ADMIN'
+    const isHead = () => auth.value.role === 'HEAD' || auth.value.role === 'ADMIN'
+    const isMentor = () => ['ADMIN', 'HEAD', 'MENTOR'].includes(auth.value.role)
 
     async function logout() {
       localStorage.removeItem('token')
@@ -125,6 +133,9 @@ export const useAuthStore = defineStore(
       auth,
       getName,
       getUuid,
+      isAdmin,
+      isHead,
+      isMentor,
       $reset,
       squads,
       getSquad,

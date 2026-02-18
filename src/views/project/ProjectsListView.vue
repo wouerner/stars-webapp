@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12" class="d-flex justify-space-between align-center">
         <h1 class="text-h4">Projetos</h1>
-        <v-btn v-if="authStore.auth.email" color="primary" :to="{ name: 'project-create' }">
+        <v-btn v-if="authStore.isHead()" color="primary" :to="{ name: 'project-create' }">
           <v-icon left>mdi-plus</v-icon>
           Criar Novo Projeto
         </v-btn>
@@ -29,7 +29,7 @@
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn
-              v-if="authStore.auth.email"
+              v-if="authStore.isAdmin()"
               icon
               color="error"
               variant="text"

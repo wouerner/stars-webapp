@@ -36,7 +36,7 @@
 					/-->
           <!-- v-btn variant="text" class="font-weight-semibold" :to="{ name: 'home' }"> Home </v-btn-->
           <v-btn
-            v-if="logged === true"
+            v-if="logged === true && auth.isMentor()"
             variant="text"
             class="font-weight-semibold"
             :to="{ name: 'onboarding' }"
@@ -44,7 +44,7 @@
             Onboarding
           </v-btn>
           <v-btn
-            v-if="logged === true"
+            v-if="logged === true && auth.isMentor()"
             variant="text"
             class="font-weight-semibold"
             :to="{ name: 'dashboard' }"
@@ -52,7 +52,7 @@
             Dashboard
           </v-btn>
           <v-btn
-            v-if="logged === true"
+            v-if="logged === true && auth.isMentor()"
             variant="text"
             class="font-weight-semibold"
             :to="{ name: 'volunteers' }"
@@ -189,6 +189,9 @@
             <v-list>
               <v-list-item link :to="{ name: 'profile' }">
                 <v-list-item-title>Profile</v-list-item-title>
+              </v-list-item>
+              <v-list-item v-if="auth.isAdmin()" link :to="{ name: 'users-management' }">
+                <v-list-item-title>Gerenciar Usuários</v-list-item-title>
               </v-list-item>
               <v-list-item link @click="auth.logout()">
                 <v-list-item-title>Logout</v-list-item-title>

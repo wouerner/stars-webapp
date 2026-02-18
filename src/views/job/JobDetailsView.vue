@@ -26,11 +26,13 @@
               </div>
                          </div>
                          
-                         <div v-if="logged">
+                         <div v-if="authStore.isHead()">
                             <v-btn color="primary" variant="outlined" :to="{ name: 'job-update', params: { id: job.id } }">
                               Editar
                             </v-btn>
-            
+                            <v-btn v-if="authStore.isAdmin()" color="error" variant="text" class="ml-2" @click="confirmDelete">
+                              Deletar
+                            </v-btn>
             </div>
           </div>
         </v-col>
@@ -90,7 +92,7 @@
 
             <!-- Admin: List of Applications -->
 
-            <v-row v-if="logged">
+            <v-row v-if="authStore.isMentor()">
 
                <v-col cols="12">
 
@@ -134,14 +136,28 @@
         <v-alert type="error">Vaga não encontrada.</v-alert>
       </v-col>
     </v-row>
+
+    <!-- Delete Dialog -->
+    <v-dialog v-model="deleteDialog" max-width="400px">
+      <v-card class="rounded-lg">
+        <v-card-title class="text-h6 px-6 py-4">Deletar Vaga?</v-card-title>
+        <v-card-text class="px-6 pb-2">
+          Tem certeza que deseja deletar esta vaga? Esta ação não pode ser desfeita.
+        </v-card-text>
+        <v-card-actions class="px-6 pb-4 justify-end">
+          <v-btn color="grey-darken-1" variant="text" @click="deleteDialog = false">Cancelar</v-btn>
+          <v-btn color="error" variant="flat" :loading="isDeleting" @click="handleDeleteJob">Deletar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { event } from 'vue-gtag'
-import { getJob, applyForJob, getJobApplications } from '@/services/job'
+import { getJob, applyForJob, getJobApplications, deleteJob } from '@/services/job'
 import { useAuthStore } from '@/stores/auth'
 import { useSnackbarStore } from '@/stores/snackbar'
 import { formatDate, formatDateTime } from '@/utils/date'
@@ -149,6 +165,7 @@ import { formatDate, formatDateTime } from '@/utils/date'
 const authStore = useAuthStore()
 const snackbar = useSnackbarStore()
 const route = useRoute()
+const router = useRouter()
 
 const job = ref(null)
 const loading = ref(true)
@@ -159,6 +176,10 @@ const email = ref('')
 const applying = ref(false)
 const applyValid = ref(false)
 const applyForm = ref(null)
+
+// Delete State
+const deleteDialog = ref(false)
+const isDeleting = ref(false)
 
 const logged = computed(() => {
   return !!authStore.auth.email || !!authStore.auth.sub
@@ -171,7 +192,7 @@ const emailRules = [
 
 onMounted(async () => {
   await fetchJob()
-  if (logged.value) {
+  if (authStore.isMentor()) {
      await fetchApplications()
   }
 })
@@ -193,6 +214,25 @@ const fetchApplications = async () => {
     applications.value = response.data
   } catch (error) {
     console.error(error)
+  }
+}
+
+const confirmDelete = () => {
+  deleteDialog.value = true
+}
+
+const handleDeleteJob = async () => {
+  isDeleting.value = true
+  try {
+    await deleteJob(job.value.id)
+    snackbar.showSnackbar({ show: true, text: 'Vaga deletada com sucesso!', color: 'success' })
+    router.push({ name: 'jobs-list' })
+  } catch (error) {
+    console.error(error)
+    snackbar.showSnackbar({ show: true, text: 'Erro ao deletar vaga.', color: 'error' })
+  } finally {
+    isDeleting.value = false
+    deleteDialog.value = false
   }
 }
 
