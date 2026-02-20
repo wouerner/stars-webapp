@@ -25,67 +25,79 @@
                   <v-list-item-subtitle>Email</v-list-item-subtitle>
                 </v-list-item>
 
-                <v-list-item v-if="currentVolunteer.phone" class="px-0">
+                <v-list-item class="px-0">
                   <template #prepend>
-                    <v-icon icon="mdi-phone" color="green-darken-1"></v-icon>
+                    <v-icon icon="mdi-phone" :color="currentVolunteer.phone ? 'green-darken-1' : 'grey'"></v-icon>
                   </template>
                   <v-list-item-title>
                     <a
+                      v-if="currentVolunteer.phone"
                       :href="`https://wa.me/${currentVolunteer.phone.replace(/\D/g, '')}`"
                       target="_blank"
                       class="text-decoration-none text-primary"
                     >
                       {{ currentVolunteer.phone }}
                     </a>
+                    <span v-else class="text-medium-emphasis">sem dados</span>
                   </v-list-item-title>
                   <v-list-item-subtitle>Telefone / WhatsApp</v-list-item-subtitle>
                 </v-list-item>
 
-                <v-list-item v-if="currentVolunteer.linkedin" class="px-0">
+                <v-list-item class="px-0">
                   <template #prepend>
-                    <v-icon icon="mdi-linkedin" color="blue-darken-1"></v-icon>
+                    <v-icon icon="mdi-linkedin" :color="currentVolunteer.linkedin ? 'blue-darken-1' : 'grey'"></v-icon>
                   </template>
                   <v-list-item-title>
                     <a
+                      v-if="currentVolunteer.linkedin"
                       :href="currentVolunteer.linkedin"
                       target="_blank"
                       class="text-decoration-none text-primary"
                     >
                       {{ currentVolunteer.linkedin }}
                     </a>
+                    <span v-else class="text-medium-emphasis">sem dados</span>
                   </v-list-item-title>
                   <v-list-item-subtitle>LinkedIn</v-list-item-subtitle>
                 </v-list-item>
 
-                <v-list-item v-if="currentVolunteer.github" class="px-0">
+                <v-list-item class="px-0">
                   <template #prepend>
-                    <v-icon icon="mdi-github" color="grey-darken-3"></v-icon>
+                    <v-icon icon="mdi-github" :color="currentVolunteer.github ? 'grey-darken-3' : 'grey'"></v-icon>
                   </template>
                   <v-list-item-title>
                     <a
+                      v-if="currentVolunteer.github"
                       :href="currentVolunteer.github"
                       target="_blank"
                       class="text-decoration-none text-primary"
                     >
                       {{ currentVolunteer.github }}
                     </a>
+                    <span v-else class="text-medium-emphasis">sem dados</span>
                   </v-list-item-title>
                   <v-list-item-subtitle>GitHub</v-list-item-subtitle>
                 </v-list-item>
 
-                <v-list-item v-if="currentVolunteer.discord" class="px-0">
+                <v-list-item class="px-0">
                   <template #prepend>
-                    <v-icon icon="fa:fab fa-discord" color="indigo-lighten-1"></v-icon>
+                    <v-icon icon="fa:fab fa-discord" :color="currentVolunteer.discord ? 'indigo-lighten-1' : 'grey'"></v-icon>
                   </template>
-                  <v-list-item-title>{{ currentVolunteer.discord }}</v-list-item-title>
+                  <v-list-item-title>
+                    <span v-if="currentVolunteer.discord">{{ currentVolunteer.discord }}</span>
+                    <span v-else class="text-medium-emphasis">sem dados</span>
+                  </v-list-item-title>
                   <v-list-item-subtitle>Discord</v-list-item-subtitle>
                 </v-list-item>
 
-                <v-list-item v-if="currentVolunteer.job_title" class="px-0">
+                <v-list-item class="px-0">
                   <template #prepend>
-                    <v-icon icon="mdi-briefcase" color="grey-darken-1"></v-icon>
+                    <v-icon icon="mdi-briefcase" :color="currentVolunteer.job_title ? 'grey-darken-1' : 'grey'"></v-icon>
                   </template>
-                  <v-list-item-title>{{ currentVolunteer.job_title.name }}</v-list-item-title>
+                  <v-list-item-title>
+                    <span v-if="currentVolunteer.job_title">{{ currentVolunteer.job_title.name }}</span>
+                    <span v-else class="text-medium-emphasis">sem dados</span>
+                  </v-list-item-title>
                   <v-list-item-subtitle>Cargo</v-list-item-subtitle>
                 </v-list-item>
 
@@ -110,29 +122,35 @@
                   <v-list-item-subtitle>Status Atual</v-list-item-subtitle>
                 </v-list-item>
 
-                <v-list-item v-if="currentVolunteer.squad" class="px-0">
+                <v-list-item class="px-0">
                   <template #prepend>
-                    <v-icon icon="mdi-account-group" color="grey-darken-1"></v-icon>
+                    <v-icon icon="mdi-account-group" :color="currentVolunteer.squad ? 'grey-darken-1' : 'grey'"></v-icon>
                   </template>
-                  <v-list-item-title>{{ currentVolunteer.squad.name }}</v-list-item-title>
+                  <v-list-item-title>
+                    <span v-if="currentVolunteer.squad">{{ currentVolunteer.squad.name }}</span>
+                    <span v-else class="text-medium-emphasis">sem dados</span>
+                  </v-list-item-title>
                   <v-list-item-subtitle>Squad</v-list-item-subtitle>
                 </v-list-item>
 
-                <v-list-item v-if="currentVolunteer.verticals && currentVolunteer.verticals.length > 0" class="px-0">
+                <v-list-item class="px-0">
                   <template #prepend>
-                    <v-icon icon="mdi-layers" color="indigo"></v-icon>
+                    <v-icon icon="mdi-layers" :color="currentVolunteer.verticals && currentVolunteer.verticals.length > 0 ? 'indigo' : 'grey'"></v-icon>
                   </template>
                   <v-list-item-title class="d-flex flex-wrap gap-2">
-                    <v-chip
-                      v-for="vertical in currentVolunteer.verticals"
-                      :key="vertical.id"
-                      size="small"
-                      color="indigo-lighten-4"
-                      text-color="indigo-darken-4"
-                      label
-                    >
-                      {{ vertical.name }}
-                    </v-chip>
+                    <template v-if="currentVolunteer.verticals && currentVolunteer.verticals.length > 0">
+                      <v-chip
+                        v-for="vertical in currentVolunteer.verticals"
+                        :key="vertical.id"
+                        size="small"
+                        color="indigo-lighten-4"
+                        text-color="indigo-darken-4"
+                        label
+                      >
+                        {{ vertical.name }}
+                      </v-chip>
+                    </template>
+                    <span v-else class="text-medium-emphasis">sem dados</span>
                   </v-list-item-title>
                   <v-list-item-subtitle>Verticais</v-list-item-subtitle>
                 </v-list-item>
