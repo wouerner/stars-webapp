@@ -71,7 +71,12 @@
               label="Nome *"
               variant="outlined"
               placeholder="Ex: Backend, Frontend, DevOps..."
-              :rules="[(v) => !!v || 'Nome é obrigatório']"
+              :rules="[
+                (v) => !!v || 'Nome é obrigatório',
+                (v) => (v && v.length <= 50) || 'O nome deve ter no máximo 50 caracteres'
+              ]"
+              counter="50"
+              maxlength="50"
               prepend-inner-icon="mdi-layers"
             ></v-text-field>
 
@@ -82,6 +87,11 @@
               placeholder="Descreva a vertical..."
               rows="3"
               auto-grow
+              :rules="[
+                (v) => !v || v.length <= 255 || 'A descrição deve ter no máximo 255 caracteres'
+              ]"
+              counter="255"
+              maxlength="255"
             ></v-textarea>
           </v-form>
         </v-card-text>

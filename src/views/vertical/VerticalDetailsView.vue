@@ -127,7 +127,12 @@
               v-model="formData.name"
               label="Nome *"
               variant="outlined"
-              :rules="[(v) => !!v || 'Nome é obrigatório']"
+              :rules="[
+                (v) => !!v || 'Nome é obrigatório',
+                (v) => (v && v.length <= 50) || 'O nome deve ter no máximo 50 caracteres'
+              ]"
+              counter="50"
+              maxlength="50"
             ></v-text-field>
 
             <v-textarea
@@ -135,6 +140,11 @@
               label="Descrição (Opcional)"
               variant="outlined"
               rows="3"
+              :rules="[
+                (v) => !v || v.length <= 255 || 'A descrição deve ter no máximo 255 caracteres'
+              ]"
+              counter="255"
+              maxlength="255"
             ></v-textarea>
           </v-form>
         </v-card-text>

@@ -9,13 +9,26 @@
               <v-text-field
                 v-model="project.name"
                 label="Nome do Projeto"
-                :rules="[(v) => !!v || 'Nome é obrigatório']"
+                :rules="[
+                  (v) => !!v || 'Nome é obrigatório',
+                  (v) => (v && v.length <= 100) || 'O nome deve ter no máximo 100 caracteres'
+                ]"
+                counter="100"
+                maxlength="100"
                 required
               ></v-text-field>
 
               <v-textarea v-model="project.description" label="Descrição" rows="3"></v-textarea>
 
-              <v-text-field v-model="project.link" label="Link do Projeto"></v-text-field>
+              <v-text-field
+                v-model="project.link"
+                label="Link do Projeto"
+                :rules="[
+                  (v) => !v || v.length <= 255 || 'O link deve ter no máximo 255 caracteres'
+                ]"
+                counter="255"
+                maxlength="255"
+              ></v-text-field>
 
               <v-select
                 v-model="project.squad_ids"
