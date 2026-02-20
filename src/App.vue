@@ -8,33 +8,14 @@
       elevation="4"
     >
       <div class="w-100 d-flex align-center justify-space-between main-container">
-        <a class="d-flex align-center logo">
+        <router-link :to="{ name: 'home' }" class="d-flex align-center logo text-decoration-none">
           <h1
             class="d-none d-sm-block text-h5 font-weight-bold font-semibold primary-color ml-3 logo-text"
           >
             Stars
           </h1>
-        </a>
+        </router-link>
         <div class="d-flex align-center ga-2">
-          <!--v-icon
-						v-if="currentTheme.dark"
-						variant="text"
-						icon="mdi-weather-night"
-						size="large"
-						color="purple-darken-1"
-						class="mr-8 cursor-pointer"
-						@click="toggleTheme"
-					/-->
-          <!--v-icon
-						v-if="!currentTheme.dark"
-						variant="text"
-						icon="mdi-white-balance-sunny"
-						size="large"
-						color="orange"
-						class="mr-8 cursor-pointer"
-						@click="toggleTheme"
-					/-->
-          <!-- v-btn variant="text" class="font-weight-semibold" :to="{ name: 'home' }"> Home </v-btn-->
           <v-btn
             v-if="logged === true && auth.isMentor()"
             variant="text"
@@ -90,30 +71,6 @@
           >
             Verticais
           </v-btn>
-          <!--v-btn
-            v-if="logged === false"
-            variant="text"
-            class="font-weight-semibold"
-            :to="{ name: 'registry' }"
-          >
-            Registro
-          </v-btn-->
-          <!--v-btn
-            v-if="logged === false"
-            variant="text"
-            class="font-weight-semibold"
-            :to="{ name: 'login' }"
-          >
-            Login
-          </v-btn-->
-          <!--v-btn
-            v-if="logged === false"
-            variant="text"
-            class="font-weight-semibold"
-            :to="{ name: 'user-register' }"
-          >
-            Criar Conta
-          </v-btn-->
           <v-btn
             v-if="logged === false"
             variant="text"
@@ -209,9 +166,9 @@
           v-bind="snackbarStore.snack"
           location="top right"
         >
-          {{ text }}
+          {{ snackbarStore.snack.text }}
           <template #actions>
-            <v-btn variant="text" @click="snackbar = false"> Close </v-btn>
+            <v-btn variant="text" @click="snackbarStore.snack.show = false"> Close </v-btn>
           </template>
         </v-snackbar>
       </v-main>

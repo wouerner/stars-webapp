@@ -18,8 +18,8 @@ export const useSnackbarStore = defineStore(
       snack.value.timeout = payload.timeout || 3000 // Set default timeout if not provided
 
       setTimeout(() => {
-        this.show = false
-      }, this.timeout)
+        snack.value.show = false
+      }, snack.value.timeout)
     }
 
     function hideSnackbar() {

@@ -278,12 +278,21 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const token = localStorage.getItem('token')
   const auth = useAuthStore()
 
-  if (auth.auth.name === '') {
-    auth.loginByToken()
+  // Se tem token mas a store está vazia, espera carregar
+  if (token && auth.auth.name === '' && auth.auth.email === '') {
+    await auth.loginByToken()
+  }
+
+  // Se o usuário já está logado e tenta ir para login ou registro, redireciona
+  if (token && (to.name === 'login' || to.name === 'user-register' || to.name === 'registry')) {
+    if (auth.isMentor()) {
+      return next({ name: 'volunteers' })
+    }
+    return next({ name: 'home' })
   }
 
   if (to.meta.auth === true && (token === '' || token === null)) {
