@@ -44,7 +44,6 @@
             Onboarding
           </v-btn>
           <v-btn
-            v-if="logged === true && auth.isMentor()"
             variant="text"
             class="font-weight-semibold"
             :to="{ name: 'dashboard' }"
@@ -162,14 +161,6 @@
             :to="{ name: 'projects-list' }"
           >
             Projetos
-          </v-btn>
-          <v-btn
-            v-if="logged === false"
-            variant="text"
-            class="font-weight-semibold"
-            :to="{ name: 'dashboard' }"
-          >
-            Dashboard
           </v-btn>
           <v-menu v-if="logged === true" open-on-hover>
             <template #activator="{ props }">

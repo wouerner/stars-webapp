@@ -530,7 +530,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useVolunteerStore } from '@/stores/volunteer.js'
 import { useSquadStore } from '@/stores/squad.js'
@@ -723,8 +723,13 @@ const sortedStatusHistory = computed(() => {
   return []
 })
 
-onMounted(async () => {
+const fetchData = async () => {
   const volunteerId = route.params.id
+  if (!volunteerId) return
+
+  // Clear current volunteer to avoid showing stale data
+  volunteerStore.currentVolunteer = null
+
   await Promise.all([
     volunteerStore.fetchStatuses(),
     squadStore.fetchAllSquads(),
@@ -740,6 +745,15 @@ onMounted(async () => {
     selectedVerticalIds.value = currentVolunteer.value.verticals
       ? currentVolunteer.value.verticals.map((v) => v.id)
       : []
+  }
+}
+
+onMounted(fetchData)
+
+// Watch for ID changes to refetch data when navigating between volunteers
+watch(() => route.params.id, (newId) => {
+  if (newId) {
+    fetchData()
   }
 })
 
