@@ -285,6 +285,35 @@
             </v-list>
           </v-card>
 
+          <!-- Badges Card -->
+          <v-card v-if="volunteer.badges && volunteer.badges.length > 0" class="rounded-xl" elevation="1">
+            <div class="px-6 py-4 border-b">
+              <h2 class="text-subtitle-1 font-weight-bold">Conquistas (Badges)</h2>
+            </div>
+            <v-list class="py-0">
+              <v-list-item
+                v-for="badge in volunteer.badges"
+                :key="badge.id"
+                class="px-6 py-3"
+              >
+                <template #prepend>
+                  <v-avatar color="amber-darken-1" variant="tonal" class="mr-4 rounded-circle">
+                    <v-icon icon="mdi-medal"></v-icon>
+                  </v-avatar>
+                </template>
+                <v-list-item-title class="text-body-2 font-weight-bold">
+                  {{ badge.title }}
+                </v-list-item-title>
+                <v-list-item-subtitle class="text-caption">
+                  {{ badge.description }}
+                </v-list-item-subtitle>
+                <v-list-item-subtitle class="text-caption mt-1">
+                  Reconhecido por {{ badge.issuer_name }}
+                </v-list-item-subtitle>
+              </v-list-item>
+            </v-list>
+          </v-card>
+
           <!-- History Card -->
           <v-card class="rounded-xl" elevation="1">
             <div class="px-6 py-4 border-b">
@@ -466,6 +495,59 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+
+          <!-- Badge Dialog -->
+          <v-dialog v-model="badgeDialog" max-width="500px">
+            <v-card class="rounded-xl">
+              <v-card-title class="text-h6 px-6 py-4 border-b">
+                Atribuir Medalha (Badge)
+              </v-card-title>
+              <v-card-text class="pt-4 px-6">
+                <v-form ref="badgeFormRef" v-model="badgeValid">
+                  <v-text-field
+                    v-model="badgeForm.title"
+                    label="Título da Medalha"
+                    placeholder="Ex: Super Colaborador, Mentor Destaque..."
+                    variant="outlined"
+                    :rules="[(v) => !!v || 'Campo obrigatório']"
+                  ></v-text-field>
+                  <v-textarea
+                    v-model="badgeForm.description"
+                    label="Descrição / Motivo"
+                    placeholder="Explique por que o voluntário está recebendo esta medalha..."
+                    variant="outlined"
+                    rows="3"
+                    auto-grow
+                  ></v-textarea>
+                </v-form>
+              </v-card-text>
+              <v-card-actions class="px-6 pb-4 pt-0 justify-end">
+                <v-btn color="grey-darken-1" variant="text" @click="badgeDialog = false">Cancelar</v-btn>
+                <v-btn
+                  color="amber-darken-2"
+                  variant="flat"
+                  :loading="badgeLoading"
+                  :disabled="!badgeValid"
+                  @click="saveBadge"
+                  >Atribuir</v-btn
+                >
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <!-- Delete Badge Dialog -->
+          <v-dialog v-model="deleteBadgeDialog" max-width="400px">
+            <v-card class="rounded-xl">
+              <v-card-title class="text-h6 px-6 py-4">Excluir Medalha?</v-card-title>
+              <v-card-text class="px-6 pb-2">
+                Tem certeza que deseja remover esta medalha? Esta ação não pode ser desfeita.
+              </v-card-text>
+              <v-card-actions class="px-6 pb-4 justify-end">
+                <v-btn color="grey-darken-1" variant="text" @click="deleteBadgeDialog = false">Cancelar</v-btn>
+                <v-btn color="error" variant="flat" :loading="badgeLoading" @click="deleteBadge">Excluir</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </div>
       </v-col>
     </v-row>
@@ -477,6 +559,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import volunteerService from '@/services/volunteer.js'
 import feedbackService from '@/services/feedback.js'
+import badgeService from '@/services/badge.js'
 import { useAuthStore } from '@/stores/auth.js'
 import { formatDateTime } from '@/utils/date'
 
@@ -495,8 +578,74 @@ const feedbackForm = ref({
 const feedbackToDelete = ref(null)
 const feedbackLoading = ref(false)
 
+// Badge State
+const badgeDialog = ref(false)
+const deleteBadgeDialog = ref(false)
+const badgeValid = ref(false)
+const badgeLoading = ref(false)
+const badgeFormRef = ref(null)
+const badgeForm = ref({
+  title: '',
+  description: ''
+})
+const badgeToDelete = ref(null)
+
 const canEdit = (feedback) => {
   return authStore.auth.email && feedback.author && authStore.auth.email === feedback.author.email
+}
+
+const canDeleteBadge = (badge) => {
+  if (authStore.isAdmin()) return true
+  return authStore.auth.email && badge.issuer && authStore.auth.email === badge.issuer.email
+}
+
+const saveBadge = async () => {
+  const { valid } = await badgeFormRef.value.validate()
+  if (!valid) return
+
+  badgeLoading.value = true
+  try {
+    const newBadge = await badgeService.create(volunteer.value.id, {
+      title: badgeForm.value.title,
+      description: badgeForm.value.description,
+      volunteer_id: volunteer.value.id
+    })
+    
+    if (!volunteer.value.badges) volunteer.value.badges = []
+    volunteer.value.badges.unshift(newBadge)
+    
+    badgeDialog.value = false
+    badgeForm.value = { title: '', description: '' }
+  } catch (e) {
+    console.error('Error saving badge', e)
+    alert('Erro ao atribuir medalha')
+  } finally {
+    badgeLoading.value = false
+  }
+}
+
+const confirmDeleteBadge = (badge) => {
+  badgeToDelete.value = badge
+  deleteBadgeDialog.value = true
+}
+
+const deleteBadge = async () => {
+  if (!badgeToDelete.value) return
+
+  badgeLoading.value = true
+  try {
+    await badgeService.delete(badgeToDelete.value.id)
+    volunteer.value.badges = volunteer.value.badges.filter(
+      (b) => b.id !== badgeToDelete.value.id
+    )
+    deleteBadgeDialog.value = false
+  } catch (e) {
+    console.error('Error deleting badge', e)
+    alert('Erro ao excluir medalha')
+  } finally {
+    badgeLoading.value = false
+    badgeToDelete.value = null
+  }
 }
 
 const openFeedbackDialog = () => {
