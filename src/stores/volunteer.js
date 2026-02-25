@@ -197,6 +197,26 @@ export const useVolunteerStore = defineStore(
       }
     }
 
+    async function addMentee(mentorId, menteeId) {
+      try {
+        const data = await volunteerService.addMentee(mentorId, menteeId)
+        return data
+      } catch (error) {
+        console.error(`Erro ao adicionar mentorado:`, error)
+        throw error
+      }
+    }
+
+    async function removeMentee(mentorId, menteeId) {
+      try {
+        const data = await volunteerService.removeMentee(mentorId, menteeId)
+        return data
+      } catch (error) {
+        console.error(`Erro ao remover mentorado:`, error)
+        throw error
+      }
+    }
+
     return {
       currentVolunteer,
       volunteers,
@@ -212,7 +232,9 @@ export const useVolunteerStore = defineStore(
       updateVolunteerSquad,
       updateVolunteerType,
       checkApoiaseStatus,
-      fetchByEmail
+      fetchByEmail,
+      addMentee,
+      removeMentee
     }
   },
   {

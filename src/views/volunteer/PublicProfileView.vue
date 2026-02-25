@@ -233,6 +233,56 @@
                 <v-list-item-subtitle class="text-caption mt-2">Verticais</v-list-item-subtitle>
               </v-list-item>
 
+              <v-divider v-if="(volunteer.mentors && volunteer.mentors.length > 0) || (volunteer.mentees && volunteer.mentees.length > 0)" inset></v-divider>
+
+              <!-- Mentoria (Mentores) -->
+              <v-list-item v-if="volunteer.mentors && volunteer.mentors.length > 0" class="px-6 py-3">
+                <template #prepend>
+                  <v-avatar color="deep-purple" variant="tonal" class="mr-4 rounded-circle">
+                    <v-icon icon="mdi-school"></v-icon>
+                  </v-avatar>
+                </template>
+                <v-list-item-title class="d-flex flex-wrap gap-2 align-center">
+                  <v-chip
+                    v-for="mentor in volunteer.mentors"
+                    :key="mentor.id"
+                    size="small"
+                    color="deep-purple-lighten-4"
+                    text-color="deep-purple-darken-4"
+                    label
+                    link
+                    :to="{ name: 'public-profile', params: { id: mentor.id } }"
+                  >
+                    {{ mentor.name }}
+                  </v-chip>
+                </v-list-item-title>
+                <v-list-item-subtitle class="text-caption mt-2">Mentores</v-list-item-subtitle>
+              </v-list-item>
+
+              <!-- Mentoria (Mentorados) -->
+              <v-list-item v-if="volunteer.mentees && volunteer.mentees.length > 0" class="px-6 py-3">
+                <template #prepend>
+                  <v-avatar color="teal" variant="tonal" class="mr-4 rounded-circle">
+                    <v-icon icon="mdi-account-tie-voice"></v-icon>
+                  </v-avatar>
+                </template>
+                <v-list-item-title class="d-flex flex-wrap gap-2 align-center">
+                  <v-chip
+                    v-for="mentee in volunteer.mentees"
+                    :key="mentee.id"
+                    size="small"
+                    color="teal-lighten-4"
+                    text-color="teal-darken-4"
+                    label
+                    link
+                    :to="{ name: 'public-profile', params: { id: mentee.id } }"
+                  >
+                    {{ mentee.name }}
+                  </v-chip>
+                </v-list-item-title>
+                <v-list-item-subtitle class="text-caption mt-2">Mentorados</v-list-item-subtitle>
+              </v-list-item>
+
               <v-divider v-if="volunteer.verticals && volunteer.verticals.length > 0 && volunteer.is_apoiase_supporter" inset></v-divider>
 
               <!-- Apoiador APOIA.se -->
@@ -555,7 +605,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import volunteerService from '@/services/volunteer.js'
 import feedbackService from '@/services/feedback.js'
@@ -741,14 +791,24 @@ const sortedStatusHistory = computed(() => {
   return []
 })
 
-onMounted(async () => {
-  const volunteerId = route.params.id
+const fetchVolunteer = async (id) => {
+  if (!id) return
+  volunteer.value = null
+  error.value = false
   try {
-    volunteer.value = await volunteerService.getPublicProfile(volunteerId)
+    volunteer.value = await volunteerService.getPublicProfile(id)
   } catch (e) {
     console.error(e)
     error.value = true
   }
+}
+
+onMounted(() => {
+  fetchVolunteer(route.params.id)
+})
+
+watch(() => route.params.id, (newId) => {
+  fetchVolunteer(newId)
 })
 
 const getStatusColor = (statusName) => {

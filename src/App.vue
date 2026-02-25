@@ -1,21 +1,73 @@
 <template>
   <v-app :class="ef">
+    <v-navigation-drawer v-model="drawer" temporary class="d-md-none">
+      <v-list>
+        <v-list-item v-if="logged === true && auth.isMentor()" :to="{ name: 'onboarding' }">
+          <v-list-item-title>Onboarding</v-list-item-title>
+        </v-list-item>
+        <v-list-item :to="{ name: 'dashboard' }">
+          <v-list-item-title>Dashboard</v-list-item-title>
+        </v-list-item>
+        <v-list-item v-if="logged === true && auth.isMentor()" :to="{ name: 'volunteers' }">
+          <v-list-item-title>Voluntários</v-list-item-title>
+        </v-list-item>
+        <template v-if="logged === true">
+          <v-list-item :to="{ name: 'squads-list' }">
+            <v-list-item-title>Squads</v-list-item-title>
+          </v-list-item>
+          <v-list-item :to="{ name: 'projects-list' }">
+            <v-list-item-title>Projetos</v-list-item-title>
+          </v-list-item>
+          <v-list-item :to="{ name: 'jobs-list' }">
+            <v-list-item-title>Vagas</v-list-item-title>
+          </v-list-item>
+          <v-list-item :to="{ name: 'verticals-list' }">
+            <v-list-item-title>Verticais</v-list-item-title>
+          </v-list-item>
+        </template>
+        <template v-else>
+          <v-list-item :to="{ name: 'registry' }">
+            <v-list-item-title>Registro</v-list-item-title>
+          </v-list-item>
+          <v-list-item :to="{ name: 'search' }">
+            <v-list-item-title>Pesquise</v-list-item-title>
+          </v-list-item>
+          <v-list-item :to="{ name: 'jobs-list' }">
+            <v-list-item-title>Vagas</v-list-item-title>
+          </v-list-item>
+          <v-list-item :to="{ name: 'squads-list' }">
+            <v-list-item-title>Squads</v-list-item-title>
+          </v-list-item>
+          <v-list-item :to="{ name: 'verticals-list' }">
+            <v-list-item-title>Verticais</v-list-item-title>
+          </v-list-item>
+          <v-list-item :to="{ name: 'projects-list' }">
+            <v-list-item-title>Projetos</v-list-item-title>
+          </v-list-item>
+        </template>
+      </v-list>
+    </v-navigation-drawer>
+
     <v-app-bar
       v-if="route.name !== 'public-profile' && route.name !== 'certificate'"
-      class="header"
+      class="header px-4"
       color="transparent"
       app
       elevation="4"
     >
       <div class="w-100 d-flex align-center justify-space-between main-container">
-        <router-link :to="{ name: 'home' }" class="d-flex align-center logo text-decoration-none">
-          <h1
-            class="d-none d-sm-block text-h5 font-weight-bold font-semibold primary-color ml-3 logo-text"
-          >
-            Stars
-          </h1>
-        </router-link>
-        <div class="d-flex align-center ga-2">
+        <div class="d-flex align-center">
+          <v-app-bar-nav-icon class="d-md-none" @click="drawer = !drawer"></v-app-bar-nav-icon>
+          <router-link :to="{ name: 'home' }" class="d-flex align-center logo text-decoration-none">
+            <h1
+              class="d-none d-sm-block text-h5 font-weight-bold font-semibold primary-color ml-3 logo-text"
+            >
+              Stars
+            </h1>
+          </router-link>
+        </div>
+
+        <div class="d-none d-md-flex align-center ga-2">
           <v-btn
             v-if="logged === true && auth.isMentor()"
             variant="text"
@@ -119,6 +171,9 @@
           >
             Projetos
           </v-btn>
+        </div>
+
+        <div class="d-flex align-center ga-2">
           <v-menu v-if="logged === true" open-on-hover>
             <template #activator="{ props }">
               <v-btn
@@ -177,7 +232,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useSnackbarStore } from '@/stores/snackbar'
@@ -187,6 +242,8 @@ const snackbarStore = useSnackbarStore()
 const auth = useAuthStore()
 
 const route = useRoute()
+
+const drawer = ref(false)
 
 const logged = computed(() => auth.getName() != '')
 
@@ -228,6 +285,16 @@ const formattedName = computed(() => {
   @media (max-width: 1600px) {
     margin-left: 120px;
     margin-right: 120px;
+  }
+
+  @media (max-width: 1200px) {
+    margin-left: 40px;
+    margin-right: 40px;
+  }
+
+  @media (max-width: 600px) {
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 

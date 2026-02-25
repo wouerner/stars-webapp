@@ -371,6 +371,51 @@
   </v-card>
 </v-col>
 
+<!-- Gerenciar Mentoria -->
+<v-col v-if="authStore.isHead()" cols="12" md="6">
+  <v-card class="h-100" elevation="2">
+    <v-card-item>
+      <v-card-title class="text-h6">
+        {{ isMentorView ? 'Mentorados' : 'Mentores' }}
+      </v-card-title>
+    </v-card-item>
+    <v-card-text>
+      <p class="text-body-2 mb-4">
+        {{ isMentorView ? 'Gerencie os voluntários orientados por este mentor.' : 'Gerencie os mentores deste voluntário.' }}
+      </p>
+      
+      <v-btn color="secondary" prepend-icon="mdi-account-plus" @click="mentorshipDialog = true">
+        {{ isMentorView ? 'Adicionar Mentorado' : 'Adicionar Mentor' }}
+      </v-btn>
+
+      <v-list class="mt-4">
+        <v-list-item
+          v-for="person in (isMentorView ? currentVolunteer.mentees : currentVolunteer.mentors)"
+          :key="person.id"
+          :to="{ name: 'volunteer-details', params: { id: person.id } }"
+        >
+          <template #prepend>
+            <v-icon icon="mdi-account"></v-icon>
+          </template>
+          <v-list-item-title>{{ person.name }}</v-list-item-title>
+          <template #append>
+            <v-btn
+              icon="mdi-delete"
+              size="small"
+              variant="text"
+              color="error"
+              @click.prevent="removeMentorship(person.id)"
+            ></v-btn>
+          </template>
+        </v-list-item>
+        <div v-if="!(isMentorView ? currentVolunteer.mentees?.length : currentVolunteer.mentors?.length)" class="text-center text-caption text-medium-emphasis py-2">
+          Nenhuma relação de mentoria encontrada.
+        </div>
+      </v-list>
+    </v-card-text>
+  </v-card>
+</v-col>
+
         <!-- Histórico -->
         <v-col cols="12">
           <v-card elevation="2">
@@ -636,6 +681,50 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <!-- Mentorship Dialog -->
+      <v-dialog v-model="mentorshipDialog" max-width="500px">
+        <v-card class="rounded-lg">
+          <v-card-title class="text-h6 px-6 py-4 border-b">
+            {{ isMentorView ? 'Adicionar Mentorado' : 'Adicionar Mentor' }}
+          </v-card-title>
+          <v-card-text class="pt-4 px-6">
+            <v-text-field
+              v-model="mentorshipSearch"
+              label="Buscar Voluntário por nome"
+              placeholder="Digite ao menos 3 caracteres..."
+              variant="outlined"
+              append-inner-icon="mdi-magnify"
+              hide-details
+              class="mb-4"
+              @update:model-value="searchVolunteersForMentorship"
+            ></v-text-field>
+
+            <v-list v-if="mentorshipResults.length > 0" class="border rounded">
+              <v-list-item
+                v-for="volunteer in mentorshipResults"
+                :key="volunteer.id"
+                @click="addMentorship(volunteer.id)"
+              >
+                <v-list-item-title>{{ volunteer.name }}</v-list-item-title>
+                <v-list-item-subtitle>{{ volunteer.email }}</v-list-item-subtitle>
+                <template #append>
+                  <v-btn icon="mdi-plus" variant="text" size="small" color="success"></v-btn>
+                </template>
+              </v-list-item>
+            </v-list>
+            <div v-else-if="mentorshipSearch.length >= 3 && !isSearchingMentorship" class="text-center py-4 text-medium-emphasis">
+              Nenhum voluntário encontrado.
+            </div>
+            <div v-else-if="isSearchingMentorship" class="text-center py-4">
+              <v-progress-circular indeterminate size="24" color="primary"></v-progress-circular>
+            </div>
+          </v-card-text>
+          <v-card-actions class="px-6 pb-4 pt-0 justify-end">
+            <v-btn color="grey-darken-1" variant="text" @click="mentorshipDialog = false">Fechar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
 
     <div v-else class="d-flex justify-center align-center w-100" style="min-height: 400px">
@@ -651,6 +740,7 @@ import { useVolunteerStore } from '@/stores/volunteer.js'
 import { useSquadStore } from '@/stores/squad.js'
 import { useVolunteerTypeStore } from '@/stores/volunteerType.js'
 import { useVerticalStore } from '@/stores/vertical.js'
+import volunteerService from '@/services/volunteer.js'
 import feedbackService from '@/services/feedback.js'
 import certificateService from '@/services/certificate.js'
 import badgeService from '@/services/badge.js'
@@ -704,6 +794,104 @@ const badgeForm = ref({
   description: ''
 })
 const badgeToDelete = ref(null)
+
+// Mentorship State
+const mentorshipDialog = ref(false)
+const mentorshipSearch = ref('')
+const mentorshipResults = ref([])
+const isSearchingMentorship = ref(false)
+const mentorshipLoading = ref(false)
+const isMentorView = computed(() => currentVolunteer.value?.volunteer_type?.name === 'Mentor')
+
+const searchVolunteersForMentorship = async () => {
+  if (!mentorshipSearch.value || mentorshipSearch.value.length < 3) {
+    mentorshipResults.value = []
+    return
+  }
+  
+  isSearchingMentorship.value = true
+  try {
+    const params = { name: mentorshipSearch.value }
+    // 1 is Junior, 2 is Mentor based on DB seed
+    if (isMentorView.value) {
+      params.volunteer_type_id = 1 // Looking for Juniors to mentor
+    } else {
+      params.volunteer_type_id = 2 // Looking for Mentors
+    }
+
+    const results = await volunteerService.fetchAll(params)
+    // Filter out already related or self, and ensure they are ACTIVE
+    const relatedIds = isMentorView.value 
+      ? (currentVolunteer.value.mentees || []).map(m => m.id)
+      : (currentVolunteer.value.mentors || []).map(m => m.id)
+    
+    mentorshipResults.value = results.filter(v => {
+      const isSelf = v.id === currentVolunteer.value.id
+      const isRelated = relatedIds.includes(v.id)
+      const isActive = v.status?.name === 'ACTIVE'
+      return !isSelf && !isRelated && isActive
+    })
+  } catch (e) {
+    console.error('Error searching volunteers', e)
+  } finally {
+    isSearchingMentorship.value = false
+  }
+}
+
+const addMentorship = async (otherId) => {
+  mentorshipLoading.value = true
+  try {
+    const mentorId = isMentorView.value ? currentVolunteer.value.id : otherId
+    const menteeId = isMentorView.value ? otherId : currentVolunteer.value.id
+    
+    const updatedVolunteer = await volunteerStore.addMentee(mentorId, menteeId)
+    
+    // Update local state
+    if (isMentorView.value) {
+      if (!currentVolunteer.value.mentees) currentVolunteer.value.mentees = []
+      // We need the full object or at least ID/Name from the results
+      const selected = mentorshipResults.value.find(v => v.id === otherId)
+      currentVolunteer.value.mentees.push({ id: selected.id, name: selected.name })
+    } else {
+      if (!currentVolunteer.value.mentors) currentVolunteer.value.mentors = []
+      const selected = mentorshipResults.value.find(v => v.id === otherId)
+      currentVolunteer.value.mentors.push({ id: selected.id, name: selected.name })
+    }
+    
+    mentorshipDialog.value = false
+    mentorshipSearch.value = ''
+    mentorshipResults.value = []
+  } catch (e) {
+    console.error('Error adding mentorship', e)
+    alert('Erro ao adicionar mentoria')
+  } finally {
+    mentorshipLoading.value = false
+  }
+}
+
+const removeMentorship = async (otherId) => {
+  if (!confirm('Tem certeza que deseja remover esta relação de mentoria?')) return
+  
+  mentorshipLoading.value = true
+  try {
+    const mentorId = isMentorView.value ? currentVolunteer.value.id : otherId
+    const menteeId = isMentorView.value ? otherId : currentVolunteer.value.id
+    
+    await volunteerStore.removeMentee(mentorId, menteeId)
+    
+    // Update local state
+    if (isMentorView.value) {
+      currentVolunteer.value.mentees = currentVolunteer.value.mentees.filter(m => m.id !== otherId)
+    } else {
+      currentVolunteer.value.mentors = currentVolunteer.value.mentors.filter(m => m.id !== otherId)
+    }
+  } catch (e) {
+    console.error('Error removing mentorship', e)
+    alert('Erro ao remover mentoria')
+  } finally {
+    mentorshipLoading.value = false
+  }
+}
 
 const canEdit = (feedback) => {
   if (authStore.isAdmin()) return true

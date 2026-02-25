@@ -198,6 +198,30 @@ async function checkApoiaseStatus(volunteerId) {
   }
 }
 
+async function addMentee(mentorId, menteeId) {
+  try {
+    const response = await axiosInstance.post(`/volunteers/${mentorId}/mentees/${menteeId}`, null, {
+      headers: headers()
+    })
+    return response.data
+  } catch (error) {
+    console.error(`Error adding mentee ${menteeId} to mentor ${mentorId}:`, error)
+    throw error
+  }
+}
+
+async function removeMentee(mentorId, menteeId) {
+  try {
+    const response = await axiosInstance.delete(`/volunteers/${mentorId}/mentees/${menteeId}`, {
+      headers: headers()
+    })
+    return response.data
+  } catch (error) {
+    console.error(`Error removing mentee ${menteeId} from mentor ${mentorId}:`, error)
+    throw error
+  }
+}
+
 export default {
   fetchBy,
   del,
@@ -215,5 +239,7 @@ export default {
   fetchByToken,
   updateProfileByToken,
   getPublicProfile,
-  checkApoiaseStatus
+  checkApoiaseStatus,
+  addMentee,
+  removeMentee
 }
