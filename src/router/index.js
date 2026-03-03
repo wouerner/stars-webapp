@@ -6,6 +6,8 @@ import LoginView from '@/views/user/LoginView.vue'
 import ProfileView from '../views/user/ProfileView.vue'
 import UserRegisterView from '../views/user/UserRegisterView.vue'
 import UsersListView from '../views/user/UsersListView.vue'
+import RequestPasswordResetView from '../views/user/RequestPasswordResetView.vue'
+import ResetPasswordView from '../views/user/ResetPasswordView.vue'
 
 // squad
 import SquadsView from '../views/squad/SquadsView.vue'
@@ -92,6 +94,16 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView
+    },
+    {
+      path: '/request-password-reset',
+      name: 'request-password-reset',
+      component: RequestPasswordResetView
+    },
+    {
+      path: '/reset-password',
+      name: 'reset-password',
+      component: ResetPasswordView
     },
     {
       path: '/volunteer/request-edit',

@@ -21,6 +21,15 @@
             label="Senha"
             @click:append-inner="visible = !visible"
           />
+          <div class="mt-1 mb-4 text-right">
+            <router-link
+              :to="{ name: 'request-password-reset' }"
+              class="text-caption text-decoration-none text-primary"
+              style="font-family: 'Radio Canada', serif !important; font-weight: 600"
+            >
+              Esqueci minha senha
+            </router-link>
+          </div>
           <hr class="mb-6 mt-3" />
           <v-btn color="primary" type="submit" block @click="submitLogin">Login</v-btn>
           <v-btn block class="mt-2 cancelButton" :to="{ name: 'user-register' }">Registrar</v-btn>

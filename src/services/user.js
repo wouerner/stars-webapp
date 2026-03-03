@@ -9,5 +9,11 @@ export default {
   },
   updateRole(id, role) {
     return instance.patch(`/users/${id}/role?role=${role}`)
+  },
+  requestPasswordReset(email) {
+    return instance.post('/request-password-reset', { email })
+  },
+  resetPassword(token, new_password) {
+    return instance.post('/reset-password', { token, new_password })
   }
 }
